@@ -2,8 +2,8 @@
 
 ## Kompilacja projektu
 Terminal:
-cd ../proi_23l_103_projekt_babaisyou_kc_kk
-cmake -S . -B build/
-cd build/
-make
-./BabaIsYou
+* cd ../proi_23l_103_projekt_babaisyou_kc_kk
+* cmake -S . -B build/
+* cd build/
+* make
+* ./BabaIsYou
