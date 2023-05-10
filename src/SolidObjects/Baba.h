@@ -2,19 +2,17 @@
 
 #include <iostream>
 
-#include "SolidObject.h"
+#include "../SolidObject.h"
 
 class Baba : public SolidObject
 {
+private:
+    std::string _imagePathUp, _imagePathDown, _imagePathLeft, _imagePathRight;
+
 public:
     Baba(std::string imagePath);
 
-    static bool isYou;
-    static bool isWin;
-    static bool isPush;
-    static bool isStop;
-    static bool isSink;
-    static bool isHot;
-    static bool isMelt;
-    static bool isDefeat;
+    std::string getImagePath(std::string direction) const;
+
+    void setImagePath(std::string imagePath, std::string direction);
 };

@@ -9,5 +9,4 @@ class SolidObject : public ObjectOnField
 {
 public:
     SolidObject(std::string imagePath);
-    ~SolidObject();
 };
