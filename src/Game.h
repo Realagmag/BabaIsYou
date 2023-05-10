@@ -11,6 +11,4 @@ private:
 
 public:
     Game(const Board &board);
-
-    Board getBoard() const;
 };
