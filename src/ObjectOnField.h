@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "paths.h"
 
 class ObjectOnField
 {
@@ -10,10 +11,10 @@ protected:
 public:
     ObjectOnField(std::string imagePath);
     ObjectOnField();
-    ~ObjectOnField();
+    virtual ~ObjectOnField();
 
-    std::string getImagePath() const;
-    void setImagePath(std::string imagePath);
+    virtual std::string getImagePath() const;
+    virtual void setImagePath(std::string imagePath);
 
     bool isSolidObject = false;
     bool isObjectWord = false;
@@ -27,4 +28,5 @@ public:
     bool isSink = false;
     bool isDefeat = false;
     bool isHot = false;
+    bool isMelt = false;
 };
