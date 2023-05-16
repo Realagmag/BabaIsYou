@@ -22,6 +22,8 @@ add_library(BabaIsYouLib
   src/SolidObject.h
   src/SolidObjects/Baba.cpp
   src/SolidObjects/Baba.h
+  src/SolidObjects/Wall.h
+  src/SolidObjects/Wall.cpp
   src/paths.h)
 
 target_include_directories(BabaIsYouLib PUBLIC "${PROJECT_BINARY_DIR}")

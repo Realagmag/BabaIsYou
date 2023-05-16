@@ -9,11 +9,11 @@ TEST_CASE("Baba tests", "[Baba]")
 
     SECTION("Getters")
     {
-        CHECK(baba.getImagePath() == paths.at("Baba"));
-        CHECK(baba.getImagePath("up") == paths.at("BabaUp"));
-        CHECK(baba.getImagePath("down") == paths.at("BabaDown"));
-        CHECK(baba.getImagePath("left") == paths.at("BabaLeft"));
-        CHECK(baba.getImagePath("right") == paths.at("BabaRight"));
+        CHECK(baba.getImagePath() == "../" + paths.at("Baba"));
+        CHECK(baba.getImagePath("up") == "../" + paths.at("BabaUp"));
+        CHECK(baba.getImagePath("down") == "../" + paths.at("BabaDown"));
+        CHECK(baba.getImagePath("left") == "../" + paths.at("BabaLeft"));
+        CHECK(baba.getImagePath("right") == "../" + paths.at("BabaRight"));
     }
 
     SECTION("Set image path")
