@@ -81,6 +81,11 @@ ObjectOnFieldPtr Board::getObject(int x, int y) const
     return _objectOnFieldPtrs[x][y][0];
 }
 
+ObjectOnFieldPtr Board::getemptyFieldPtr() const
+{
+    return _emptyFieldPtr;
+}
+
 int Board::getXSize() const
 {
     return _xSize;

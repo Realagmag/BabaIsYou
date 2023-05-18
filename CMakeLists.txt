@@ -16,6 +16,8 @@ add_library(BabaIsYouLib
   src/Board.h
   src/Game.cpp
   src/Game.h
+  src/Window.h
+  src/Window.cpp
   src/ObjectOnField.cpp
   src/ObjectOnField.h
   src/SolidObject.cpp

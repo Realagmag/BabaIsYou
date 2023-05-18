@@ -2,16 +2,24 @@
 
 #include <iostream>
 #include "paths.h"
+#include <SFML/Graphics.hpp>
+
 
 class ObjectOnField
 {
 protected:
     std::string _imagePath;
+    sf::Sprite sprite; //Cointains texture and size
+
 
 public:
+
     ObjectOnField(std::string imagePath);
     ObjectOnField();
     virtual ~ObjectOnField();
+
+    void SetTexture(sf::Texture texture); //SFML part
+    sf::Sprite* GetSpritePtr();
 
     virtual std::string getImagePath() const;
     virtual void setImagePath(std::string imagePath);

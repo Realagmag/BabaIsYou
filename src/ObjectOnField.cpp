@@ -10,6 +10,17 @@ ObjectOnField::ObjectOnField()
 
 ObjectOnField::~ObjectOnField() {}
 
+void ObjectOnField::SetTexture(sf::Texture texture)
+{
+    texture = texture;
+}
+
+sf::Sprite* ObjectOnField::GetSpritePtr()
+{
+    return &sprite;
+}
+
+
 std::string ObjectOnField::getImagePath() const
 {
     return _imagePath;
