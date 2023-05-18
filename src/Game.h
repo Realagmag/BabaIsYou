@@ -6,7 +6,7 @@
 
 
 class Game{
-public:
+    public:
         Game(const Board &board);
         Game();
         ~Game();

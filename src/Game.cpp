@@ -12,6 +12,9 @@ Game::Game(): m_window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
 
 Game::~Game(){}
 
+void Game::HandleInput()
+{}
+
 void Game::Update()
 {
     m_window.Update(); // Update window events.
@@ -22,6 +25,11 @@ void Game::Render()
     m_window.BeginDraw(); // Clear.
     m_window.DrawBoard(_board);
     m_window.EndDraw(); // Display.
+}
+
+Window* Game::GetWindow()
+{
+    return &m_window;
 }
 
 void Game::SetupBoard()

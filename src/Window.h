@@ -15,7 +15,6 @@ class Window{
         bool IsDone();
         bool IsFullscreen();
         sf::Vector2u GetWindowSize();
-        void ToggleFullscreen();
         void Draw(sf::Drawable& l_drawable);
         void DrawBoard(Board& board);
 
