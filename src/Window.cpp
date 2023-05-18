@@ -21,8 +21,7 @@ void Window::Setup(const std::string l_title, const sf::Vector2u& l_size)
 void Window::Create()
 {
     auto style = (m_isFullscreen ? sf::Style::Fullscreen : sf::Style::Default);
-    m_window.create({ m_windowSize.x, m_windowSize.y, 32 },
-    m_windowTitle, style);
+    m_window.create({ m_windowSize.x, m_windowSize.y, 32 }, m_windowTitle, style);
 }
 
 void Window::Destroy(){ m_window.close(); }
@@ -33,6 +32,13 @@ void Window::Update()
     while(m_window.pollEvent(event))
     {
         if(event.type == sf::Event::Closed){m_isDone = true;}
+        else if (event.type == sf::Event::KeyPressed)
+        {
+            if (event.key.code == sf::Keyboard::Escape)
+            {
+                m_isDone = true;
+            }
+        }
     }
 }
 
@@ -53,16 +59,17 @@ void Window::Draw(sf::Drawable& l_drawable)
 
 void Window::DrawBoard(Board& board)
 {
-    for (int i=0; board.getXSize()-1; i++)
+    for (int i=0; board.getYSize()-1; i++)
     {
-        for (int j=0; board.getYSize()-1; i++)
+        for (int j=0; board.getXSize()-1; j++)
         {
-            if (board.getObject(i,j) != board.getemptyFieldPtr())
+            if (board.getObject(j,i) != board.getemptyFieldPtr())
             {
-                sf::Sprite* sprite_ptr = board.getObject(i,j)->GetSpritePtr();
-                sprite_ptr->setPosition(sf::Vector2f(i*64.0f, j*64.0f));
+                std::shared_ptr<sf::Sprite> sprite_ptr = board.getObject(i,j)->GetSpritePtr();
+                sprite_ptr->setPosition(sf::Vector2f(j*64.0f, i*64.0f));
                 Draw(*sprite_ptr);
             }
         }
     }
+
 }

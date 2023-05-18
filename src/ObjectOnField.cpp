@@ -15,9 +15,9 @@ void ObjectOnField::SetTexture(sf::Texture texture)
     texture = texture;
 }
 
-sf::Sprite* ObjectOnField::GetSpritePtr()
+std::shared_ptr<sf::Sprite> ObjectOnField::GetSpritePtr()
 {
-    return &sprite;
+    return std::make_shared<sf::Sprite>(sprite);
 }
 
 

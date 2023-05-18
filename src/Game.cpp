@@ -46,6 +46,7 @@ void Game::SetupBoard()
     _board.addObject(17,9,wall_ptr);
     _board.addObject(17,10,wall_ptr);
     _board.addObject(17,11,wall_ptr);
+    _board.addObject(3,0,wall_ptr);
 }
 
 void Game::CreateObjectInstances()

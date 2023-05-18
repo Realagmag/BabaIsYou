@@ -3,6 +3,7 @@
 #include <iostream>
 #include "paths.h"
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 
 class ObjectOnField
@@ -19,7 +20,7 @@ public:
     virtual ~ObjectOnField();
 
     void SetTexture(sf::Texture texture); //SFML part
-    sf::Sprite* GetSpritePtr();
+    std::shared_ptr<sf::Sprite> GetSpritePtr();
 
     virtual std::string getImagePath() const;
     virtual void setImagePath(std::string imagePath);
