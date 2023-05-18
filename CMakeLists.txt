@@ -13,17 +13,13 @@ install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 add_library(BabaIsYouLib
   src/Board.cpp
-  src/Board.h
   src/Game.cpp
-  src/Game.h
   src/ObjectOnField.cpp
-  src/ObjectOnField.h
   src/SolidObject.cpp
-  src/SolidObject.h
   src/SolidObjects/Baba.cpp
-  src/SolidObjects/Baba.h
-  src/SolidObjects/Wall.h
   src/SolidObjects/Wall.cpp
+  src/SolidObjects/Flag.cpp
+  src/SolidObjects/Rock.cpp
   src/paths.h)
 
 target_include_directories(BabaIsYouLib PUBLIC "${PROJECT_BINARY_DIR}")
