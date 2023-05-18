@@ -87,6 +87,7 @@ public:
     bool moveRight(int x, int y, int z);
 
     /** Checks move impact, changes game status if should.
+     * Especially checks if there is win or lose situation.
      * @param currentObject object which is moving.
      * @param nextObjects objects from the next object in the direction
      * of movement to the end of the board.
@@ -95,7 +96,8 @@ public:
     std::pair<bool, int> checkMoveImpact(const ObjectOnFieldPtr &currentObject,
                                          const ObjectOnFieldPtrs2Vector &nextObjects);
 
-    /** Checks if move into objects in vector is possible.
+    /** Checks if move into objects in vector is possible (PUSH and STOP issues).
+     * This method does not check if there is win or lose situation.
      * @param nextObjects objects from the next object in the direction
      * of movement to the end of the board.
      * @return a pair of: 1. bool - indicates if move is possible

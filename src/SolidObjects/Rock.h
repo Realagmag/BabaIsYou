@@ -6,6 +6,7 @@
 
 class Rock : public SolidObject
 {
+public:
     Rock(std::string imagePath);
     Rock();
-}
+};

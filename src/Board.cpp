@@ -110,10 +110,10 @@ void Board::addObject(int x, int y, const ObjectOnFieldPtr &ptr)
 bool Board::moveUp(int x, int y, int z)
 {
     if (y < _ySize - 1){
-        ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
         // Create vector from y+1 to the end of the board in up direction
         ObjectOnFieldPtrs2Vector nextObjects(_objectOnFieldPtrs[x].begin() + y + 1,
                                              _objectOnFieldPtrs[x].end());
+        ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
 
         std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
         bool isMovePossible = moveImpact.first;
@@ -127,7 +127,6 @@ bool Board::moveUp(int x, int y, int z)
                 auto it = std::find_if(_objectOnFieldPtrs[x][y+i+1].begin(),
                                        _objectOnFieldPtrs[x][y+i+1].end(),
                                        [](const ObjectOnFieldPtr& ptr) { return ptr->isPush; });
-
                 int index = std::distance(_objectOnFieldPtrs[x][y+i+1].begin(), it);
 
                 addObject(x, y+i+2, _objectOnFieldPtrs[x][y+i+1][index]);
@@ -184,16 +183,26 @@ std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObjec
 
 std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextObjects) const
 {
-    bool isMovePossible = false;
+    bool isPushPossible = false;
+    bool isMovePossible = true;
     int objectsToMove = 0;
 
+    // Check if move is possible
+    if (std::any_of(nextObjects[0].begin(), nextObjects[0].end(),
+                        [&](ObjectOnFieldPtr objectOnFieldPtr) {
+                            return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
+    {
+        isMovePossible = false;
+    }
+
+    // Check if chain of objects can be pushed
     for (std::vector<ObjectOnFieldPtr> objectOnOneFieldPtrs : nextObjects) {
         // Check if any object has isStop flag and not isPush flag
         if (std::any_of(objectOnOneFieldPtrs.begin(), objectOnOneFieldPtrs.end(),
                         [&](ObjectOnFieldPtr objectOnFieldPtr) {
                             return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
         {
-            isMovePossible = false;
+            isPushPossible = false;
             break;
         }
         else if (anyObjectHasTrueFlag(objectOnOneFieldPtrs, "isPush")) {
@@ -201,10 +210,13 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
             continue;
         }
         else {
-            isMovePossible = true;
+            isPushPossible = true;
             break;
         }
     }
+
+    if (!isPushPossible)
+        objectsToMove = 0;
 
     return std::make_pair(isMovePossible, objectsToMove);
 }

@@ -6,6 +6,7 @@
 
 class Flag : public SolidObject
 {
+public:
     Flag(std::string imagePath);
     Flag();
-}
+};
