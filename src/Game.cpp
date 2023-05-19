@@ -37,8 +37,8 @@ void Game::SetupBoard()
     //For test purposes I manually create shared ptr to each object
     //It should be change to loop later
     CreateObjectInstances();
-    ObjectOnFieldPtr baba_ptr = std::make_shared<ObjectOnField>(AllTypesOfObjects[0]);
-    ObjectOnFieldPtr wall_ptr = std::make_shared<ObjectOnField>(AllTypesOfObjects[1]);
+    ObjectOnFieldPtr baba_ptr = std::make_shared<ObjectOnField>(AllObjects[0]);
+    ObjectOnFieldPtr wall_ptr = std::make_shared<ObjectOnField>(AllObjects[1]);
     _board.addObject(10,8,baba_ptr);
     _board.addObject(17,5,wall_ptr);
     _board.addObject(17,6,wall_ptr);
@@ -51,34 +51,26 @@ void Game::SetupBoard()
 
 void Game::CreateObjectInstances()
 {
-    //For test purposes textures are simple shapes for now
-    //Later it will be changes to load from files
+
+    baba_texture.loadFromFile("../src/textures/Baba.png");
+    baba_sprite.setTexture(baba_texture);
+
+    baba_sprite.setScale(sf::Vector2f((64.0f/baba_texture.getSize().x),(64.0f/baba_texture.getSize().y)));
+
+    wall_texture.loadFromFile("../src/textures/Wall.png");
+    wall_sprite.setTexture(wall_texture);
+
+    wall_sprite.setScale(sf::Vector2f((64.0f/wall_texture.getSize().x),(64.0f/wall_texture.getSize().y)));
+
+    std::shared_ptr<sf::Sprite> baba_sprite_ptr = std::make_shared<sf::Sprite>(baba_sprite);
+    std::shared_ptr<sf::Sprite> wall_sprite_ptr = std::make_shared<sf::Sprite>(wall_sprite);
+
     Baba baba;
     Wall wall;
 
-    // Creating baba texture
-    sf::CircleShape circle(64.0f);
-    circle.setFillColor(sf::Color::Red);
-    sf::RenderTexture circle_texture;
-    circle_texture.create(64,64);
-    circle_texture.clear();
-    circle_texture.draw(circle);
-    circle_texture.display();
-    sf::Texture baba_texture = circle_texture.getTexture();
+    baba.SetSpritePtr(baba_sprite_ptr);
+    wall.SetSpritePtr(wall_sprite_ptr);
 
-    //Creating wall texture
-    sf::RectangleShape rectangle(sf::Vector2f(64.0f,64.0f));
-    rectangle.setFillColor(sf::Color::Yellow);
-    sf::RenderTexture rectangle_texture;
-    rectangle_texture.create(64,64);
-    rectangle_texture.clear();
-    rectangle_texture.draw(rectangle);
-    rectangle_texture.display();
-    sf::Texture wall_texture = rectangle_texture.getTexture();
-
-    baba.SetTexture(baba_texture);
-    wall.SetTexture(wall_texture);
-
-    AllTypesOfObjects.push_back(baba);
-    AllTypesOfObjects.push_back(wall);
+    AllObjects.push_back(baba);
+    AllObjects.push_back(wall);
 }

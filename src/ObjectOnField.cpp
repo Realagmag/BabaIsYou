@@ -10,14 +10,14 @@ ObjectOnField::ObjectOnField()
 
 ObjectOnField::~ObjectOnField() {}
 
-void ObjectOnField::SetTexture(sf::Texture texture)
+void ObjectOnField::SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr)
 {
-    texture = texture;
+    sprite_ptr = new_sprite_ptr;
 }
 
 std::shared_ptr<sf::Sprite> ObjectOnField::GetSpritePtr()
 {
-    return std::make_shared<sf::Sprite>(sprite);
+    return sprite_ptr;
 }
 
 

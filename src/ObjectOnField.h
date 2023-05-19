@@ -10,7 +10,7 @@ class ObjectOnField
 {
 protected:
     std::string _imagePath;
-    sf::Sprite sprite; //Cointains texture and size
+    std::shared_ptr<sf::Sprite> sprite_ptr; //Cointains texture and size
 
 
 public:
@@ -19,7 +19,7 @@ public:
     ObjectOnField();
     virtual ~ObjectOnField();
 
-    void SetTexture(sf::Texture texture); //SFML part
+    void SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr); //SFML part
     std::shared_ptr<sf::Sprite> GetSpritePtr();
 
     virtual std::string getImagePath() const;

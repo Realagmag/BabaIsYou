@@ -21,7 +21,7 @@ void Window::Setup(const std::string l_title, const sf::Vector2u& l_size)
 void Window::Create()
 {
     auto style = (m_isFullscreen ? sf::Style::Fullscreen : sf::Style::Default);
-    m_window.create({ m_windowSize.x, m_windowSize.y, 32 }, m_windowTitle, style);
+    m_window.create({ m_windowSize.x, m_windowSize.y}, m_windowTitle, style);
 }
 
 void Window::Destroy(){ m_window.close(); }
@@ -59,15 +59,14 @@ void Window::Draw(sf::Drawable& l_drawable)
 
 void Window::DrawBoard(Board& board)
 {
-    for (int i=0; i < board.getYSize() -1; i++)
+    for (int i=0; i < board.getYSize(); i++)
     {
-        for (int j=0; j < board.getXSize() -1; j++)
+        for (int j=0; j < board.getXSize(); j++)
         {
             if (board.getObject(j,i) != board.getemptyFieldPtr())
             {
-                std::shared_ptr<sf::Sprite> sprite_ptr = board.getObject(j,i)->GetSpritePtr();
-                sprite_ptr->setPosition(sf::Vector2f(j*64.0f, i*64.0f));
-                Draw(*sprite_ptr);
+                board.getObject(j,i)->GetSpritePtr()->setPosition(sf::Vector2f(float(j*60),float(i*60)));
+                Draw(*board.getObject(j,i)->GetSpritePtr());
             }
         }
     }
