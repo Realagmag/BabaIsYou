@@ -25,9 +25,9 @@ add_library(BabaIsYouLib
   src/SolidObjects/Rock.cpp
   src/paths.h)
 
-  target_link_libraries(BabaIsYouLib PRIVATE
-  sfml-system sfml-window sfml-graphics sfml-network sfml-audio
-  )
+target_link_libraries(BabaIsYouLib PRIVATE
+sfml-system sfml-window sfml-graphics sfml-network sfml-audio
+)
 
 target_include_directories(BabaIsYouLib PUBLIC "${PROJECT_BINARY_DIR}")
 target_link_libraries(${PROJECT_NAME} BabaIsYouLib)
