@@ -15,6 +15,7 @@ class Game{
         void Render();
         Window* GetWindow();
         Board _board;
+        bool IsKeyReleased = true;
 
         std::vector<ObjectOnField> AllObjects;
         std::vector<sf::Sprite> AllSprites;

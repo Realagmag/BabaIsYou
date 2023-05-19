@@ -39,26 +39,6 @@ void Window::Update()
             {
                 m_isDone = true;
             }
-            else if (event.key.code == sf::Keyboard::Up)
-            {
-                Action action = UP;
-                _board->updateState(action);
-            }
-            else if (event.key.code == sf::Keyboard::Down)
-            {
-                Action action = DOWN;
-                _board->updateState(action);
-            }
-            else if (event.key.code == sf::Keyboard::Left)
-            {
-                Action action = LEFT;
-                _board->updateState(action);
-            }
-            else if (event.key.code == sf::Keyboard::Right)
-            {
-                Action action = RIGHT;
-                _board->updateState(action);
-            }
         }
     }
 }
@@ -91,9 +71,4 @@ void Window::DrawBoard(Board& board)
             }
         }
     }
-}
-
-void Window::SetBoardPtr(std::shared_ptr<Board> board_ptr)
-{
-    _board = board_ptr;
 }

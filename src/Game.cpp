@@ -7,8 +7,6 @@ Game::Game(const Board &board)
 
 Game::Game(): m_window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
 {
-    std::shared_ptr<Board> board_ptr = std::make_shared<Board>(_board);
-    m_window.SetBoardPtr(board_ptr);
     SetupBoard();
 }
 
@@ -16,7 +14,35 @@ Game::~Game(){}
 
 void Game::HandleInput()
 {
-
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && IsKeyReleased)
+    {
+        IsKeyReleased = false;
+        Action action = UP;
+        _board.updateState(action);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && IsKeyReleased)
+    {
+        IsKeyReleased = false;
+        Action action = LEFT;
+        _board.updateState(action);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && IsKeyReleased)
+    {
+        IsKeyReleased = false;
+        Action action = DOWN;
+        _board.updateState(action);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && IsKeyReleased)
+    {
+        IsKeyReleased = false;
+        Action action = RIGHT;
+        _board.updateState(action);
+    }
+    else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
+    !sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
+        IsKeyReleased = true;
+    }
 }
 
 void Game::Update()
@@ -72,6 +98,7 @@ void Game::CreateObjectInstances()
     std::shared_ptr<sf::Sprite> wall_sprite_ptr = std::make_shared<sf::Sprite>(wall_sprite);
 
     Baba baba;
+    baba.isYou = true;
     Wall wall;
 
     baba.SetSpritePtr(baba_sprite_ptr);
