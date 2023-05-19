@@ -17,6 +17,7 @@ class Window{
         sf::Vector2u GetWindowSize();
         void Draw(sf::Drawable& l_drawable);
         void DrawBoard(Board& board);
+        void SetBoardPtr(std::shared_ptr<Board> board_ptr);
 
     private:
         void Setup(const std::string l_title, const sf::Vector2u& l_size);
@@ -27,4 +28,5 @@ class Window{
         std::string m_windowTitle;
         bool m_isDone;
         bool m_isFullscreen;
+        std::shared_ptr<Board> _board;
 };

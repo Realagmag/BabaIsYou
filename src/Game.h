@@ -15,6 +15,7 @@ class Game{
         void Render();
         Window* GetWindow();
         Board _board;
+
         std::vector<ObjectOnField> AllObjects;
         std::vector<sf::Sprite> AllSprites;
         std::vector<sf::Texture> AllTexturesOfSprites;
@@ -23,6 +24,7 @@ class Game{
         sf::Sprite baba_sprite;
         sf::Texture wall_texture;
         sf::Sprite wall_sprite;
+
     private:
         void SetupBoard();
         void CreateObjectInstances();

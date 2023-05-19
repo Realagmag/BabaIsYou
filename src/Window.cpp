@@ -16,6 +16,7 @@ void Window::Setup(const std::string l_title, const sf::Vector2u& l_size)
     m_isFullscreen = true;
     m_isDone = false;
     Create();
+    m_window.setKeyRepeatEnabled(false);
 }
 
 void Window::Create()
@@ -37,6 +38,26 @@ void Window::Update()
             if (event.key.code == sf::Keyboard::Escape)
             {
                 m_isDone = true;
+            }
+            else if (event.key.code == sf::Keyboard::Up)
+            {
+                Action action = UP;
+                _board->updateState(action);
+            }
+            else if (event.key.code == sf::Keyboard::Down)
+            {
+                Action action = DOWN;
+                _board->updateState(action);
+            }
+            else if (event.key.code == sf::Keyboard::Left)
+            {
+                Action action = LEFT;
+                _board->updateState(action);
+            }
+            else if (event.key.code == sf::Keyboard::Right)
+            {
+                Action action = RIGHT;
+                _board->updateState(action);
             }
         }
     }
@@ -70,4 +91,9 @@ void Window::DrawBoard(Board& board)
             }
         }
     }
+}
+
+void Window::SetBoardPtr(std::shared_ptr<Board> board_ptr)
+{
+    _board = board_ptr;
 }
