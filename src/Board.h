@@ -67,6 +67,8 @@ public:
 
     ObjectOnFieldPtr getObject(int x, int y) const;
 
+    ObjectOnFieldPtr getemptyFieldPtr() const;
+
     int getXSize() const;
 
     int getYSize() const;

@@ -10,6 +10,17 @@ ObjectOnField::ObjectOnField()
 
 ObjectOnField::~ObjectOnField() {}
 
+void ObjectOnField::SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr)
+{
+    sprite_ptr = new_sprite_ptr;
+}
+
+std::shared_ptr<sf::Sprite> ObjectOnField::GetSpritePtr()
+{
+    return sprite_ptr;
+}
+
+
 std::string ObjectOnField::getImagePath() const
 {
     return _imagePath;
