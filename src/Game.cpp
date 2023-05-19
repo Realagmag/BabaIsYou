@@ -39,10 +39,10 @@ void Game::SetupBoard()
     CreateObjectInstances();
     ObjectOnFieldPtr baba_ptr = std::make_shared<ObjectOnField>(AllTypesOfObjects[0]);
     ObjectOnFieldPtr wall_ptr = std::make_shared<ObjectOnField>(AllTypesOfObjects[1]);
+    _board.addObject(10,8,baba_ptr);
     _board.addObject(17,5,wall_ptr);
     _board.addObject(17,6,wall_ptr);
     _board.addObject(17,7,wall_ptr);
-    _board.addObject(17,8,wall_ptr);
     _board.addObject(17,9,wall_ptr);
     _board.addObject(17,10,wall_ptr);
     _board.addObject(17,11,wall_ptr);
@@ -56,7 +56,7 @@ void Game::CreateObjectInstances()
     Baba baba;
     Wall wall;
 
-    //Creating baba texture
+    // Creating baba texture
     sf::CircleShape circle(64.0f);
     circle.setFillColor(sf::Color::Red);
     sf::RenderTexture circle_texture;

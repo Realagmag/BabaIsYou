@@ -59,17 +59,16 @@ void Window::Draw(sf::Drawable& l_drawable)
 
 void Window::DrawBoard(Board& board)
 {
-    for (int i=0; board.getYSize()-1; i++)
+    for (int i=0; i < board.getYSize() -1; i++)
     {
-        for (int j=0; board.getXSize()-1; j++)
+        for (int j=0; j < board.getXSize() -1; j++)
         {
             if (board.getObject(j,i) != board.getemptyFieldPtr())
             {
-                std::shared_ptr<sf::Sprite> sprite_ptr = board.getObject(i,j)->GetSpritePtr();
+                std::shared_ptr<sf::Sprite> sprite_ptr = board.getObject(j,i)->GetSpritePtr();
                 sprite_ptr->setPosition(sf::Vector2f(j*64.0f, i*64.0f));
                 Draw(*sprite_ptr);
             }
         }
     }
-
 }
