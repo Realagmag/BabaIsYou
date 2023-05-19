@@ -268,3 +268,14 @@ std::vector<Coordinates> Board::getYouObjectsCoordinates() const
 
     return youObjectsCoordinates;
 }
+
+void Board::updateRules()
+{
+    // Iterate over vector
+    for (int x = 0; x < _objectOnFieldPtrs.size(); x++) {
+        for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++) {
+            if (_objectOnFieldPtrs[x][y][0]->isNoun)
+        }
+    }
+
+}

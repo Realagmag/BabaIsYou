@@ -17,7 +17,7 @@ public:
     virtual void setImagePath(std::string imagePath);
 
     bool isSolidObject = false;
-    bool isObjectWord = false;
+    bool isNoun = false;
     bool isOperator = false;
     bool isKeyword = false;
 

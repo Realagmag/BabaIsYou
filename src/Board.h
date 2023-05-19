@@ -113,4 +113,6 @@ public:
     /** Finds solid objects which have isYou flag set to true from objects on board
      * and returns their coordinates. */
     std::vector<Coordinates> getYouObjectsCoordinates() const;
+
+    void updateRules();
 };
