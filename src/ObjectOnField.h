@@ -5,13 +5,14 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-
 class ObjectOnField
 {
 protected:
     std::string _imagePath;
-    std::shared_ptr<sf::Sprite> sprite_ptr; //Cointains texture and size
+    std::string _type;
 
+    /* Cointains texture and size !SFML! */
+    std::shared_ptr<sf::Sprite> _sprite_ptr;
 
 public:
 
@@ -19,16 +20,19 @@ public:
     ObjectOnField();
     virtual ~ObjectOnField();
 
-    void SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr); //SFML part
+    // SFML part
+    void SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr);
     std::shared_ptr<sf::Sprite> GetSpritePtr();
 
     virtual std::string getImagePath() const;
-    virtual void setImagePath(std::string imagePath);
 
-    bool isSolidObject = false;
-    bool isNoun = false;
-    bool isOperator = false;
-    bool isKeyword = false;
+    virtual std::string getType() const;
+
+    virtual std::shared_ptr<ObjectOnField> getTemporaryIdentity() const;
+
+    virtual void setTemporaryIdentity(const std::shared_ptr<ObjectOnField> &objectPtr);
+
+    virtual void clearTemporaryIdentity();
 
     bool isYou = false;
     bool isWin = false;
@@ -39,3 +43,7 @@ public:
     bool isHot = false;
     bool isMelt = false;
 };
+
+using ObjectOnFieldPtr = std::shared_ptr<ObjectOnField>;
+using ObjectOnFieldPtrs2Vector = std::vector<std::vector<ObjectOnFieldPtr>>;
+using ObjectOnFieldPtrs3Vector = std::vector<std::vector<std::vector<ObjectOnFieldPtr>>>;

@@ -1,16 +1,10 @@
 #include "SolidObject.h"
 
 SolidObject::SolidObject(std::string imagePath) : ObjectOnField(imagePath)
-{
-    isSolidObject = true;
-    _temporaryImagePath = "";
-}
+{ _type = "SolidObject"; }
 
-SolidObject::SolidObject()
-{
-    isSolidObject = true;
-    _temporaryImagePath = "";
-}
+SolidObject::SolidObject() : ObjectOnField()
+{ _type = "SolidObject"; }
 
 std::string SolidObject::getImagePath() const
 {
@@ -19,12 +13,28 @@ std::string SolidObject::getImagePath() const
     return _imagePath;
 }
 
-void SolidObject::setImagePath(std::string imagePath)
+std::string SolidObject::getType() const
 {
-    _temporaryImagePath = imagePath;
+    if (_temporaryType != "")
+        return _temporaryType;
+    return _type;
 }
 
-void SolidObject::clearTemporaryImagePath()
+ObjectOnFieldPtr SolidObject::getTemporaryIdentity() const
 {
+    return _temporaryIdentity;
+}
+
+void SolidObject::setTemporaryIdentity(const ObjectOnFieldPtr &objectPtr)
+{
+    _temporaryIdentity = objectPtr;
+    _temporaryImagePath = objectPtr->getImagePath();
+    _temporaryType = objectPtr->getType();
+}
+
+void SolidObject::clearTemporaryIdentity()
+{
+    _temporaryIdentity = nullptr;
     _temporaryImagePath = "";
+    _temporaryType = "";
 }

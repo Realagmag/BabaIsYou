@@ -1,32 +1,46 @@
 #include "ObjectOnField.h"
 
 ObjectOnField::ObjectOnField(std::string imagePath)
-: _imagePath(imagePath) {}
+: _imagePath(imagePath)
+, _type("Empty") {}
 
 ObjectOnField::ObjectOnField()
-{
-    _imagePath = paths.at("Empty");
-}
+: _imagePath(paths.at("Empty"))
+, _type("Empty") {}
 
 ObjectOnField::~ObjectOnField() {}
 
 void ObjectOnField::SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr)
 {
-    sprite_ptr = new_sprite_ptr;
+    _sprite_ptr = new_sprite_ptr;
 }
 
 std::shared_ptr<sf::Sprite> ObjectOnField::GetSpritePtr()
 {
-    return sprite_ptr;
+    return _sprite_ptr;
 }
-
 
 std::string ObjectOnField::getImagePath() const
 {
     return _imagePath;
 }
 
-void ObjectOnField::setImagePath(std::string imagePath)
+std::string ObjectOnField::getType() const
 {
-    _imagePath = imagePath;
+    return _type;
+}
+
+ObjectOnFieldPtr ObjectOnField::getTemporaryIdentity() const
+{
+    return nullptr;
+}
+
+void ObjectOnField::setTemporaryIdentity(const ObjectOnFieldPtr &objectPtr)
+{
+    return;
+}
+
+void ObjectOnField::clearTemporaryIdentity()
+{
+    return;
 }

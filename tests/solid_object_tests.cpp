@@ -6,19 +6,23 @@
 
 TEST_CASE("SolidObject tests", "[SolidObject]")
 {
-    SolidObject solid_object;
-    Baba baba;
+    ObjectOnFieldPtr solid_object = std::make_shared<SolidObject>();
+    ObjectOnFieldPtr baba_ptr = std::make_shared<Baba>();
 
     SECTION("Getters")
     {
-        CHECK(solid_object.getImagePath() == paths.at("Empty"));
+        CHECK(solid_object->getImagePath() == paths.at("Empty"));
+        CHECK(solid_object->getType() == "SolidObject");
     }
 
-    SECTION("Set and remove image path")
+    SECTION("Set and clear temporary identity")
     {
-        solid_object.setImagePath("newSolidObject.png");
-        CHECK(solid_object.getImagePath() == "newSolidObject.png");
-        solid_object.clearTemporaryImagePath();
-        CHECK(solid_object.getImagePath() == paths.at("Empty"));
+        solid_object->setTemporaryIdentity(baba_ptr);
+        CHECK(solid_object->getImagePath() == baba_ptr->getImagePath());
+        CHECK(solid_object->getType() == "Baba");
+        solid_object->clearTemporaryIdentity();
+        CHECK(solid_object->getImagePath() == paths.at("Empty"));
+        CHECK(solid_object->getType() == "SolidObject");
+        CHECK(solid_object->getTemporaryIdentity() == nullptr);
     }
 }

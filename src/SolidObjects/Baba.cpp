@@ -2,7 +2,7 @@
 #include "../paths.h"
 
 Baba::Baba(std::string imagePath) : SolidObject(imagePath)
-{}
+{ _type = "Baba";}
 
 Baba::Baba()
 {
@@ -11,6 +11,8 @@ Baba::Baba()
     _imagePathDown = "../" + paths.at("BabaDown");
     _imagePathLeft = "../" + paths.at("BabaLeft");
     _imagePathRight = "../" + paths.at("BabaRight");
+
+    _type = "Baba";
 }
 
 std::string Baba::getImagePath() const
