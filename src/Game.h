@@ -24,5 +24,5 @@ class Game{
     private:
         void SetupBoard();
         void CreateObjectInstances();
-        Window m_window;
+        Window _window;
 };

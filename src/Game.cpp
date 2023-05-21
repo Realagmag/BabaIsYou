@@ -5,7 +5,7 @@
 Game::Game(const Board &board)
 : _board(board) {}
 
-Game::Game(): m_window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
+Game::Game(): _window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
 {
     SetupBoard();
 }
@@ -47,19 +47,19 @@ void Game::HandleInput()
 
 void Game::Update()
 {
-    m_window.Update(); // Update window events.
+    _window.Update(); // Update window events.
 }
 
 void Game::Render()
 {
-    m_window.BeginDraw(); // Clear.
-    m_window.DrawBoard(_board);
-    m_window.EndDraw(); // Display.
+    _window.BeginDraw(); // Clear.
+    _window.DrawBoard(_board);
+    _window.EndDraw(); // Display.
 }
 
 Window* Game::GetWindow()
 {
-    return &m_window;
+    return &_window;
 }
 
 void Game::SetupBoard()
