@@ -82,28 +82,26 @@ void Game::SetupBoard()
 
 void Game::CreateObjectInstances()
 {
-
-
-    baba_texture.loadFromFile("../src/textures/Baba.png");
-    baba_sprite.setTexture(baba_texture);
-
-    baba_sprite.setScale(sf::Vector2f((64.0f/baba_texture.getSize().x),(64.0f/baba_texture.getSize().y)));
-
-    wall_texture.loadFromFile("../src/textures/Wall.png");
-    wall_sprite.setTexture(wall_texture);
-
-    wall_sprite.setScale(sf::Vector2f((64.0f/wall_texture.getSize().x),(64.0f/wall_texture.getSize().y)));
-
-    std::shared_ptr<sf::Sprite> baba_sprite_ptr = std::make_shared<sf::Sprite>(baba_sprite);
-    std::shared_ptr<sf::Sprite> wall_sprite_ptr = std::make_shared<sf::Sprite>(wall_sprite);
-
+    // Creates Textures, Sprites and ObjectOnField instances and stores it
     Baba baba;
-    baba.isYou = true;
+    AllObjects.emplace_back(baba);
+    sf::Texture baba_texture;
+    AllTexturesOfSprites.emplace_back(baba_texture);
+    sf::Sprite baba_sprite;
+    AllSprites.emplace_back(baba_sprite);
+
     Wall wall;
+    AllObjects.emplace_back(wall);
+    sf::Texture wall_texture;
+    AllTexturesOfSprites.emplace_back(wall_texture);
+    sf::Sprite wall_sprite;
+    AllSprites.emplace_back(wall_sprite);
 
-    baba.SetSpritePtr(baba_sprite_ptr);
-    wall.SetSpritePtr(wall_sprite_ptr);
-
-    AllObjects.push_back(baba);
-    AllObjects.push_back(wall);
+    for (int i; i < AllObjects.size(); i++)
+    {
+        AllTexturesOfSprites[i].loadFromFile(AllObjects[i].getImagePath());
+        AllSprites[i].setTexture(AllTexturesOfSprites[i]);
+        AllSprites[i].setScale(sf::Vector2f((64.0f/AllTexturesOfSprites[i].getSize().x),(64.0f/AllTexturesOfSprites[i].getSize().y)));
+        AllObjects[i].SetSpritePtr(std::make_shared<sf::Sprite>(AllSprites[i]));
+    }
 }
