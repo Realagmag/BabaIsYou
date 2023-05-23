@@ -55,7 +55,7 @@ TEST_CASE("Board tests general and move", "[Board]")
 
     SECTION("Move")
     {
-        board.moveUp(0, 0, 0);
+        board.moveDown(0, 0, 0);
         CHECK(board.getObject(0, 1, 1)->getImagePath() == "baba.png");
         CHECK(board.getObject(0, 0, 0)->getImagePath() == paths.at("Empty"));
 
@@ -106,7 +106,7 @@ TEST_CASE("Board tests general and move", "[Board]")
 
     SECTION("Move tests")
     {
-        board.moveUp(1, 1, 0);
+        board.moveDown(1, 1, 0);
         CHECK(board.getObject(1, 2, 0)->getImagePath() == "../" + paths.at("Wall"));
         CHECK(board.getObject(1, 2, 1)->getImagePath() == "baba.png");
     }

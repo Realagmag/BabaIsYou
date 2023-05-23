@@ -52,6 +52,8 @@ Board::Board(int x, int y)
 
 void Board::updateState(Action action)
 {
+    _wasRulesChanged = false;
+
     for (const Coordinates &object_coordinates : getYouObjectsCoordinates())
     {
         switch (action)
@@ -115,14 +117,13 @@ void Board::addObject(int x, int y, const ObjectOnFieldPtr &ptr)
     if (_objectOnFieldPtrs[x][y].size() == 1 && _objectOnFieldPtrs[x][y][0] == _emptyFieldPtr)
         _objectOnFieldPtrs[x][y][0] = ptr;
     else
-        _objectOnFieldPtrs[x][y].emplace_back(ptr);
+        _objectOnFieldPtrs[x][y].push_back(ptr);
 }
 
-bool Board::moveUp(int x, int y, int z)
+bool Board::moveDown(int x, int y, int z)
 {
     if (y < _ySize - 1)
     {
-        // Create vector from y+1 to the end of the board in up direction
         ObjectOnFieldPtrs2Vector nextObjects(_objectOnFieldPtrs[x].begin() + y + 1,
                                              _objectOnFieldPtrs[x].end());
         ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
@@ -133,47 +134,162 @@ bool Board::moveUp(int x, int y, int z)
 
         if (isMovePossible)
         {
+            // Move chain of objects before current object
+            makeMove(nextObjects, objectsToMove);
+            for (int i = 0; i <= objectsToMove; i++)
+            {
+                // Move semantics to avoid copying
+                _objectOnFieldPtrs[x][y + i + 1] = std::move(nextObjects[i]);
+            }
+
+            // Move current object
             addObject(x, y + 1, currentObject);
             removeObject(x, y, z);
-            for (int i = 0; i < objectsToMove; i++)
-            {
-                // Find first object that can be pushed, we know that it exists
-                auto it = std::find_if(_objectOnFieldPtrs[x][y + i + 1].begin(),
-                                       _objectOnFieldPtrs[x][y + i + 1].end(),
-                                       [](const ObjectOnFieldPtr &ptr)
-                                       { return ptr->isPush; });
-                int index = std::distance(_objectOnFieldPtrs[x][y + i + 1].begin(), it);
 
-                addObject(x, y + i + 2, _objectOnFieldPtrs[x][y + i + 1][index]);
-                removeObject(x, y + i + 1, index);
-            }
+            return true;
         }
+        return false;
     }
-    else
+    return false;
+}
+
+bool Board::moveUp(int x, int y, int z)
+{
+    if (y > 0)
     {
+        ObjectOnFieldPtrs2Vector nextObjects(std::make_reverse_iterator(_objectOnFieldPtrs[x].begin() + y),
+                                             std::make_reverse_iterator(_objectOnFieldPtrs[x].begin()));
+        ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
+
+        std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
+        bool isMovePossible = moveImpact.first;
+        int objectsToMove = moveImpact.second;
+
+        if (isMovePossible)
+        {
+            // Move chain of objects before current object
+            if (objectsToMove > 0)
+            {
+                makeMove(nextObjects, objectsToMove);
+                for (int i = 0; i <= objectsToMove; i++)
+                {
+                    // Move semantics to avoid copying
+                    _objectOnFieldPtrs[x][y - i - 1] = std::move(nextObjects[i]);
+                }
+            }
+
+            // Move current object
+            addObject(x, y - 1, currentObject);
+            removeObject(x, y, z);
+
+            return true;
+        }
         return false;
     }
 }
 
-bool Board::moveDown(int x, int y, int z)
-{
-    addObject(x, y - 1, _objectOnFieldPtrs[x][y][z]);
-    removeObject(x, y, z);
-    return true;
-}
-
 bool Board::moveLeft(int x, int y, int z)
 {
-    addObject(x - 1, y, _objectOnFieldPtrs[x][y][z]);
-    removeObject(x, y, z);
-    return true;
+    if (x > 0)
+    {
+        ObjectOnFieldPtrs2Vector nextObjects;
+        nextObjects.resize(x);
+        for (int i = x-1; i >= 0; i--)
+        {
+            nextObjects[x-1-i] = _objectOnFieldPtrs[i][y];
+        }
+        ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
+
+        std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
+        bool isMovePossible = moveImpact.first;
+        int objectsToMove = moveImpact.second;
+
+        if (isMovePossible)
+        {
+            // Move chain of objects before current object
+            makeMove(nextObjects, objectsToMove);
+            for (int i = 0; i <= objectsToMove; i++)
+            {
+                // Move semantics to avoid copying
+               _objectOnFieldPtrs[x-1-i][y] = std::move(nextObjects[i]);
+            }
+
+            // Move current object
+            addObject(x-1, y, currentObject);
+            removeObject(x, y, z);
+
+            return true;
+        }
+        return false;
+    }
 }
 
 bool Board::moveRight(int x, int y, int z)
 {
-    addObject(x + 1, y, _objectOnFieldPtrs[x][y][z]);
-    removeObject(x, y, z);
-    return true;
+    if (x < _xSize - 1)
+    {
+        ObjectOnFieldPtrs2Vector nextObjects;
+        nextObjects.resize(_xSize - x - 1);
+        for (int i = x+1; i < _xSize; i++)
+        {
+            nextObjects[i-x-1] = _objectOnFieldPtrs[i][y];
+        }
+        ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
+
+        std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
+        bool isMovePossible = moveImpact.first;
+        int objectsToMove = moveImpact.second;
+
+        if (isMovePossible)
+        {
+            // Move chain of objects before current object
+            makeMove(nextObjects, objectsToMove);
+            for (int i = 0; i <= objectsToMove; i++)
+            {
+                // Move semantics to avoid copying
+                _objectOnFieldPtrs[x+1+i][y] = std::move(nextObjects[i]);
+            }
+
+            // Move current object
+            addObject(x+1, y, currentObject);
+            removeObject(x, y, z);
+
+            return true;
+        }
+        return false;
+    }
+}
+
+void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, int objectsToMove)
+{
+    for (int i = 0; i < objectsToMove; i++)
+    {
+        // Find first object that can be pushed, we know that it exists
+        auto it = std::find_if(nextObjects[i].begin(), nextObjects[i].end(),
+                               [](const ObjectOnFieldPtr &ptr)
+                               { return ptr->isPush; });
+        int index = std::distance(nextObjects[i].begin(), it);
+
+        // Check if this move will change rules
+        if (nextObjects[i][index]->getType() == "Noun" ||
+            nextObjects[i][index]->getType() == "Operator" ||
+            nextObjects[i][index]->getType() == "Attribute")
+        {
+            _wasRulesChanged = true;
+        }
+
+        // Add object to the next field
+        if (nextObjects[i + 1].size() == 1 && nextObjects[i + 1][0] == _emptyFieldPtr)
+            nextObjects[i + 1][0] = nextObjects[i][index];
+        else
+            nextObjects[i + 1].push_back(nextObjects[i][index]);
+
+        // Remove object from the current field
+        if (nextObjects[i].size() == 1)
+            nextObjects[i][0] = _emptyFieldPtr;
+        else
+            nextObjects[i].erase(nextObjects[i].begin() + index);
+    }
 }
 
 std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObject,

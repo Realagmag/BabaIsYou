@@ -47,6 +47,9 @@ private:
     /** Status of the game */
     GameStatus _gameStatus;
 
+    /** Indicates if rules was changed in last move. */
+    bool _wasRulesChanged = false;
+
     /** Ptr to the empty field */
     ObjectOnFieldPtr _emptyFieldPtr;
 
@@ -83,13 +86,15 @@ public:
     void addObject(int x, int y, const ObjectOnFieldPtr &ptr);
 
     /** Check if move is possible and move if it is possible. */
-    bool moveUp(int x, int y, int z);
-
     bool moveDown(int x, int y, int z);
+
+    bool moveUp(int x, int y, int z);
 
     bool moveLeft(int x, int y, int z);
 
     bool moveRight(int x, int y, int z);
+
+    void makeMove(ObjectOnFieldPtrs2Vector& nextObjects, int objectsToMove);
 
     /** Checks move impact, changes game status if should.
      * Especially checks if there is win or lose situation.
