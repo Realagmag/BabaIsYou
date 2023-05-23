@@ -17,6 +17,7 @@ class Game{
         Board _board;
         bool IsKeyReleased = true;
 
+        //Order of objects: Baba, Flag, Lava, Rock, Skull, Tree, Wall, Water
         std::vector<ObjectOnField> AllObjects;
         std::vector<sf::Sprite> AllSprites;
         std::vector<sf::Texture> AllTexturesOfSprites;

@@ -16,6 +16,7 @@ const std::map<std::string, std::string> paths = {
     {"Water", "src/textures/Water.png"},
     {"Lava", "src/textures/Lava.png"},
     {"Skull", "src/textures/Skull.png"},
+    {"Tree", "src/textures/Tree.png"},
     {"Grass", "src/textures/Grass.png"},
     {"Is", "src/textures/Is.png"},
     {"And", "src/textures/And.png"},

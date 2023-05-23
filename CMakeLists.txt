@@ -23,6 +23,11 @@ add_library(BabaIsYouLib
   src/SolidObjects/Wall.cpp
   src/SolidObjects/Flag.cpp
   src/SolidObjects/Rock.cpp
+  src/SolidObjects/Lava.cpp
+  src/SolidObjects/Water.cpp
+  src/SolidObjects/Skull.cpp
+  src/SolidObjects/Rock.cpp
+  src/SolidObjects/Tree.cpp
   src/paths.h)
 
 target_link_libraries(BabaIsYouLib PRIVATE
