@@ -1,12 +1,10 @@
 #include "ObjectOnField.h"
 
 ObjectOnField::ObjectOnField(std::string imagePath)
-: _imagePath(imagePath)
-, _type("Empty") {}
+    : _imagePath(imagePath), _type("Empty") {}
 
 ObjectOnField::ObjectOnField()
-: _imagePath(paths.at("Empty"))
-, _type("Empty") {}
+    : _imagePath(paths.at("Empty")), _type("Empty") {}
 
 ObjectOnField::~ObjectOnField() {}
 

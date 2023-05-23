@@ -9,11 +9,14 @@
 #include "ObjectOnField.h"
 #include "SolidObject.h"
 
-using ObjectOnFieldPtr = std::shared_ptr<ObjectOnField>;
-using ObjectOnFieldPtrs2Vector = std::vector<std::vector<ObjectOnFieldPtr>>;
-using ObjectOnFieldPtrs3Vector = std::vector<std::vector<std::vector<ObjectOnFieldPtr>>>;
-
-enum Action { UP, DOWN, LEFT, RIGHT, WAIT };
+enum Action
+{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    WAIT
+};
 
 enum GameStatus
 {
@@ -23,7 +26,7 @@ enum GameStatus
     FROZEN // There is no isYou object on board
 };
 
-/*Struct to store coordinates of object on board*/
+/* Struct to store coordinates of object on board*/
 struct Coordinates
 {
     int x;
@@ -35,7 +38,7 @@ class Board
 {
 private:
     /** Three dimensional vector of shared pointers to the ObjectOnField class instances.
-    * Third dimension is to allow two objects occupying the same field. */
+     * Third dimension is to allow two objects occupying the same field. */
     ObjectOnFieldPtrs3Vector _objectOnFieldPtrs;
 
     /** Size of board */
@@ -56,8 +59,8 @@ public:
     Board(int x, int y);
 
     /** Function which takes user action and do everything to update board state
-    * properly after that action.
-    * @param action Integer from actions enum. */
+     * properly after that action.
+     * @param action Integer from actions enum. */
     void updateState(Action action);
 
     /** Getters */

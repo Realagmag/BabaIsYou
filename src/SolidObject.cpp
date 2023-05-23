@@ -1,10 +1,14 @@
 #include "SolidObject.h"
 
 SolidObject::SolidObject(std::string imagePath) : ObjectOnField(imagePath)
-{ _type = "SolidObject"; }
+{
+    _type = "SolidObject";
+}
 
 SolidObject::SolidObject() : ObjectOnField()
-{ _type = "SolidObject"; }
+{
+    _type = "SolidObject";
+}
 
 std::string SolidObject::getImagePath() const
 {

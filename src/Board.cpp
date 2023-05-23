@@ -23,22 +23,27 @@ Board::Board(int x, int y)
     // Resize x dimension
     _objectOnFieldPtrs.resize(x);
     // Resize y dimension
-    for (int i = 0; i < x; i++) {
+    for (int i = 0; i < x; i++)
+    {
         _objectOnFieldPtrs[i].resize(y);
     }
     // RESEREVE 2 slots in z dimension
     // We reserve 2 slots in z dimension, because situations when more than two objects
     // are on the same field are extraordinary and then we can push back new object
-    for (int i = 0; i < x; i++) {
-        for (int j = 0; j < y; j++) {
+    for (int i = 0; i < x; i++)
+    {
+        for (int j = 0; j < y; j++)
+        {
             _objectOnFieldPtrs[i][j].reserve(2);
         }
     }
 
     // Fill vector with empty ObjectOnFieldPtr instances
-    for (int i = 0; i < x; i++) {
-        for (int j = 0; j < y; j++) {
-            _objectOnFieldPtrs[i][j] = { _emptyFieldPtr};
+    for (int i = 0; i < x; i++)
+    {
+        for (int j = 0; j < y; j++)
+        {
+            _objectOnFieldPtrs[i][j] = {_emptyFieldPtr};
         }
     }
 
@@ -47,7 +52,8 @@ Board::Board(int x, int y)
 
 void Board::updateState(Action action)
 {
-    for (const Coordinates& object_coordinates : getYouObjectsCoordinates()) {
+    for (const Coordinates &object_coordinates : getYouObjectsCoordinates())
+    {
         switch (action)
         {
         case Action::UP:
@@ -114,7 +120,8 @@ void Board::addObject(int x, int y, const ObjectOnFieldPtr &ptr)
 
 bool Board::moveUp(int x, int y, int z)
 {
-    if (y < _ySize - 1){
+    if (y < _ySize - 1)
+    {
         // Create vector from y+1 to the end of the board in up direction
         ObjectOnFieldPtrs2Vector nextObjects(_objectOnFieldPtrs[x].begin() + y + 1,
                                              _objectOnFieldPtrs[x].end());
@@ -124,43 +131,47 @@ bool Board::moveUp(int x, int y, int z)
         bool isMovePossible = moveImpact.first;
         int objectsToMove = moveImpact.second;
 
-        if (isMovePossible) {
-            addObject(x, y+1, currentObject);
+        if (isMovePossible)
+        {
+            addObject(x, y + 1, currentObject);
             removeObject(x, y, z);
-            for (int i = 0; i < objectsToMove; i++) {
+            for (int i = 0; i < objectsToMove; i++)
+            {
                 // Find first object that can be pushed, we know that it exists
-                auto it = std::find_if(_objectOnFieldPtrs[x][y+i+1].begin(),
-                                       _objectOnFieldPtrs[x][y+i+1].end(),
-                                       [](const ObjectOnFieldPtr& ptr) { return ptr->isPush; });
-                int index = std::distance(_objectOnFieldPtrs[x][y+i+1].begin(), it);
+                auto it = std::find_if(_objectOnFieldPtrs[x][y + i + 1].begin(),
+                                       _objectOnFieldPtrs[x][y + i + 1].end(),
+                                       [](const ObjectOnFieldPtr &ptr)
+                                       { return ptr->isPush; });
+                int index = std::distance(_objectOnFieldPtrs[x][y + i + 1].begin(), it);
 
-                addObject(x, y+i+2, _objectOnFieldPtrs[x][y+i+1][index]);
-                removeObject(x, y+i+1, index);
+                addObject(x, y + i + 2, _objectOnFieldPtrs[x][y + i + 1][index]);
+                removeObject(x, y + i + 1, index);
             }
         }
     }
-    else {
+    else
+    {
         return false;
     }
 }
 
 bool Board::moveDown(int x, int y, int z)
 {
-    addObject(x, y-1, _objectOnFieldPtrs[x][y][z]);
+    addObject(x, y - 1, _objectOnFieldPtrs[x][y][z]);
     removeObject(x, y, z);
     return true;
 }
 
 bool Board::moveLeft(int x, int y, int z)
 {
-    addObject(x-1, y, _objectOnFieldPtrs[x][y][z]);
+    addObject(x - 1, y, _objectOnFieldPtrs[x][y][z]);
     removeObject(x, y, z);
     return true;
 }
 
 bool Board::moveRight(int x, int y, int z)
 {
-    addObject(x+1, y, _objectOnFieldPtrs[x][y][z]);
+    addObject(x + 1, y, _objectOnFieldPtrs[x][y][z]);
     removeObject(x, y, z);
     return true;
 }
@@ -169,19 +180,22 @@ std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObjec
                                             const ObjectOnFieldPtrs2Vector &nextObjects)
 {
     // Check win conditions
-    if (anyObjectHasTrueFlag(nextObjects[0], "isWin")) {
+    if (anyObjectHasTrueFlag(nextObjects[0], "isWin"))
+    {
         _gameStatus = GameStatus::WIN;
         return std::make_pair(true, 0);
     }
     // Check lose conditions
     else if (anyObjectHasTrueFlag(nextObjects[0], "isDefeat") ||
              (currentObject->isMelt && (anyObjectHasTrueFlag(nextObjects[0], "isHot"))) ||
-             anyObjectHasTrueFlag(nextObjects[0], "isSink")) {
+             anyObjectHasTrueFlag(nextObjects[0], "isSink"))
+    {
         _gameStatus = GameStatus::LOSE;
         return std::make_pair(false, 0);
     }
     // If there is no win or lose conditions, check if move is possible
-    else {
+    else
+    {
         return isMovePossible(nextObjects);
     }
 }
@@ -194,27 +208,30 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
 
     // Check if move is possible
     if (std::any_of(nextObjects[0].begin(), nextObjects[0].end(),
-                        [&](ObjectOnFieldPtr objectOnFieldPtr) {
-                            return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
+                    [&](ObjectOnFieldPtr objectOnFieldPtr)
+                    { return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
     {
         isMovePossible = false;
     }
 
     // Check if chain of objects can be pushed
-    for (std::vector<ObjectOnFieldPtr> objectOnOneFieldPtrs : nextObjects) {
+    for (std::vector<ObjectOnFieldPtr> objectOnOneFieldPtrs : nextObjects)
+    {
         // Check if any object has isStop flag and not isPush flag
         if (std::any_of(objectOnOneFieldPtrs.begin(), objectOnOneFieldPtrs.end(),
-                        [&](ObjectOnFieldPtr objectOnFieldPtr) {
-                            return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
+                        [&](ObjectOnFieldPtr objectOnFieldPtr)
+                        { return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
         {
             isPushPossible = false;
             break;
         }
-        else if (anyObjectHasTrueFlag(objectOnOneFieldPtrs, "isPush")) {
+        else if (anyObjectHasTrueFlag(objectOnOneFieldPtrs, "isPush"))
+        {
             objectsToMove++;
             continue;
         }
-        else {
+        else
+        {
             isPushPossible = true;
             break;
         }
@@ -229,7 +246,8 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
 bool Board::anyObjectHasTrueFlag(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
                                  std::string flag)
 {
-    return std::any_of(objectOnFieldPtrs.begin(), objectOnFieldPtrs.end(), [&](ObjectOnFieldPtr ptr) {
+    return std::any_of(objectOnFieldPtrs.begin(), objectOnFieldPtrs.end(), [&](ObjectOnFieldPtr ptr)
+                       {
         if (flag == "isWin")
             return ptr->isWin;
         else if (flag == "isDefeat")
@@ -247,8 +265,7 @@ bool Board::anyObjectHasTrueFlag(const std::vector<ObjectOnFieldPtr> &objectOnFi
         else if (flag == "isYou")
             return ptr->isYou;
         else
-            return false;
-    });
+            return false; });
 }
 
 std::vector<Coordinates> Board::getYouObjectsCoordinates() const
@@ -256,16 +273,17 @@ std::vector<Coordinates> Board::getYouObjectsCoordinates() const
     std::vector<Coordinates> youObjectsCoordinates;
 
     // Iterate over vector
-    for (int x = 0; x < _objectOnFieldPtrs.size(); x++) {
-        for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++) {
-            for (int z = 0; z < _objectOnFieldPtrs[x][y].size(); z++) {
+    for (int x = 0; x < _objectOnFieldPtrs.size(); x++)
+    {
+        for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
+        {
+            for (int z = 0; z < _objectOnFieldPtrs[x][y].size(); z++)
+            {
                 // Check if object has isYou flag
-                if (_objectOnFieldPtrs[x][y][z]->isYou) {
-                        Coordinates coordinates;
-                        coordinates.x = x;
-                        coordinates.y = y;
-                        coordinates.z = z;
-                        youObjectsCoordinates.emplace_back(coordinates);
+                if (_objectOnFieldPtrs[x][y][z]->isYou)
+                {
+                    Coordinates coordinates = {x, y, z};
+                    youObjectsCoordinates.emplace_back(coordinates);
                 }
             }
         }
@@ -276,5 +294,15 @@ std::vector<Coordinates> Board::getYouObjectsCoordinates() const
 
 void Board::updateRules()
 {
-
+    // Iterate over vector
+    for (int x = 0; x < _objectOnFieldPtrs.size(); x++)
+    {
+        for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
+        {
+            // Noun, Operator and Keyword can only have z=0
+            if (_objectOnFieldPtrs[x][y][0]->getType() == "Noun")
+            {
+            }
+        }
+    }
 }
