@@ -14,10 +14,9 @@ install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 add_library(BabaIsYouLib
   src/Board.cpp
   src/Game.cpp
-  src/Game.h
-  src/Window.h
   src/Window.cpp
   src/ObjectOnField.cpp
+  src/Noun.cpp
   src/SolidObject.cpp
   src/SolidObjects/Baba.cpp
   src/SolidObjects/Wall.cpp

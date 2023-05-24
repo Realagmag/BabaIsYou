@@ -72,6 +72,11 @@ void Board::updateState(Action action)
             break;
         }
     }
+
+    if (_wasRulesChanged)
+    {
+        updateRules();
+    }
 }
 
 ObjectOnFieldPtr Board::getObject(int x, int y, int z) const
@@ -194,9 +199,9 @@ bool Board::moveLeft(int x, int y, int z)
     {
         ObjectOnFieldPtrs2Vector nextObjects;
         nextObjects.resize(x);
-        for (int i = x-1; i >= 0; i--)
+        for (int i = x - 1; i >= 0; i--)
         {
-            nextObjects[x-1-i] = _objectOnFieldPtrs[i][y];
+            nextObjects[x - 1 - i] = _objectOnFieldPtrs[i][y];
         }
         ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
 
@@ -211,11 +216,11 @@ bool Board::moveLeft(int x, int y, int z)
             for (int i = 0; i <= objectsToMove; i++)
             {
                 // Move semantics to avoid copying
-               _objectOnFieldPtrs[x-1-i][y] = std::move(nextObjects[i]);
+                _objectOnFieldPtrs[x - 1 - i][y] = std::move(nextObjects[i]);
             }
 
             // Move current object
-            addObject(x-1, y, currentObject);
+            addObject(x - 1, y, currentObject);
             removeObject(x, y, z);
 
             return true;
@@ -230,9 +235,9 @@ bool Board::moveRight(int x, int y, int z)
     {
         ObjectOnFieldPtrs2Vector nextObjects;
         nextObjects.resize(_xSize - x - 1);
-        for (int i = x+1; i < _xSize; i++)
+        for (int i = x + 1; i < _xSize; i++)
         {
-            nextObjects[i-x-1] = _objectOnFieldPtrs[i][y];
+            nextObjects[i - x - 1] = _objectOnFieldPtrs[i][y];
         }
         ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
 
@@ -247,11 +252,11 @@ bool Board::moveRight(int x, int y, int z)
             for (int i = 0; i <= objectsToMove; i++)
             {
                 // Move semantics to avoid copying
-                _objectOnFieldPtrs[x+1+i][y] = std::move(nextObjects[i]);
+                _objectOnFieldPtrs[x + 1 + i][y] = std::move(nextObjects[i]);
             }
 
             // Move current object
-            addObject(x+1, y, currentObject);
+            addObject(x + 1, y, currentObject);
             removeObject(x, y, z);
 
             return true;
@@ -267,7 +272,7 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, int objectsToMove)
         // Find first object that can be pushed, we know that it exists
         auto it = std::find_if(nextObjects[i].begin(), nextObjects[i].end(),
                                [](const ObjectOnFieldPtr &ptr)
-                               { return ptr->isPush; });
+                               { return ptr->getProperty("Push"); });
         int index = std::distance(nextObjects[i].begin(), it);
 
         // Check if this move will change rules
@@ -296,15 +301,15 @@ std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObjec
                                             const ObjectOnFieldPtrs2Vector &nextObjects)
 {
     // Check win conditions
-    if (anyObjectHasTrueFlag(nextObjects[0], "isWin"))
+    if (anyObjectHasProperty(nextObjects[0], "Win"))
     {
         _gameStatus = GameStatus::WIN;
         return std::make_pair(true, 0);
     }
     // Check lose conditions
-    else if (anyObjectHasTrueFlag(nextObjects[0], "isDefeat") ||
-             (currentObject->isMelt && (anyObjectHasTrueFlag(nextObjects[0], "isHot"))) ||
-             anyObjectHasTrueFlag(nextObjects[0], "isSink"))
+    else if (anyObjectHasProperty(nextObjects[0], "Defeat") ||
+             (currentObject->getProperty("Melt") && (anyObjectHasProperty(nextObjects[0], "Hot"))) ||
+             anyObjectHasProperty(nextObjects[0], "Sink"))
     {
         _gameStatus = GameStatus::LOSE;
         return std::make_pair(false, 0);
@@ -325,7 +330,7 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
     // Check if move is possible
     if (std::any_of(nextObjects[0].begin(), nextObjects[0].end(),
                     [&](ObjectOnFieldPtr objectOnFieldPtr)
-                    { return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
+                    { return objectOnFieldPtr->getProperty("Stop") && !objectOnFieldPtr->getProperty("Push"); }))
     {
         isMovePossible = false;
     }
@@ -336,12 +341,12 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
         // Check if any object has isStop flag and not isPush flag
         if (std::any_of(objectOnOneFieldPtrs.begin(), objectOnOneFieldPtrs.end(),
                         [&](ObjectOnFieldPtr objectOnFieldPtr)
-                        { return objectOnFieldPtr->isStop && !objectOnFieldPtr->isPush; }))
+                        { return objectOnFieldPtr->getProperty("Stop") && !objectOnFieldPtr->getProperty("Push"); }))
         {
             isPushPossible = false;
             break;
         }
-        else if (anyObjectHasTrueFlag(objectOnOneFieldPtrs, "isPush"))
+        else if (anyObjectHasProperty(objectOnOneFieldPtrs, "Push"))
         {
             objectsToMove++;
             continue;
@@ -359,29 +364,11 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
     return std::make_pair(isMovePossible, objectsToMove);
 }
 
-bool Board::anyObjectHasTrueFlag(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
-                                 std::string flag)
+bool Board::anyObjectHasProperty(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
+                                 const std::string &property)
 {
     return std::any_of(objectOnFieldPtrs.begin(), objectOnFieldPtrs.end(), [&](ObjectOnFieldPtr ptr)
-                       {
-        if (flag == "isWin")
-            return ptr->isWin;
-        else if (flag == "isDefeat")
-            return ptr->isDefeat;
-        else if (flag == "isHot")
-            return ptr->isHot;
-        else if (flag == "isMelt")
-            return ptr->isMelt;
-        else if (flag == "isSink")
-            return ptr->isSink;
-        else if (flag == "isPush")
-            return ptr->isPush;
-        else if (flag == "isStop")
-            return ptr->isStop;
-        else if (flag == "isYou")
-            return ptr->isYou;
-        else
-            return false; });
+                       { return ptr->getProperty(property); });
 }
 
 std::vector<Coordinates> Board::getYouObjectsCoordinates() const
@@ -395,8 +382,8 @@ std::vector<Coordinates> Board::getYouObjectsCoordinates() const
         {
             for (int z = 0; z < _objectOnFieldPtrs[x][y].size(); z++)
             {
-                // Check if object has isYou flag
-                if (_objectOnFieldPtrs[x][y][z]->isYou)
+                // Check if object has You property
+                if (_objectOnFieldPtrs[x][y][z]->getProperty("You"))
                 {
                     Coordinates coordinates = {x, y, z};
                     youObjectsCoordinates.emplace_back(coordinates);
@@ -415,9 +402,13 @@ void Board::updateRules()
     {
         for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
         {
-            // Noun, Operator and Keyword can only have z=0
-            if (_objectOnFieldPtrs[x][y][0]->getType() == "Noun")
+            // Noun, Operator and Property can only have z=0
+            if (_objectOnFieldPtrs[x][y][0]->getType() == "Operator")
             {
+                // Clear parent SolidObject
+                _objectOnFieldPtrs[x][y][0]->getSolidObjectPtr()->clearTemporaryIdentity();
+                _objectOnFieldPtrs[x][y][0]->getSolidObjectPtr()->resetProperties();
+
             }
         }
     }

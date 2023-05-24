@@ -7,4 +7,5 @@ Wall::Wall(std::string imagePath) : SolidObject(imagePath)
 Wall::Wall()
 {
     _imagePath = "../" + paths.at("Wall");
+    _nounImagePath = "../" + paths.at("Walltext");
 }

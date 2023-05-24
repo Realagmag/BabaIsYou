@@ -23,7 +23,7 @@ enum GameStatus
     IN_PROGRESS,
     WIN,
     LOSE,
-    FROZEN // There is no isYou object on board
+    FROZEN // There is no "You" object on the board
 };
 
 /* Struct to store coordinates of object on board*/
@@ -117,8 +117,8 @@ public:
     /** Check if any object in vector has given flag set to true.
      * @param objectsOnField vector of ObjectOnFieldPtrs.
      * @param flag flag to check as string. */
-    static bool anyObjectHasTrueFlag(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
-                                     std::string flag);
+    static bool anyObjectHasProperty(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
+                                     const std::string &property);
 
     /** Finds solid objects which have isYou flag set to true from objects on board
      * and returns their coordinates. */

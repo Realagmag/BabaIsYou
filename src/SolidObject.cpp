@@ -42,3 +42,23 @@ void SolidObject::clearTemporaryIdentity()
     _temporaryImagePath = "";
     _temporaryType = "";
 }
+
+bool SolidObject::getProperty(const std::string &property) const
+{
+    if (_temporaryIdentity == nullptr)
+    {
+        if (_properties.find(property) != _properties.end())
+            return _properties.at(property);
+        else
+            throw std::invalid_argument("Property " + property + " does not exist.");
+    }
+    else
+    {
+        return _temporaryIdentity->getProperty(property);
+    }
+}
+
+std::string SolidObject::getNounImagePath() const
+{
+    return _nounImagePath;
+}

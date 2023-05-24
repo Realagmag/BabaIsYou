@@ -16,10 +16,10 @@ TEST_CASE("Board tests general and move", "[Board]")
     ObjectOnFieldPtr wall_ptr = std::make_shared<Wall>();
     ObjectOnFieldPtr rock_ptr = std::make_shared<Rock>();
     ObjectOnFieldPtr flag_ptr = std::make_shared<Flag>();
-    flag_ptr->isWin = true;
-    rock_ptr->isStop = true;
-    baba_ptr->isYou = true;
-    wall_ptr->isPush = true;
+    flag_ptr->setProperty("Win", true);
+    rock_ptr->setProperty("Stop", true);
+    baba_ptr->setProperty("You", true);
+    wall_ptr->setProperty("Push", true);
 
     board.addObject(0, 0, baba_ptr);
     board.addObject(0, 1, SolidObject_ptr);
@@ -78,9 +78,9 @@ TEST_CASE("Board tests general and move", "[Board]")
     {
         std::vector<ObjectOnFieldPtr> ptrs1 = {wall_ptr, baba_ptr};
         std::vector<ObjectOnFieldPtr> ptrs2 = {SolidObject_ptr, SolidObject_ptr};
-        CHECK(Board::anyObjectHasTrueFlag(ptrs1, "isYou") == true);
-        CHECK(Board::anyObjectHasTrueFlag(ptrs1, "isPush") == true);
-        CHECK(Board::anyObjectHasTrueFlag(ptrs2, "isYou") == false);
+        CHECK(Board::anyObjectHasProperty(ptrs1, "You") == true);
+        CHECK(Board::anyObjectHasProperty(ptrs1, "Push") == true);
+        CHECK(Board::anyObjectHasProperty(ptrs2, "You") == false);
     }
 
     SECTION("Check if move is possible")

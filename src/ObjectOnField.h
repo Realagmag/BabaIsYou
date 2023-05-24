@@ -1,9 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include "paths.h"
 #include <SFML/Graphics.hpp>
 #include <memory>
+
+#include "paths.h"
 
 class ObjectOnField
 {
@@ -14,8 +15,18 @@ protected:
     /* Cointains texture and size !SFML! */
     std::shared_ptr<sf::Sprite> _sprite_ptr;
 
-public:
+    /** Properties of the object. */
+    std::map<std::string, bool> _properties = {
+        {"You", false},
+        {"Win", false},
+        {"Stop", false},
+        {"Push", false},
+        {"Sink", false},
+        {"Defeat", false},
+        {"Hot", false},
+        {"Melt", false}};
 
+public:
     ObjectOnField(std::string imagePath);
     ObjectOnField();
     virtual ~ObjectOnField();
@@ -34,14 +45,14 @@ public:
 
     virtual void clearTemporaryIdentity();
 
-    bool isYou = false;
-    bool isWin = false;
-    bool isStop = false;
-    bool isPush = false;
-    bool isSink = false;
-    bool isDefeat = false;
-    bool isHot = false;
-    bool isMelt = false;
+    virtual std::shared_ptr<ObjectOnField> getSolidObjectPtr() const;
+
+    /** Sets all properties to false. */
+    void resetProperties();
+
+    virtual bool getProperty(const std::string &property) const;
+
+    virtual void setProperty(const std::string &property, bool value);
 };
 
 using ObjectOnFieldPtr = std::shared_ptr<ObjectOnField>;

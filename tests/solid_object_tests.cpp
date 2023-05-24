@@ -19,7 +19,7 @@ TEST_CASE("SolidObject tests", "[SolidObject]")
     {
         solid_object->setTemporaryIdentity(baba_ptr);
         CHECK(solid_object->getImagePath() == baba_ptr->getImagePath());
-        CHECK(solid_object->getType() == "Baba");
+        CHECK(solid_object->getType() == "SolidObject");
         solid_object->clearTemporaryIdentity();
         CHECK(solid_object->getImagePath() == paths.at("Empty"));
         CHECK(solid_object->getType() == "SolidObject");

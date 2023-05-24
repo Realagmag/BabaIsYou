@@ -68,11 +68,12 @@ void Game::SetupBoard()
     //It should be change to loop later
     CreateObjectInstances();
     ObjectOnFieldPtr baba_ptr = std::make_shared<ObjectOnField>(AllObjects[0]);
-    baba_ptr->isYou = true;
+    baba_ptr->setProperty("You", true);
     ObjectOnFieldPtr wall_ptr = std::make_shared<ObjectOnField>(AllObjects[1]);
+    wall_ptr->setProperty("Push", true);
     _board.addObject(10,8,baba_ptr);
-    _board.addObject(17,5,wall_ptr);
-    _board.addObject(17,6,wall_ptr);
+    _board.addObject(10,10,wall_ptr);
+    _board.addObject(10,11,wall_ptr);
     _board.addObject(17,7,wall_ptr);
     _board.addObject(17,9,wall_ptr);
     _board.addObject(17,10,wall_ptr);
@@ -98,7 +99,6 @@ void Game::CreateObjectInstances()
     std::shared_ptr<sf::Sprite> wall_sprite_ptr = std::make_shared<sf::Sprite>(wall_sprite);
 
     Baba baba;
-    baba.isYou = true;
     Wall wall;
 
     baba.SetSpritePtr(baba_sprite_ptr);

@@ -4,11 +4,15 @@
 
 #include "Board.h"
 
-class Noun
+class Noun : public ObjectOnField
 {
 private:
-    std::string _imagePath;
-
     /* Solid Object to which the noun refers. */
-    ObjectOnFieldPtr _solidObjectPtr;
+    std::shared_ptr<SolidObject> _solidObjectPtr;
+
+public:
+    Noun(std::string imagePath, std::shared_ptr<SolidObject> solidObjectPtr);
+
+    /** Pointer to the parent object of noun. */
+    ObjectOnFieldPtr getSolidObjectPtr() const override;
 };
