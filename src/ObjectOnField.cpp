@@ -1,4 +1,5 @@
 #include "ObjectOnField.h"
+#include <string>
 
 ObjectOnField::ObjectOnField(std::string imagePath)
     : _imagePath(imagePath), _type("Empty") {}
@@ -74,7 +75,9 @@ void ObjectOnField::setProperty(const std::string &property, bool value)
 
 std::string ObjectOnField::getNounImagePath() const
 {
-    return "";
+    std::string str = _imagePath;
+    str = str.substr(0, str.length() - 4);
+    return str+"text.png";
 }
 
 std::string ObjectOnField::getText() const
