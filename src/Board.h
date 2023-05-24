@@ -48,7 +48,7 @@ private:
     GameStatus _gameStatus;
 
     /** Indicates if rules was changed in last move. */
-    bool _wasRulesChanged = false;
+    bool _wereRulesChanged = false;
 
     /** Ptr to the empty field */
     ObjectOnFieldPtr _emptyFieldPtr;
@@ -124,5 +124,8 @@ public:
      * and returns their coordinates. */
     std::vector<Coordinates> getYouObjectsCoordinates() const;
 
+    /** Updates rules. */
     void updateRules();
+
+    void resetRules();
 };

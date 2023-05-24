@@ -1,8 +1,8 @@
 #include "Board.h"
 
 Board::Board(const ObjectOnFieldPtrs3Vector &objectOnFieldPtrs)
+    : _objectOnFieldPtrs(objectOnFieldPtrs)
 {
-    _objectOnFieldPtrs = objectOnFieldPtrs;
     _xSize = objectOnFieldPtrs.size();
     _ySize = objectOnFieldPtrs[0].size();
 
@@ -12,10 +12,8 @@ Board::Board(const ObjectOnFieldPtrs3Vector &objectOnFieldPtrs)
 }
 
 Board::Board(int x, int y)
+    : _xSize(x), _ySize(y)
 {
-    _xSize = x;
-    _ySize = y;
-
     // Make pointer to the empty field
     _emptyFieldPtr = std::make_shared<ObjectOnField>();
 
@@ -52,8 +50,9 @@ Board::Board(int x, int y)
 
 void Board::updateState(Action action)
 {
-    _wasRulesChanged = false;
+    _wereRulesChanged = false;
 
+    // Move all "You" objects
     for (const Coordinates &object_coordinates : getYouObjectsCoordinates())
     {
         switch (action)
@@ -73,7 +72,8 @@ void Board::updateState(Action action)
         }
     }
 
-    if (_wasRulesChanged)
+    // Upadate rules if they were changed
+    if (_wereRulesChanged)
     {
         updateRules();
     }
@@ -278,9 +278,9 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, int objectsToMove)
         // Check if this move will change rules
         if (nextObjects[i][index]->getType() == "Noun" ||
             nextObjects[i][index]->getType() == "Operator" ||
-            nextObjects[i][index]->getType() == "Attribute")
+            nextObjects[i][index]->getType() == "Property")
         {
-            _wasRulesChanged = true;
+            _wereRulesChanged = true;
         }
 
         // Add object to the next field
@@ -397,18 +397,79 @@ std::vector<Coordinates> Board::getYouObjectsCoordinates() const
 
 void Board::updateRules()
 {
-    // Iterate over vector
+    // Reset rules
+    resetRules();
+
+    // Load new rules
     for (int x = 0; x < _objectOnFieldPtrs.size(); x++)
     {
         for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
         {
             // Noun, Operator and Property can only have z=0
-            if (_objectOnFieldPtrs[x][y][0]->getType() == "Operator")
+            if (_objectOnFieldPtrs[x][y][0]->getType() == "Operator" &&
+                _objectOnFieldPtrs[x][y][0]->getText() == "Is")
             {
-                // Clear parent SolidObject
-                _objectOnFieldPtrs[x][y][0]->getSolidObjectPtr()->clearTemporaryIdentity();
-                _objectOnFieldPtrs[x][y][0]->getSolidObjectPtr()->resetProperties();
+                // Read rules from left to right
+                if ((x > 0 && _objectOnFieldPtrs[x - 1][y][0]->getType() == "Noun"))
+                {
+                    if (x < _xSize - 1 && _objectOnFieldPtrs[x + 1][y][0]->getType() == "Property")
+                    {
+                        _objectOnFieldPtrs[x - 1][y][0]->setProperty(_objectOnFieldPtrs[x + 1][y][0]->getText(), true);
 
+                        // Check if AND is after first Property and second property must be added
+                        if (x < _xSize - 3 && _objectOnFieldPtrs[x + 2][y][0]->getType() == "Operator" &&
+                            _objectOnFieldPtrs[x + 2][y][0]->getText() == "And" &&
+                            _objectOnFieldPtrs[x + 3][y][0]->getType() == "Property")
+                        {
+                            _objectOnFieldPtrs[x - 1][y][0]->setProperty(_objectOnFieldPtrs[x + 3][y][0]->getText(), true);
+                        }
+                    }
+                    else if (x < _xSize - 1 && _objectOnFieldPtrs[x + 1][y][0]->getType() == "Noun")
+                    {
+                        _objectOnFieldPtrs[x - 1][y][0]->setTemporaryIdentity(_objectOnFieldPtrs[x + 1][y][0]);
+                    }
+                }
+
+                // Read rules from up to down
+                if (y > 0 && _objectOnFieldPtrs[x][y - 1][0]->getType() == "Noun")
+                {
+                    if (y < _ySize - 1 && _objectOnFieldPtrs[x][y + 1][0]->getType() == "Property")
+                    {
+                        _objectOnFieldPtrs[x][y - 1][0]->setProperty(_objectOnFieldPtrs[x][y + 1][0]->getText(), true);
+
+                        // Check if AND is after first Property and second property must be added
+                        if (y < _ySize - 3 && _objectOnFieldPtrs[x][y + 2][0]->getType() == "Operator" &&
+                            _objectOnFieldPtrs[x][y + 2][0]->getText() == "And" &&
+                            _objectOnFieldPtrs[x][y + 3][0]->getType() == "Property")
+                        {
+                            _objectOnFieldPtrs[x][y - 1][0]->setProperty(_objectOnFieldPtrs[x][y + 3][0]->getText(), true);
+                        }
+                    }
+                    else if (y < _ySize - 1 && _objectOnFieldPtrs[x][y + 1][0]->getType() == "Noun")
+                    {
+                        _objectOnFieldPtrs[x][y - 1][0]->setTemporaryIdentity(_objectOnFieldPtrs[x][y + 1][0]);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Board::resetRules()
+{
+    // Iterate over vector
+    for (auto &vector2 : _objectOnFieldPtrs)
+    {
+        for (auto &vector1 : vector2)
+        {
+            for (ObjectOnFieldPtr &objectOnFieldPtr : vector1)
+            {
+                if (objectOnFieldPtr->getType() == "SolidObject")
+                {
+                    // Clear SolidObject state
+                    objectOnFieldPtr->resetProperties();
+                    objectOnFieldPtr->clearTemporaryIdentity();
+                }
             }
         }
     }
