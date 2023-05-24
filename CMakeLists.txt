@@ -18,6 +18,8 @@ add_library(BabaIsYouLib
   src/ObjectOnField.cpp
   src/Noun.cpp
   src/SolidObject.cpp
+  src/Operator.cpp
+  src/Property.cpp
   src/SolidObjects/Baba.cpp
   src/SolidObjects/Wall.cpp
   src/SolidObjects/Flag.cpp

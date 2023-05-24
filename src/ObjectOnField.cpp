@@ -76,3 +76,8 @@ std::string ObjectOnField::getNounImagePath() const
 {
     return "";
 }
+
+std::string ObjectOnField::getText() const
+{
+    return "";
+}
