@@ -64,10 +64,13 @@ void Window::DrawBoard(Board& board)
     {
         for (int j=0; j < board.getXSize(); j++)
         {
-            if (board.getObject(j,i) != board.getemptyFieldPtr())
+            for (int k=0; k<board.getZSize(j,i); k++)
             {
-                board.getObject(j,i)->GetSpritePtr()->setPosition(sf::Vector2f(float(j*60),float(i*60)));
-                Draw(*board.getObject(j,i)->GetSpritePtr());
+                if (board.getObject(j,i,k) != board.getemptyFieldPtr())
+                {
+                    board.getObject(j,i,k)->GetSpritePtr()->setPosition(sf::Vector2f(float(j*60),float(i*60)));
+                    Draw(*board.getObject(j,i,k)->GetSpritePtr());
+                }
             }
         }
     }

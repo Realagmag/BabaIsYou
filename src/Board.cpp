@@ -96,6 +96,11 @@ int Board::getYSize() const
     return _ySize;
 }
 
+int Board::getZSize(int x, int y) const
+{
+    return _objectOnFieldPtrs[x][y].size();
+}
+
 void Board::removeObject(int x, int y, int z)
 {
     if (_objectOnFieldPtrs[x][y].size() == 1)
