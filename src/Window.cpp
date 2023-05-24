@@ -11,51 +11,51 @@ Window::~Window(){ Destroy(); }
 
 void Window::Setup(const std::string l_title, const sf::Vector2u& l_size)
 {
-    m_windowTitle = l_title;
-    m_windowSize = l_size;
-    m_isFullscreen = true;
-    m_isDone = false;
+    _windowTitle = l_title;
+    _windowSize = l_size;
+    _isFullscreen = true;
+    _isDone = false;
     Create();
-    m_window.setKeyRepeatEnabled(false);
+    _window.setKeyRepeatEnabled(false);
 }
 
 void Window::Create()
 {
-    auto style = (m_isFullscreen ? sf::Style::Fullscreen : sf::Style::Default);
-    m_window.create({ m_windowSize.x, m_windowSize.y}, m_windowTitle, style);
+    auto style = (_isFullscreen ? sf::Style::Fullscreen : sf::Style::Default);
+    _window.create({ _windowSize.x, _windowSize.y}, _windowTitle, style);
 }
 
-void Window::Destroy(){ m_window.close(); }
+void Window::Destroy(){ _window.close(); }
 
 void Window::Update()
 {
     sf::Event event;
-    while(m_window.pollEvent(event))
+    while(_window.pollEvent(event))
     {
-        if(event.type == sf::Event::Closed){m_isDone = true;}
+        if(event.type == sf::Event::Closed){_isDone = true;}
         else if (event.type == sf::Event::KeyPressed)
         {
             if (event.key.code == sf::Keyboard::Escape)
             {
-                m_isDone = true;
+                _isDone = true;
             }
         }
     }
 }
 
-void Window::BeginDraw(){ m_window.clear(sf::Color::Black); }
+void Window::BeginDraw(){ _window.clear(sf::Color::Black); }
 
-void Window::EndDraw(){ m_window.display(); }
+void Window::EndDraw(){ _window.display(); }
 
-bool Window::IsDone(){ return m_isDone; }
+bool Window::IsDone(){ return _isDone; }
 
-bool Window::IsFullscreen(){ return m_isFullscreen; }
+bool Window::IsFullscreen(){ return _isFullscreen; }
 
-sf::Vector2u Window::GetWindowSize(){ return m_windowSize; }
+sf::Vector2u Window::GetWindowSize(){ return _windowSize; }
 
 void Window::Draw(sf::Drawable& l_drawable)
 {
-    m_window.draw(l_drawable);
+    _window.draw(l_drawable);
 }
 
 void Window::DrawBoard(Board& board)
@@ -64,10 +64,13 @@ void Window::DrawBoard(Board& board)
     {
         for (int j=0; j < board.getXSize(); j++)
         {
-            if (board.getObject(j,i) != board.getemptyFieldPtr())
+            for (int k=0; k<board.getZSize(j,i); k++)
             {
-                board.getObject(j,i)->GetSpritePtr()->setPosition(sf::Vector2f(float(j*60),float(i*60)));
-                Draw(*board.getObject(j,i)->GetSpritePtr());
+                if (board.getObject(j,i,k) != board.getemptyFieldPtr())
+                {
+                    board.getObject(j,i,k)->GetSpritePtr()->setPosition(sf::Vector2f(float(j*60),float(i*60)));
+                    Draw(*board.getObject(j,i,k)->GetSpritePtr());
+                }
             }
         }
     }

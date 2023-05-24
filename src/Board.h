@@ -79,6 +79,8 @@ public:
 
     int getYSize() const;
 
+    int getZSize(int x, int y) const;
+
     /** Removes object */
     void removeObject(int x, int y, int z);
 

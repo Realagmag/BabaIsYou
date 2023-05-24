@@ -17,17 +17,13 @@ class Game{
         Board _board;
         bool IsKeyReleased = true;
 
+        //Order of objects: Baba, Flag, Lava, Rock, Skull, Tree, Wall, Water
         std::vector<ObjectOnField> AllObjects;
         std::vector<sf::Sprite> AllSprites;
         std::vector<sf::Texture> AllTexturesOfSprites;
 
-        sf::Texture baba_texture;
-        sf::Sprite baba_sprite;
-        sf::Texture wall_texture;
-        sf::Sprite wall_sprite;
-
     private:
         void SetupBoard();
         void CreateObjectInstances();
-        Window m_window;
+        Window _window;
 };

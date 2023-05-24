@@ -22,9 +22,9 @@ class Window{
         void Setup(const std::string l_title, const sf::Vector2u& l_size);
         void Destroy();
         void Create();
-        sf::RenderWindow m_window;
-        sf::Vector2u m_windowSize;
-        std::string m_windowTitle;
-        bool m_isDone;
-        bool m_isFullscreen;
+        sf::RenderWindow _window;
+        sf::Vector2u _windowSize;
+        std::string _windowTitle;
+        bool _isDone;
+        bool _isFullscreen;
 };
