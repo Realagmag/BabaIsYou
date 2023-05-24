@@ -74,7 +74,7 @@ void Game::SetupBoard()
     //It should be change to loop later
     CreateObjectInstances();
     ObjectOnFieldPtr baba_ptr = std::make_shared<ObjectOnField>(AllObjects[0]);
-    baba_ptr->isYou = true;
+    baba_ptr->setProperty("You", true);
     ObjectOnFieldPtr flag_ptr = std::make_shared<ObjectOnField>(AllObjects[1]);
     ObjectOnFieldPtr lava_ptr = std::make_shared<ObjectOnField>(AllObjects[2]);
     ObjectOnFieldPtr rock_ptr = std::make_shared<ObjectOnField>(AllObjects[3]);
