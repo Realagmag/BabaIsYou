@@ -53,6 +53,8 @@ public:
     virtual bool getProperty(const std::string &property) const;
 
     virtual void setProperty(const std::string &property, bool value);
+
+    virtual std::string getNounImagePath() const;
 };
 
 using ObjectOnFieldPtr = std::shared_ptr<ObjectOnField>;

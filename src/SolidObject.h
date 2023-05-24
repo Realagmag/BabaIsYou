@@ -33,7 +33,7 @@ public:
 
     bool getProperty(const std::string &property) const override;
 
-    std::string getNounImagePath() const;
+    std::string getNounImagePath() const override;
 
     // void setProperty(const std::string &property, bool value) override;
 };

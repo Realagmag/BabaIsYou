@@ -38,6 +38,7 @@ find_package(Catch2 REQUIRED)
 add_executable(test
 tests/board_tests.cpp
 tests/solid_object_tests.cpp
-tests/baba_tests.cpp)
+tests/baba_tests.cpp
+tests/noun_tests.cpp)
 
 target_link_libraries(test PRIVATE Catch2::Catch2WithMain BabaIsYouLib)

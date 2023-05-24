@@ -71,3 +71,8 @@ void ObjectOnField::setProperty(const std::string &property, bool value)
     else
         throw std::invalid_argument("Property " + property + " does not exist.");
 }
+
+std::string ObjectOnField::getNounImagePath() const
+{
+    return "";
+}

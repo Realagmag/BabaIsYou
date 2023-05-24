@@ -8,10 +8,11 @@ class Noun : public ObjectOnField
 {
 private:
     /* Solid Object to which the noun refers. */
-    std::shared_ptr<SolidObject> _solidObjectPtr;
+    ObjectOnFieldPtr _solidObjectPtr;
 
 public:
-    Noun(std::string imagePath, std::shared_ptr<SolidObject> solidObjectPtr);
+    Noun(std::string imagePath, ObjectOnFieldPtr solidObjectPtr);
+    Noun(ObjectOnFieldPtr solidObjectPtr);
 
     /** Pointer to the parent object of noun. */
     ObjectOnFieldPtr getSolidObjectPtr() const override;
