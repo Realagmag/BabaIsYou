@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <fstream>
+#include <sstream>
 #include "./SolidObjects/Baba.h"
 #include "./SolidObjects/Wall.h"
 #include "./SolidObjects/Flag.h"
@@ -17,6 +18,9 @@ Game::Game(const Board &board)
 
 Game::Game(): _window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
 {
+    setCurrentLevel(0);
+    CreateObjectInstances();
+    LoadLevelsFromFile();
     SetupBoard();
 }
 
@@ -72,71 +76,91 @@ Window* Game::GetWindow()
     return &_window;
 }
 
+int Game::getCurrentLevel()
+{
+    return _current_level;
+}
+
+void Game::setCurrentLevel(int level_number)
+{
+    _current_level = level_number;
+}
+
 void Game::SetupBoard()
 {
-    //For test purposes I manually create shared ptr to each object
-    //It should be change to loop later
-    CreateObjectInstances();
+    for (int i = 0; i < _board.getXSize(); i++)
+    {
+        for (int j = 0; j< _board.getYSize(); j++)
+        {
+            std::string letter = LoadedLevels[getCurrentLevel()][j][i];
+            if (letter == "-"){}
+            else if (letter == "and") _board.addObject(i,j,AllObjectsPtrs[LOAD_AND]);
+            else if (letter == "B") _board.addObject(i,j,AllObjectsPtrs[LOAD_BABA]);
+            else if (letter == "b") _board.addObject(i,j,AllObjectsPtrs[LOAD_BABATEXT]);
+            else if (letter == "defeat") _board.addObject(i,j,AllObjectsPtrs[LOAD_DEFEATTEXT]);
+            else if (letter == "F") _board.addObject(i,j,AllObjectsPtrs[LOAD_FLAG]);
+            else if (letter == "f") _board.addObject(i,j,AllObjectsPtrs[LOAD_FLAGTEXT]);
+            else if (letter == "float") _board.addObject(i,j,AllObjectsPtrs[LOAD_FLOATTEXT]);
+            else if (letter == "hot") _board.addObject(i,j,AllObjectsPtrs[LOAD_HOTTEXT]);
+            else if (letter == "is") _board.addObject(i,j,AllObjectsPtrs[LOAD_IS]);
+            else if (letter == "L") _board.addObject(i,j,AllObjectsPtrs[LOAD_LAVA]);
+            else if (letter == "l") _board.addObject(i,j,AllObjectsPtrs[LOAD_LAVATEXT]);
+            else if (letter == "melt") _board.addObject(i,j,AllObjectsPtrs[LOAD_MELTTEXT]);
+            else if (letter == "push") _board.addObject(i,j,AllObjectsPtrs[LOAD_PUSHTEXT]);
+            else if (letter == "R") _board.addObject(i,j,AllObjectsPtrs[LOAD_ROCK]);
+            else if (letter == "r") _board.addObject(i,j,AllObjectsPtrs[LOAD_ROCKTEXT]);
+            else if (letter == "sink") _board.addObject(i,j,AllObjectsPtrs[LOAD_SINKTEXT]);
+            else if (letter == "S") _board.addObject(i,j,AllObjectsPtrs[LOAD_SKULL]);
+            else if (letter == "s") _board.addObject(i,j,AllObjectsPtrs[LOAD_SKULLTEXT]);
+            else if (letter == "stop") _board.addObject(i,j,AllObjectsPtrs[LOAD_STOPTEXT]);
+            else if (letter == "T") _board.addObject(i,j,AllObjectsPtrs[LOAD_TREE]);
+            else if (letter == "t") _board.addObject(i,j,AllObjectsPtrs[LOAD_TREETEXT]);
+            else if (letter == "W") _board.addObject(i,j,AllObjectsPtrs[LOAD_WALL]);
+            else if (letter == "w") _board.addObject(i,j,AllObjectsPtrs[LOAD_WALLTEXT]);
+            else if (letter == "WATER") _board.addObject(i,j,AllObjectsPtrs[LOAD_WATER]);
+            else if (letter == "water") _board.addObject(i,j,AllObjectsPtrs[LOAD_WALLTEXT]);
+            else if (letter == "win") _board.addObject(i,j,AllObjectsPtrs[LOAD_WINTEXT]);
+            else if (letter == "you") _board.addObject(i,j,AllObjectsPtrs[LOAD_YOUTEXT]);
+
+        }
+    }
+
 
 
     AllObjectsPtrs[LOAD_BABA]->setProperty("You", true);
-    _board.addObject(5,10,AllObjectsPtrs[LOAD_BABA]);
-    _board.addObject(10,10,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(17,5,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(17,6,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(17,7,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(17,9,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(17,10,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(17,11,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(17,12,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(18,12,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(19,12,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(20,12,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(21,12,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,12,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,11,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,10,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,9,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,8,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,7,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,6,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(22,5,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(21,5,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(20,5,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(19,5,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(18,5,AllObjectsPtrs[LOAD_WALL]);
-    _board.addObject(16,7,AllObjectsPtrs[LOAD_TREE]);
-    _board.addObject(16,9,AllObjectsPtrs[LOAD_TREE]);
-    _board.addObject(3,0,AllObjectsPtrs[LOAD_WATER]);
-    _board.addObject(3,1,AllObjectsPtrs[LOAD_WATER]);
-    _board.addObject(3,2,AllObjectsPtrs[LOAD_WATER]);
-    _board.addObject(3,3,AllObjectsPtrs[LOAD_WATER]);
-    _board.addObject(2,3,AllObjectsPtrs[LOAD_WATER]);
-    _board.addObject(1,3,AllObjectsPtrs[LOAD_WATER]);
-    _board.addObject(0,3,AllObjectsPtrs[LOAD_WATER]);
-    _board.addObject(1,1,AllObjectsPtrs[LOAD_FLAG]);
-    _board.addObject(4,0,AllObjectsPtrs[LOAD_LAVA]);
-    _board.addObject(4,1,AllObjectsPtrs[LOAD_LAVA]);
-    _board.addObject(4,2,AllObjectsPtrs[LOAD_LAVA]);
-    _board.addObject(4,3,AllObjectsPtrs[LOAD_LAVA]);
-    _board.addObject(7,0,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(7,1,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(7,2,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(8,0,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(9,0,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(10,0,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(11,0,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(11,1,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(11,2,AllObjectsPtrs[LOAD_SKULL]);
-    _board.addObject(14,8,AllObjectsPtrs[LOAD_ROCK]);
-    _board.addObject(11,4,AllObjectsPtrs[LOAD_ROCK]);
-    _board.addObject(14,12,AllObjectsPtrs[LOAD_ROCK]);
-    _board.addObject(6,10,AllObjectsPtrs[LOAD_IS]);
-    _board.addObject(6,11,AllObjectsPtrs[LOAD_BABATEXT]);
-    _board.addObject(6,12,AllObjectsPtrs[LOAD_AND]);
-    _board.addObject(7,12,AllObjectsPtrs[LOAD_WALLTEXT]);
-    _board.addObject(8,12,AllObjectsPtrs[LOAD_TREETEXT]);
-    _board.addObject(9,12,AllObjectsPtrs[LOAD_ROCKTEXT]);
+}
+
+void Game::LoadLevelsFromFile()
+{
+    std::fstream file;
+    file.open("../src/levels.txt", std::ios::in);
+    if (file.is_open())
+    {
+        while(file.eof()==false)
+        {
+            std::vector<std::vector<std::string>> rows;
+            std::vector<std::string> row_of_letters;
+            std::string num_of_level;
+            std::string row;
+            std::string object_letter;
+            getline(file, num_of_level);
+            for (int i = 0; i < 16; i++)
+            {
+                getline(file, row);
+                std::stringstream ss1(row);
+                while(getline(ss1, object_letter, ','))
+                {
+                    object_letter.erase(std::remove_if(object_letter.begin(), object_letter.end(), ::isspace), object_letter.end());
+                    row_of_letters.push_back(object_letter);
+                }
+                rows.push_back(row_of_letters);
+                row_of_letters.clear();
+                ss1.clear();
+            }
+            LoadedLevels.push_back(rows);
+        }
+        file.close();
+    }
 }
 
 void Game::CreateObjectInstances()
@@ -304,10 +328,86 @@ void Game::CreateObjectInstances()
     ObjectOnFieldPtr watertext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_WATERTEXT]);
     AllObjectsPtrs.emplace_back(watertext_ptr);
 
+    Property defeattext("Defeat");
+    AllObjects.emplace_back(defeattext);
+    sf::Texture defeattext_texture;
+    AllTexturesOfSprites.emplace_back(defeattext_texture);
+    sf::Sprite defeattext_sprite;
+    AllSprites.emplace_back(defeattext_sprite);
+    ObjectOnFieldPtr defeattext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_DEFEATTEXT]);
+    AllObjectsPtrs.emplace_back(defeattext_ptr);
 
+    Property floattext("Float");
+    AllObjects.emplace_back(floattext);
+    sf::Texture floattext_texture;
+    AllTexturesOfSprites.emplace_back(floattext_texture);
+    sf::Sprite floattext_sprite;
+    AllSprites.emplace_back(floattext_sprite);
+    ObjectOnFieldPtr floattext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_FLOATTEXT]);
+    AllObjectsPtrs.emplace_back(floattext_ptr);
 
+    Property hottext("Hot");
+    AllObjects.emplace_back(hottext);
+    sf::Texture hottext_texture;
+    AllTexturesOfSprites.emplace_back(hottext_texture);
+    sf::Sprite hottext_sprite;
+    AllSprites.emplace_back(hottext_sprite);
+    ObjectOnFieldPtr hottext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_HOTTEXT]);
+    AllObjectsPtrs.emplace_back(hottext_ptr);
 
+    Property melttext("Melt");
+    AllObjects.emplace_back(melttext);
+    sf::Texture melttext_texture;
+    AllTexturesOfSprites.emplace_back(melttext_texture);
+    sf::Sprite melttext_sprite;
+    AllSprites.emplace_back(melttext_sprite);
+    ObjectOnFieldPtr melttext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_MELTTEXT]);
+    AllObjectsPtrs.emplace_back(melttext_ptr);
 
+    Property pushtext("Push");
+    AllObjects.emplace_back(pushtext);
+    sf::Texture pushtext_texture;
+    AllTexturesOfSprites.emplace_back(pushtext_texture);
+    sf::Sprite pushtext_sprite;
+    AllSprites.emplace_back(pushtext_sprite);
+    ObjectOnFieldPtr pushtext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_PUSHTEXT]);
+    AllObjectsPtrs.emplace_back(pushtext_ptr);
+
+    Property sinktext("Sink");
+    AllObjects.emplace_back(sinktext);
+    sf::Texture sinktext_texture;
+    AllTexturesOfSprites.emplace_back(sinktext_texture);
+    sf::Sprite sinktext_sprite;
+    AllSprites.emplace_back(sinktext_sprite);
+    ObjectOnFieldPtr sinktext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_SINKTEXT]);
+    AllObjectsPtrs.emplace_back(sinktext_ptr);
+
+    Property stoptext("Stop");
+    AllObjects.emplace_back(stoptext);
+    sf::Texture stoptext_texture;
+    AllTexturesOfSprites.emplace_back(stoptext_texture);
+    sf::Sprite stoptext_sprite;
+    AllSprites.emplace_back(stoptext_sprite);
+    ObjectOnFieldPtr stoptext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_STOPTEXT]);
+    AllObjectsPtrs.emplace_back(stoptext_ptr);
+
+    Property wintext("Win");
+    AllObjects.emplace_back(wintext);
+    sf::Texture wintext_texture;
+    AllTexturesOfSprites.emplace_back(wintext_texture);
+    sf::Sprite wintext_sprite;
+    AllSprites.emplace_back(wintext_sprite);
+    ObjectOnFieldPtr wintext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_WINTEXT]);
+    AllObjectsPtrs.emplace_back(wintext_ptr);
+
+    Property youtext("You");
+    AllObjects.emplace_back(youtext);
+    sf::Texture youtext_texture;
+    AllTexturesOfSprites.emplace_back(youtext_texture);
+    sf::Sprite youtext_sprite;
+    AllSprites.emplace_back(youtext_sprite);
+    ObjectOnFieldPtr youtext_ptr = std::make_shared<ObjectOnField>(AllObjects[LOAD_YOUTEXT]);
+    AllObjectsPtrs.emplace_back(youtext_ptr);
 
     for (int i=0; i < AllObjects.size(); i++)
     {
