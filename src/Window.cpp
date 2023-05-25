@@ -5,12 +5,16 @@ Window::Window(){ Setup("Window", sf::Vector2u(1920,1080)); }
 Window::Window(const std::string& l_title, const sf::Vector2u& l_size)
 {
     Setup(l_title,l_size);
+    levels_sprites = {};
+    levels_textures = {};
+    CreateMenuDrawables();
 }
 
 Window::~Window(){ Destroy(); }
 
 void Window::Setup(const std::string l_title, const sf::Vector2u& l_size)
 {
+    _number_of_levels = 8;
     _windowTitle = l_title;
     _windowSize = l_size;
     _isFullscreen = true;
@@ -77,7 +81,37 @@ void Window::DrawBoard(Board& board)
     }
 }
 
+void Window::CreateMenuDrawables()
+{
+    for (int i=0; i < _number_of_levels; i++)
+    {
+        sf::Texture texture;
+        std::string number = std::to_string(i+1);
+        if(!texture.loadFromFile("../src/textures/level_"+number+".png"))
+        {
+            std::cout << "Failed to load texture for level " << number << std::endl;
+        }
+        levels_textures.emplace_back(texture);
+        sf::Sprite sprite;
+        sprite.setTexture(levels_textures[i]);
+        sprite.setPosition(sf::Vector2f((_windowSize.x/10)*(i+1), (_windowSize.y/6)*4));
+        levels_sprites.emplace_back(sprite);
+    }
+    _choose_level_texture.loadFromFile("../src/textures/choose_level.png");
+    _choose_level_sprite.setTexture(_choose_level_texture);
+    sf::Vector2u size = _choose_level_texture.getSize();
+    _choose_level_sprite.setOrigin(size.x/2, size.y/2);
+    _choose_level_sprite.setScale(sf::Vector2f(3,3));
+    _choose_level_sprite.setPosition(sf::Vector2f(_windowSize.x/2, _windowSize.y/4));
+}
+
 void Window::DrawMenu()
 {
+    Draw(_choose_level_sprite);
+    for (int i= 0; i < levels_sprites.size(); i++)
+    {
+        Draw(levels_sprites[i]);
+    }
+
 
 }

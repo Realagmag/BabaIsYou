@@ -18,8 +18,14 @@ class Window{
         void Draw(sf::Drawable& l_drawable);
         void DrawBoard(Board& board);
         void DrawMenu();
+        int _number_of_levels;
+        std::vector<sf::Texture> levels_textures;
+        std::vector<sf::Sprite> levels_sprites;
+        sf::Texture _choose_level_texture;
+        sf::Sprite _choose_level_sprite;
 
     private:
+        void CreateMenuDrawables();
         void Setup(const std::string l_title, const sf::Vector2u& l_size);
         void Destroy();
         void Create();
