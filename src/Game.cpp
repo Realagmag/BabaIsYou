@@ -118,7 +118,7 @@ void Game::SetupBoard()
             else if (letter == "W") _board.addObject(i,j,AllObjectsPtrs[LOAD_WALL]);
             else if (letter == "w") _board.addObject(i,j,AllObjectsPtrs[LOAD_WALLTEXT]);
             else if (letter == "WATER") _board.addObject(i,j,AllObjectsPtrs[LOAD_WATER]);
-            else if (letter == "water") _board.addObject(i,j,AllObjectsPtrs[LOAD_WALLTEXT]);
+            else if (letter == "water") _board.addObject(i,j,AllObjectsPtrs[LOAD_WATERTEXT]);
             else if (letter == "win") _board.addObject(i,j,AllObjectsPtrs[LOAD_WINTEXT]);
             else if (letter == "you") _board.addObject(i,j,AllObjectsPtrs[LOAD_YOUTEXT]);
         }

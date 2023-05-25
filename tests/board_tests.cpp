@@ -110,4 +110,14 @@ TEST_CASE("Board tests general and move", "[Board]")
         CHECK(board.getObject(1, 2, 0)->getImagePath() == "../" + paths.at("Wall"));
         CHECK(board.getObject(1, 2, 1)->getImagePath() == "baba.png");
     }
+
+    SECTION("Merge same objects test")
+    {
+        board.addObject(0, 0, baba_ptr);
+        board.addObject(2, 1, flag_ptr);
+        board.addObject(2, 1, baba_ptr);
+        board.mergeSameObjects();
+        CHECK(board.getZSize(0, 0) == 1);
+        CHECK(board.getZSize(2, 1) == 2);
+    }
 }

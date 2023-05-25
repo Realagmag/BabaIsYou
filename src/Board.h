@@ -129,5 +129,10 @@ public:
     /** Updates rules. */
     void updateRules();
 
+    /** Resets all properties of all SolidObjects on the board
+     * and clear temporary identity of all objects. */
     void resetRules();
+
+    /** If there are same objects on the same field, merge them. */
+    void mergeSameObjects();
 };

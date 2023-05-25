@@ -77,6 +77,25 @@ void Board::updateState(Action action)
     {
         updateRules();
     }
+
+    // If there is 2 same objects on the same field, merge them
+    mergeSameObjects();
+
+    std::vector<Coordinates> youObjectsCoordinatesAfterMove = getYouObjectsCoordinates();
+
+    // Check if there is "You" object on the board
+    if (_gameStatus != GameStatus::LOSE && youObjectsCoordinatesAfterMove.size() == 0)
+    {
+        _gameStatus = GameStatus::FROZEN;
+        return;
+    }
+    // Check if any "You" object has win property
+    else if (std::any_of(youObjectsCoordinatesAfterMove.begin(), youObjectsCoordinatesAfterMove.end(),
+                         [&](Coordinates coordinates)
+                         { return getObject(coordinates)->getProperty("Win"); }))
+    {
+        _gameStatus = GameStatus::WIN;
+    }
 }
 
 ObjectOnFieldPtr Board::getObject(int x, int y, int z) const
@@ -253,6 +272,7 @@ bool Board::moveRight(int x, int y, int z)
         if (isMovePossible)
         {
             // Move chain of objects before current object
+            nextObjects[0].push_back(currentObject);
             makeMove(nextObjects, objectsToMove);
             for (int i = 0; i <= objectsToMove; i++)
             {
@@ -306,14 +326,13 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, int objectsToMove)
     for (int i = 0; i < nextObjects.size(); i++)
     {
         if (nextObjects[i].size() > 1 && (nextObjects[i][0]->getProperty("Sink") ||
-            nextObjects[i][0]->getProperty("Defeat")))
+                                          nextObjects[i][0]->getProperty("Defeat")))
         {
             // This field will be empty
             nextObjects[i].erase(nextObjects[i].begin() + 1, nextObjects[i].end());
             nextObjects[i][0] = _emptyFieldPtr;
         }
     }
-
 }
 
 std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObject,
@@ -331,7 +350,9 @@ std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObjec
              anyObjectHasProperty(nextObjects[0], "Sink"))
     {
         _gameStatus = GameStatus::LOSE;
-        return std::make_pair(false, 0);
+        // Return true, because move is possible, but some "you" objects will anihilate
+        // and game will be lost
+        return std::make_pair(true, 0);
     }
     // If there is no win or lose conditions, check if move is possible
     else
@@ -492,11 +513,11 @@ void Board::updateRules()
 void Board::resetRules()
 {
     // Iterate over vector
-    for (auto &vector2 : _objectOnFieldPtrs)
+    for (const auto &vector2 : _objectOnFieldPtrs)
     {
-        for (auto &vector1 : vector2)
+        for (const auto &vector1 : vector2)
         {
-            for (ObjectOnFieldPtr &objectOnFieldPtr : vector1)
+            for (const ObjectOnFieldPtr &objectOnFieldPtr : vector1)
             {
                 if (objectOnFieldPtr->getType() == "SolidObject")
                 {
@@ -504,6 +525,23 @@ void Board::resetRules()
                     objectOnFieldPtr->resetProperties();
                     objectOnFieldPtr->clearTemporaryIdentity();
                 }
+            }
+        }
+    }
+}
+
+void Board::mergeSameObjects()
+{
+    for (int x = 0; x < _objectOnFieldPtrs.size(); x++)
+    {
+        for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
+        {
+            if (_objectOnFieldPtrs[x][y].size() > 1)
+            {
+                // Remove duplicates
+                std::vector<ObjectOnFieldPtr>::iterator ip;
+                ip = std::unique(_objectOnFieldPtrs[x][y].begin(), _objectOnFieldPtrs[x][y].end());
+                _objectOnFieldPtrs[x][y].resize(std::distance(_objectOnFieldPtrs[x][y].begin(), ip));
             }
         }
     }
