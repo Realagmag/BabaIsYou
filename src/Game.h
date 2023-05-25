@@ -47,7 +47,9 @@ class Game{
         int getCurrentLevel();
         void setCurrentLevel(int level_number);
         Board _board;
+        std::vector<int> _select_level;
         bool IsKeyReleased = true;
+        bool GameHasStarted = false;
 
         std::vector<ObjectOnField> AllObjects;
         std::vector<sf::Sprite> AllSprites;

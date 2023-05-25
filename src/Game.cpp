@@ -31,26 +31,46 @@ void Game::HandleInput()
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && IsKeyReleased)
     {
         IsKeyReleased = false;
+        if (GameHasStarted){
         Action action = UP;
-        _board.updateState(action);
+        _board.updateState(action);}
+        else
+        {}
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && IsKeyReleased)
     {
         IsKeyReleased = false;
+        if (GameHasStarted){
         Action action = LEFT;
-        _board.updateState(action);
+        _board.updateState(action);}
+        else{
+            if (_current_level > 0) _current_level -= 1;}
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && IsKeyReleased)
     {
         IsKeyReleased = false;
+        if (GameHasStarted){
         Action action = DOWN;
-        _board.updateState(action);
+        _board.updateState(action);}
+        else
+        {}
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && IsKeyReleased)
     {
         IsKeyReleased = false;
+        if (GameHasStarted){
         Action action = RIGHT;
-        _board.updateState(action);
+        _board.updateState(action);}
+        else{
+            if (_current_level < LoadedLevels.size()) _current_level += 1;}
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && IsKeyReleased)
+    {
+        IsKeyReleased = false;
+        if (GameHasStarted){
+        SetupBoard();}
+        else
+        {}
     }
     else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
     !sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -67,7 +87,10 @@ void Game::Update()
 void Game::Render()
 {
     _window.BeginDraw(); // Clear.
-    _window.DrawBoard(_board);
+    if (GameHasStarted){
+    _window.DrawBoard(_board);}
+    else{
+    _window.DrawMenu();}
     _window.EndDraw(); // Display.
 }
 
@@ -124,10 +147,7 @@ void Game::SetupBoard()
 
         }
     }
-
-
-
-    AllObjectsPtrs[LOAD_BABA]->setProperty("You", true);
+    _board.updateRules();
 }
 
 void Game::LoadLevelsFromFile()
