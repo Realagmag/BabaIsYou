@@ -27,7 +27,7 @@ void Window::Create()
 
 void Window::Destroy(){ _window.close(); }
 
-void Window::Update()
+void Window::Update(bool& GameHasStarted)
 {
     sf::Event event;
     while(_window.pollEvent(event))
@@ -37,7 +37,8 @@ void Window::Update()
         {
             if (event.key.code == sf::Keyboard::Escape)
             {
-                _isDone = true;
+                if (GameHasStarted) GameHasStarted = false;
+                else _isDone = true;
             }
         }
     }
@@ -74,4 +75,9 @@ void Window::DrawBoard(Board& board)
             }
         }
     }
+}
+
+void Window::DrawMenu()
+{
+
 }

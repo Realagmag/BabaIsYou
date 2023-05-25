@@ -68,9 +68,22 @@ void Game::HandleInput()
     {
         IsKeyReleased = false;
         if (GameHasStarted){
+        Board new_board(_board.getXSize(), _board.getYSize());
+        _board = new_board;
         SetupBoard();}
         else
         {}
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && IsKeyReleased)
+    {
+        IsKeyReleased = false;
+        if (GameHasStarted){}
+        else {
+            GameHasStarted = true;
+            Board new_board(_board.getXSize(), _board.getYSize());
+            _board = new_board;
+            SetupBoard();}
+
     }
     else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
     !sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -81,7 +94,7 @@ void Game::HandleInput()
 
 void Game::Update()
 {
-    _window.Update(); // Update window events.
+    _window.Update(GameHasStarted); // Update window events.
 }
 
 void Game::Render()
@@ -147,7 +160,7 @@ void Game::SetupBoard()
 
         }
     }
-    _board.updateRules();
+    AllObjectsPtrs[LOAD_BABA]->setProperty("You", true);
 }
 
 void Game::LoadLevelsFromFile()
