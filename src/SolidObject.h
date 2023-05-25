@@ -12,14 +12,15 @@ protected:
      * If it is nullptr, then the object does not have temporary identity.
      * This is when SOLID_OBJECT IS ANOTHER_SOLID_OBJECT. */
     ObjectOnFieldPtr _temporaryIdentity = nullptr;
-    std::string _temporaryImagePath = "";
-    std::string _temporaryType = "";
 
+    /** Image path of Noun which depends on this Solid Object. */
     std::string _nounImagePath;
 
 public:
     SolidObject(std::string imagePath);
     SolidObject();
+
+    std::shared_ptr<sf::Sprite> GetSpritePtr() const override;
 
     std::string getImagePath() const override;
 

@@ -10,17 +10,25 @@ SolidObject::SolidObject() : ObjectOnField()
     _type = "SolidObject";
 }
 
+std::shared_ptr<sf::Sprite> SolidObject::GetSpritePtr() const
+{
+    if (_temporaryIdentity == nullptr)
+        return _spritePtr;
+    else
+        return _temporaryIdentity->GetSpritePtr();
+}
+
 std::string SolidObject::getImagePath() const
 {
-    if (_temporaryImagePath != "")
-        return _temporaryImagePath;
+    if (_temporaryIdentity != nullptr)
+        return _temporaryIdentity->getImagePath();
     return _imagePath;
 }
 
 std::string SolidObject::getType() const
 {
-    if (_temporaryType != "")
-        return _temporaryType;
+    if (_temporaryIdentity != nullptr)
+        return _temporaryIdentity->getType();
     return _type;
 }
 
@@ -32,15 +40,11 @@ ObjectOnFieldPtr SolidObject::getTemporaryIdentity() const
 void SolidObject::setTemporaryIdentity(const ObjectOnFieldPtr &objectPtr)
 {
     _temporaryIdentity = objectPtr;
-    _temporaryImagePath = objectPtr->getImagePath();
-    _temporaryType = objectPtr->getType();
 }
 
 void SolidObject::clearTemporaryIdentity()
 {
     _temporaryIdentity = nullptr;
-    _temporaryImagePath = "";
-    _temporaryType = "";
 }
 
 bool SolidObject::getProperty(const std::string &property) const

@@ -13,7 +13,7 @@ protected:
     std::string _type;
 
     /* Cointains texture and size !SFML! */
-    std::shared_ptr<sf::Sprite> _sprite_ptr;
+    std::shared_ptr<sf::Sprite> _spritePtr;
 
     /** Properties of the object. */
     std::map<std::string, bool> _properties = {
@@ -32,8 +32,8 @@ public:
     virtual ~ObjectOnField();
 
     // SFML part
-    void SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr);
-    std::shared_ptr<sf::Sprite> GetSpritePtr();
+    virtual void SetSpritePtr(std::shared_ptr<sf::Sprite> newSpritePtr);
+    virtual std::shared_ptr<sf::Sprite> GetSpritePtr() const;
 
     virtual std::string getImagePath() const;
 
