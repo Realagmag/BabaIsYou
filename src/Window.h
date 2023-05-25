@@ -17,7 +17,7 @@ class Window{
         sf::Vector2u GetWindowSize();
         void Draw(sf::Drawable& l_drawable);
         void DrawBoard(Board& board);
-        void DrawMenu();
+        void DrawMenu(int current_level);
         int _number_of_levels;
         std::vector<sf::Texture> levels_textures;
         std::vector<sf::Sprite> levels_sprites;

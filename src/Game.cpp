@@ -103,7 +103,7 @@ void Game::Render()
     if (GameHasStarted){
     _window.DrawBoard(_board);}
     else{
-    _window.DrawMenu();}
+    _window.DrawMenu(_current_level);}
     _window.EndDraw(); // Display.
 }
 

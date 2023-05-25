@@ -93,8 +93,8 @@ void Window::CreateMenuDrawables()
         }
         levels_textures.emplace_back(texture);
         sf::Sprite sprite;
-        sprite.setTexture(levels_textures[i]);
-        sprite.setPosition(sf::Vector2f((_windowSize.x/10)*(i+1), (_windowSize.y/6)*4));
+
+        sprite.setPosition(sf::Vector2f((_windowSize.x/10)*(i+1)+32, (_windowSize.y/6)*4));
         levels_sprites.emplace_back(sprite);
     }
     _choose_level_texture.loadFromFile("../src/textures/choose_level.png");
@@ -105,11 +105,18 @@ void Window::CreateMenuDrawables()
     _choose_level_sprite.setPosition(sf::Vector2f(_windowSize.x/2, _windowSize.y/4));
 }
 
-void Window::DrawMenu()
+void Window::DrawMenu(int current_level)
 {
+    float rectangle_xpos = _windowSize.x/10*(current_level+1) + 32;
+    float rectangle_ypos = _windowSize.y/6*4 + 20;
+    sf::RectangleShape red_rectangle(sf::Vector2f(127,55));
+    red_rectangle.setFillColor(sf::Color::Red);
+    red_rectangle.setPosition(sf::Vector2f(rectangle_xpos, rectangle_ypos));
+    Draw(red_rectangle);
     Draw(_choose_level_sprite);
-    for (int i= 0; i < levels_sprites.size(); i++)
+    for (int i= 0; i < _number_of_levels; i++)
     {
+        levels_sprites[i].setTexture(levels_textures[i]);
         Draw(levels_sprites[i]);
     }
 
