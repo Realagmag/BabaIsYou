@@ -300,6 +300,20 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, int objectsToMove)
         else
             nextObjects[i].erase(nextObjects[i].begin() + index);
     }
+
+    // Check if exist field where are two objects, which cannot be on the same field
+    // (for example: Sink object and any other object), if so make specific action
+    for (int i = 0; i < nextObjects.size(); i++)
+    {
+        if (nextObjects[i].size() > 1 && (nextObjects[i][0]->getProperty("Sink") ||
+            nextObjects[i][0]->getProperty("Defeat")))
+        {
+            // This field will be empty
+            nextObjects[i].erase(nextObjects[i].begin() + 1, nextObjects[i].end());
+            nextObjects[i][0] = _emptyFieldPtr;
+        }
+    }
+
 }
 
 std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObject,
@@ -341,7 +355,7 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
     }
 
     // Check if chain of objects can be pushed
-    for (std::vector<ObjectOnFieldPtr> objectOnOneFieldPtrs : nextObjects)
+    for (const std::vector<ObjectOnFieldPtr> &objectOnOneFieldPtrs : nextObjects)
     {
         // Check if any object has isStop flag and not isPush flag
         if (std::any_of(objectOnOneFieldPtrs.begin(), objectOnOneFieldPtrs.end(),
@@ -349,6 +363,11 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
                         { return objectOnFieldPtr->getProperty("Stop") && !objectOnFieldPtr->getProperty("Push"); }))
         {
             isPushPossible = false;
+            break;
+        }
+        else if (anyObjectHasProperty(objectOnOneFieldPtrs, "Sink") || anyObjectHasProperty(objectOnOneFieldPtrs, "Defeat"))
+        {
+            isPushPossible = true;
             break;
         }
         else if (anyObjectHasProperty(objectOnOneFieldPtrs, "Push"))
@@ -417,42 +436,52 @@ void Board::updateRules()
                 // Read rules from left to right
                 if ((x > 0 && _objectOnFieldPtrs[x - 1][y][0]->getType() == "Noun"))
                 {
+                    // NOUN IS PROPERTY AND PROPERTY
                     if (x < _xSize - 1 && _objectOnFieldPtrs[x + 1][y][0]->getType() == "Property")
                     {
-                        _objectOnFieldPtrs[x - 1][y][0]->setProperty(_objectOnFieldPtrs[x + 1][y][0]->getText(), true);
+                        _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->setProperty(
+                            _objectOnFieldPtrs[x + 1][y][0]->getText(), true);
 
                         // Check if AND is after first Property and second property must be added
                         if (x < _xSize - 3 && _objectOnFieldPtrs[x + 2][y][0]->getType() == "Operator" &&
                             _objectOnFieldPtrs[x + 2][y][0]->getText() == "And" &&
                             _objectOnFieldPtrs[x + 3][y][0]->getType() == "Property")
                         {
-                            _objectOnFieldPtrs[x - 1][y][0]->setProperty(_objectOnFieldPtrs[x + 3][y][0]->getText(), true);
+                            _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->setProperty(
+                                _objectOnFieldPtrs[x + 3][y][0]->getText(), true);
                         }
                     }
+                    // NOUN IS NOUN
                     else if (x < _xSize - 1 && _objectOnFieldPtrs[x + 1][y][0]->getType() == "Noun")
                     {
-                        _objectOnFieldPtrs[x - 1][y][0]->setTemporaryIdentity(_objectOnFieldPtrs[x + 1][y][0]);
+                        _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->setTemporaryIdentity(
+                            _objectOnFieldPtrs[x + 1][y][0]->getSolidObjectPtr());
                     }
                 }
 
                 // Read rules from up to down
                 if (y > 0 && _objectOnFieldPtrs[x][y - 1][0]->getType() == "Noun")
                 {
+                    // NOUN IS PROPERTY AND PROPERTY
                     if (y < _ySize - 1 && _objectOnFieldPtrs[x][y + 1][0]->getType() == "Property")
                     {
-                        _objectOnFieldPtrs[x][y - 1][0]->setProperty(_objectOnFieldPtrs[x][y + 1][0]->getText(), true);
+                        _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->setProperty(
+                            _objectOnFieldPtrs[x][y + 1][0]->getText(), true);
 
                         // Check if AND is after first Property and second property must be added
                         if (y < _ySize - 3 && _objectOnFieldPtrs[x][y + 2][0]->getType() == "Operator" &&
                             _objectOnFieldPtrs[x][y + 2][0]->getText() == "And" &&
                             _objectOnFieldPtrs[x][y + 3][0]->getType() == "Property")
                         {
-                            _objectOnFieldPtrs[x][y - 1][0]->setProperty(_objectOnFieldPtrs[x][y + 3][0]->getText(), true);
+                            _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->setProperty(
+                                _objectOnFieldPtrs[x][y + 3][0]->getText(), true);
                         }
                     }
+                    // NOUN IS NOUN
                     else if (y < _ySize - 1 && _objectOnFieldPtrs[x][y + 1][0]->getType() == "Noun")
                     {
-                        _objectOnFieldPtrs[x][y - 1][0]->setTemporaryIdentity(_objectOnFieldPtrs[x][y + 1][0]);
+                        _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->setTemporaryIdentity(
+                            _objectOnFieldPtrs[x][y + 1][0]->getSolidObjectPtr());
                     }
                 }
             }
