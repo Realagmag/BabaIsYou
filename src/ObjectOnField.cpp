@@ -75,9 +75,7 @@ void ObjectOnField::setProperty(const std::string &property, bool value)
 
 std::string ObjectOnField::getNounImagePath() const
 {
-    std::string str = _imagePath;
-    str = str.substr(0, str.length() - 4);
-    return str+"text.png";
+    return "";
 }
 
 std::string ObjectOnField::getText() const
