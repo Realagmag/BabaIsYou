@@ -23,6 +23,7 @@ class Window{
         std::vector<sf::Sprite> levels_sprites;
         sf::Texture _choose_level_texture;
         sf::Sprite _choose_level_sprite;
+        sf::RectangleShape red_level;
 
     private:
         void CreateMenuDrawables();

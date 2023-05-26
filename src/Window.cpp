@@ -103,16 +103,16 @@ void Window::CreateMenuDrawables()
     _choose_level_sprite.setOrigin(size.x/2, size.y/2);
     _choose_level_sprite.setScale(sf::Vector2f(3,3));
     _choose_level_sprite.setPosition(sf::Vector2f(_windowSize.x/2, _windowSize.y/4));
+    red_level.setSize(sf::Vector2f(127,55));
+    red_level.setFillColor(sf::Color::Red);
 }
 
 void Window::DrawMenu(int current_level)
 {
     float rectangle_xpos = _windowSize.x/10*(current_level+1) + 32;
     float rectangle_ypos = _windowSize.y/6*4 + 20;
-    sf::RectangleShape red_rectangle(sf::Vector2f(127,55));
-    red_rectangle.setFillColor(sf::Color::Red);
-    red_rectangle.setPosition(sf::Vector2f(rectangle_xpos, rectangle_ypos));
-    Draw(red_rectangle);
+    red_level.setPosition(sf::Vector2f(rectangle_xpos, rectangle_ypos));
+    Draw(red_level);
     Draw(_choose_level_sprite);
     for (int i= 0; i < _number_of_levels; i++)
     {

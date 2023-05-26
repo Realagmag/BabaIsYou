@@ -62,7 +62,7 @@ void Game::HandleInput()
         Action action = RIGHT;
         _board.updateState(action);}
         else{
-            if (_current_level < LoadedLevels.size()) _current_level += 1;}
+            if (_current_level < LoadedLevels.size()-1) _current_level += 1;}
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && IsKeyReleased)
     {
