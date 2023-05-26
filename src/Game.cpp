@@ -159,7 +159,7 @@ void Game::SetupBoard()
             else if (letter == "you") _board.addObject(i,j,AllObjectsPtrs[LOAD_YOUTEXT]);
         }
     }
-    AllObjectsPtrs[LOAD_BABA]->setProperty("You", true);
+    _board.updateRules();
 }
 
 void Game::LoadLevelsFromFile()
