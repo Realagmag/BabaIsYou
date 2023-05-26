@@ -92,7 +92,6 @@ void Board::updateState(Action action)
 
             if (checkWinConditions(vector1))
                 _gameStatus = GameStatus::WIN;
-
         }
     }
 
@@ -102,7 +101,6 @@ void Board::updateState(Action action)
         _gameStatus = GameStatus::LOSE;
         return;
     }
-
 }
 
 ObjectOnFieldPtr Board::getObject(int x, int y, int z) const
@@ -514,15 +512,27 @@ void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
     // (for example: Sink object and objects which is not Float), if so, make specific action
     if (vector1.size() > 1)
     {
-        // Sink and Defeat
+        // Sink
         if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
-                        { return (objectOnFieldPtr->getProperty("Sink") && !objectOnFieldPtr->getProperty("Float")) ||
-                                 (objectOnFieldPtr->getProperty("Defeat") && !objectOnFieldPtr->getProperty("Float")); }))
+                        { return (objectOnFieldPtr->getProperty("Sink") && !objectOnFieldPtr->getProperty("Float")); }))
         {
             vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
                                          { return !objectOnFieldPtr->getProperty("Float"); }),
                           vector1.end());
-            vector1.emplace_back(_emptyFieldPtr);
+
+            if (vector1.size() == 0)
+                vector1.emplace_back(_emptyFieldPtr);
+        }
+        // Defeat
+        else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                             { return (objectOnFieldPtr->getProperty("Defeat") && !objectOnFieldPtr->getProperty("Float")); }))
+        {
+            vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                         { return objectOnFieldPtr->getProperty("You") && !objectOnFieldPtr->getProperty("Float"); }),
+                          vector1.end());
+
+            if (vector1.size() == 0)
+                vector1.emplace_back(_emptyFieldPtr);
         }
         // Hot and Melt
         else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
@@ -531,7 +541,9 @@ void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
             vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
                                          { return objectOnFieldPtr->getProperty("Melt") && !objectOnFieldPtr->getProperty("Float"); }),
                           vector1.end());
-            vector1.emplace_back(_emptyFieldPtr);
+
+            if (vector1.size() == 0)
+                vector1.emplace_back(_emptyFieldPtr);
         }
     }
 }
