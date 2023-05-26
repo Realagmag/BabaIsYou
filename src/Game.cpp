@@ -159,6 +159,8 @@ void Game::SetupBoard()
             else if (letter == "you") _board.addObject(i,j,AllObjectsPtrs[LOAD_YOUTEXT]);
         }
     }
+
+    // Update rules before start of the game
     _board.updateRules();
 }
 
