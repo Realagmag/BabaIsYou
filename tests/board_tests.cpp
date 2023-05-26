@@ -5,6 +5,7 @@
 #include "../src/SolidObjects/Wall.h"
 #include "../src/SolidObjects/Rock.h"
 #include "../src/SolidObjects/Flag.h"
+#include "../src/SolidObjects/Skull.h"
 #include "../src/paths.h"
 
 TEST_CASE("Board tests general and move", "[Board]")
@@ -16,10 +17,12 @@ TEST_CASE("Board tests general and move", "[Board]")
     ObjectOnFieldPtr wall_ptr = std::make_shared<Wall>();
     ObjectOnFieldPtr rock_ptr = std::make_shared<Rock>();
     ObjectOnFieldPtr flag_ptr = std::make_shared<Flag>();
+    ObjectOnFieldPtr skull_ptr = std::make_shared<Skull>();
     flag_ptr->setProperty("Win", true);
     rock_ptr->setProperty("Stop", true);
     baba_ptr->setProperty("You", true);
     wall_ptr->setProperty("Push", true);
+    skull_ptr->setProperty("Defeat", true);
 
     board.addObject(0, 0, baba_ptr);
     board.addObject(0, 1, SolidObject_ptr);
@@ -37,6 +40,7 @@ TEST_CASE("Board tests general and move", "[Board]")
 
         CHECK(board.getXSize() == 3);
         CHECK(board.getYSize() == 3);
+        CHECK(board.getZSize(0, 0) == 1);
     }
 
     SECTION("Add and remove objects")
@@ -96,7 +100,7 @@ TEST_CASE("Board tests general and move", "[Board]")
         CHECK(board.isMovePossible(ptrs1).second == 0);
         CHECK(board.isMovePossible(ptrs2).first == true);
         CHECK(board.isMovePossible(ptrs2).second == 2);
-        CHECK(board.isMovePossible(ptrs3).first == true);
+        CHECK(board.isMovePossible(ptrs3).first == false);
         CHECK(board.isMovePossible(ptrs3).second == 0);
         CHECK(board.isMovePossible(ptrs4).first == true);
         CHECK(board.isMovePossible(ptrs4).second == 3);
@@ -108,6 +112,73 @@ TEST_CASE("Board tests general and move", "[Board]")
     {
         board.moveDown(1, 1, 0);
         CHECK(board.getObject(1, 2, 0)->getImagePath() == "../" + paths.at("Wall"));
-        CHECK(board.getObject(1, 2, 1)->getImagePath() == "baba.png");
+        CHECK(board.getZSize(1, 2) == 1);
+
+        board.moveLeft(1, 1, 0);
+        CHECK(board.getZSize(0, 1) == 2);
+        CHECK(board.getObject(0, 1, 0)->getImagePath() == "solidObject.png");
+        CHECK(board.getObject(0, 1, 1)->getImagePath() == "baba.png");
+
+        board.moveRight(0, 1, 1);
+        CHECK(board.getObject(1, 1, 0)->getImagePath() == "baba.png");
+
+        board.moveUp(1, 1, 0);
+        CHECK(board.getZSize(1, 0) == 2);
+        CHECK(board.getObject(1, 0, 0)->getImagePath() == "solidObject.png");
+        CHECK(board.getObject(1, 0, 1)->getImagePath() == "baba.png");
+    }
+
+    SECTION("Merge same objects test")
+    {
+        std::vector<ObjectOnFieldPtr> ptrs1 = {wall_ptr, wall_ptr, SolidObject_ptr};
+        std::vector<ObjectOnFieldPtr> ptrs2 = {wall_ptr, SolidObject_ptr};
+        std::vector<ObjectOnFieldPtr> ptrs3 = {wall_ptr, wall_ptr, wall_ptr};
+        board.mergeSameObjects(ptrs1);
+        CHECK(ptrs1.size() == 2);
+        CHECK(ptrs1[0]->getImagePath() == "../" + paths.at("Wall"));
+        board.mergeSameObjects(ptrs2);
+        CHECK(ptrs2.size() == 2);
+        board.mergeSameObjects(ptrs3);
+        CHECK(ptrs3.size() == 1);
+    }
+
+    SECTION("Check win condition test")
+    {
+        std::vector<ObjectOnFieldPtr> ptrs1 = {baba_ptr, wall_ptr, SolidObject_ptr};
+        std::vector<ObjectOnFieldPtr> ptrs2 = {flag_ptr, baba_ptr};
+        CHECK(board.checkWinConditions(ptrs1) == false);
+        CHECK(board.checkWinConditions(ptrs2) == true);
+        // baba_ptr->setProperty("Win", true);
+        // CHECK(board.checkWinConditions(ptrs1) == true);
+    }
+
+    SECTION("Win test")
+    {
+        board.updateState(Action::RIGHT);
+        board.updateState(Action::RIGHT);
+        CHECK(board.getGameStatus() == GameStatus::WIN);
+    }
+
+    SECTION("Lose test")
+    {
+        board.removeObject(1, 1, 0);
+        board.removeObject(0, 0, 0);
+        board.updateState(Action::LEFT);
+        CHECK(board.getGameStatus() == GameStatus::LOSE);
+    }
+
+    SECTION("Multiple move test")
+    {
+        board.updateState(Action::LEFT);
+        board.updateState(Action::UP);
+        CHECK(board.getYouObjectsCoordinates().size() == 1);
+    }
+
+    SECTION("Anihilate test")
+    {
+        std::vector<ObjectOnFieldPtr> ptrs1 = {wall_ptr, wall_ptr, skull_ptr};
+        board.anihilateSomeOfObjects(ptrs1);
+        CHECK(ptrs1.size() == 1);
+        CHECK(ptrs1[0]->getType() == "Empty");
     }
 }

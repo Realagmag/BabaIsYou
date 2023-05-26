@@ -9,14 +9,14 @@ ObjectOnField::ObjectOnField()
 
 ObjectOnField::~ObjectOnField() {}
 
-void ObjectOnField::SetSpritePtr(std::shared_ptr<sf::Sprite> new_sprite_ptr)
+void ObjectOnField::SetSpritePtr(std::shared_ptr<sf::Sprite> newSpritePtr)
 {
-    _sprite_ptr = new_sprite_ptr;
+    _spritePtr = newSpritePtr;
 }
 
-std::shared_ptr<sf::Sprite> ObjectOnField::GetSpritePtr()
+std::shared_ptr<sf::Sprite> ObjectOnField::GetSpritePtr() const
 {
-    return _sprite_ptr;
+    return _spritePtr;
 }
 
 std::string ObjectOnField::getImagePath() const
