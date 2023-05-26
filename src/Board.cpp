@@ -78,24 +78,31 @@ void Board::updateState(Action action)
         updateRules();
     }
 
-    // If there is 2 same objects on the same field, merge them
-    mergeSameObjects();
-
-    std::vector<Coordinates> youObjectsCoordinatesAfterMove = getYouObjectsCoordinates();
-
-    // Check if there is "You" object on the board
-    if (_gameStatus != GameStatus::LOSE && youObjectsCoordinatesAfterMove.size() == 0)
+    // After move and update of rules: 1. remove duplicates on the same field,
+    // 2. anihilate objects which cannot be on the same field
+    // 3. check win conditions
+    // for every field
+    for (auto &vector2 : _objectOnFieldPtrs)
     {
-        _gameStatus = GameStatus::FROZEN;
+        for (auto &vector1 : vector2)
+        {
+            mergeSameObjects(vector1);
+
+            anihilateSomeOfObjects(vector1);
+
+            if (checkWinConditions(vector1))
+                _gameStatus = GameStatus::WIN;
+
+        }
+    }
+
+    // Check lose condition
+    if (getYouObjectsCoordinates().size() == 0)
+    {
+        _gameStatus = GameStatus::LOSE;
         return;
     }
-    // Check if any "You" object has win property
-    else if (std::any_of(youObjectsCoordinatesAfterMove.begin(), youObjectsCoordinatesAfterMove.end(),
-                         [&](Coordinates coordinates)
-                         { return getObject(coordinates)->getProperty("Win"); }))
-    {
-        _gameStatus = GameStatus::WIN;
-    }
+
 }
 
 ObjectOnFieldPtr Board::getObject(int x, int y, int z) const
@@ -133,12 +140,22 @@ int Board::getZSize(int x, int y) const
     return _objectOnFieldPtrs[x][y].size();
 }
 
+GameStatus Board::getGameStatus() const
+{
+    return _gameStatus;
+}
+
 void Board::removeObject(int x, int y, int z)
 {
     if (_objectOnFieldPtrs[x][y].size() == 1)
         _objectOnFieldPtrs[x][y][0] = _emptyFieldPtr;
     else
         _objectOnFieldPtrs[x][y].erase(_objectOnFieldPtrs[x][y].begin() + z);
+}
+
+void Board::removeObject(const Coordinates &coordinates)
+{
+    removeObject(coordinates.x, coordinates.y, coordinates.z);
 }
 
 void Board::addObject(int x, int y, const ObjectOnFieldPtr &ptr)
@@ -157,22 +174,20 @@ bool Board::moveDown(int x, int y, int z)
                                              _objectOnFieldPtrs[x].end());
         ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
 
-        std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
+        std::pair<bool, int> moveImpact = isMovePossible(nextObjects);
         bool isMovePossible = moveImpact.first;
         int objectsToMove = moveImpact.second;
 
         if (isMovePossible)
         {
-            // Move chain of objects before current object
-            makeMove(nextObjects, objectsToMove);
+            makeMove(nextObjects, currentObject, objectsToMove);
             for (int i = 0; i <= objectsToMove; i++)
             {
                 // Move semantics to avoid copying
                 _objectOnFieldPtrs[x][y + i + 1] = std::move(nextObjects[i]);
             }
 
-            // Move current object
-            addObject(x, y + 1, currentObject);
+            // Remove current object from the board
             removeObject(x, y, z);
 
             return true;
@@ -190,25 +205,20 @@ bool Board::moveUp(int x, int y, int z)
                                              std::make_reverse_iterator(_objectOnFieldPtrs[x].begin()));
         ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
 
-        std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
+        std::pair<bool, int> moveImpact = isMovePossible(nextObjects);
         bool isMovePossible = moveImpact.first;
         int objectsToMove = moveImpact.second;
 
         if (isMovePossible)
         {
-            // Move chain of objects before current object
-            if (objectsToMove > 0)
+            makeMove(nextObjects, currentObject, objectsToMove);
+            for (int i = 0; i <= objectsToMove; i++)
             {
-                makeMove(nextObjects, objectsToMove);
-                for (int i = 0; i <= objectsToMove; i++)
-                {
-                    // Move semantics to avoid copying
-                    _objectOnFieldPtrs[x][y - i - 1] = std::move(nextObjects[i]);
-                }
+                // Move semantics to avoid copying
+                _objectOnFieldPtrs[x][y - i - 1] = std::move(nextObjects[i]);
             }
 
-            // Move current object
-            addObject(x, y - 1, currentObject);
+            // Remove current object from the board
             removeObject(x, y, z);
 
             return true;
@@ -229,22 +239,20 @@ bool Board::moveLeft(int x, int y, int z)
         }
         ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
 
-        std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
+        std::pair<bool, int> moveImpact = isMovePossible(nextObjects);
         bool isMovePossible = moveImpact.first;
         int objectsToMove = moveImpact.second;
 
         if (isMovePossible)
         {
-            // Move chain of objects before current object
-            makeMove(nextObjects, objectsToMove);
+            makeMove(nextObjects, currentObject, objectsToMove);
             for (int i = 0; i <= objectsToMove; i++)
             {
                 // Move semantics to avoid copying
                 _objectOnFieldPtrs[x - 1 - i][y] = std::move(nextObjects[i]);
             }
 
-            // Move current object
-            addObject(x - 1, y, currentObject);
+            // Remove current object from the board
             removeObject(x, y, z);
 
             return true;
@@ -265,23 +273,20 @@ bool Board::moveRight(int x, int y, int z)
         }
         ObjectOnFieldPtr currentObject = _objectOnFieldPtrs[x][y][z];
 
-        std::pair<bool, int> moveImpact = checkMoveImpact(currentObject, nextObjects);
+        std::pair<bool, int> moveImpact = isMovePossible(nextObjects);
         bool isMovePossible = moveImpact.first;
         int objectsToMove = moveImpact.second;
 
         if (isMovePossible)
         {
-            // Move chain of objects before current object
-            nextObjects[0].push_back(currentObject);
-            makeMove(nextObjects, objectsToMove);
+            makeMove(nextObjects, currentObject, objectsToMove);
             for (int i = 0; i <= objectsToMove; i++)
             {
                 // Move semantics to avoid copying
                 _objectOnFieldPtrs[x + 1 + i][y] = std::move(nextObjects[i]);
             }
 
-            // Move current object
-            addObject(x + 1, y, currentObject);
+            // Remove current object
             removeObject(x, y, z);
 
             return true;
@@ -290,8 +295,15 @@ bool Board::moveRight(int x, int y, int z)
     }
 }
 
-void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, int objectsToMove)
+void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, ObjectOnFieldPtr &currentObject, int objectsToMove)
 {
+    // Move current object
+    if (nextObjects[0].size() == 1 && nextObjects[0][0] == _emptyFieldPtr)
+        nextObjects[0][0] = currentObject;
+    else
+        nextObjects[0].push_back(currentObject);
+
+    // Move chain of objects before current object
     for (int i = 0; i < objectsToMove; i++)
     {
         // Find first object that can be pushed, we know that it exists
@@ -320,51 +332,11 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, int objectsToMove)
         else
             nextObjects[i].erase(nextObjects[i].begin() + index);
     }
-
-    // Check if exist field where are two objects, which cannot be on the same field
-    // (for example: Sink object and any other object), if so make specific action
-    for (int i = 0; i < nextObjects.size(); i++)
-    {
-        if (nextObjects[i].size() > 1 && (nextObjects[i][0]->getProperty("Sink") ||
-                                          nextObjects[i][0]->getProperty("Defeat")))
-        {
-            // This field will be empty
-            nextObjects[i].erase(nextObjects[i].begin() + 1, nextObjects[i].end());
-            nextObjects[i][0] = _emptyFieldPtr;
-        }
-    }
-}
-
-std::pair<bool, int> Board::checkMoveImpact(const ObjectOnFieldPtr &currentObject,
-                                            const ObjectOnFieldPtrs2Vector &nextObjects)
-{
-    // Check win conditions
-    if (anyObjectHasProperty(nextObjects[0], "Win"))
-    {
-        _gameStatus = GameStatus::WIN;
-        return std::make_pair(true, 0);
-    }
-    // Check lose conditions
-    else if (anyObjectHasProperty(nextObjects[0], "Defeat") ||
-             (currentObject->getProperty("Melt") && (anyObjectHasProperty(nextObjects[0], "Hot"))) ||
-             anyObjectHasProperty(nextObjects[0], "Sink"))
-    {
-        _gameStatus = GameStatus::LOSE;
-        // Return true, because move is possible, but some "you" objects will anihilate
-        // and game will be lost
-        return std::make_pair(true, 0);
-    }
-    // If there is no win or lose conditions, check if move is possible
-    else
-    {
-        return isMovePossible(nextObjects);
-    }
 }
 
 std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextObjects) const
 {
-    bool isPushPossible = false;
-    bool isMovePossible = true;
+    bool isMovePossible = false;
     int objectsToMove = 0;
 
     // Check if move is possible
@@ -383,12 +355,7 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
                         [&](ObjectOnFieldPtr objectOnFieldPtr)
                         { return objectOnFieldPtr->getProperty("Stop") && !objectOnFieldPtr->getProperty("Push"); }))
         {
-            isPushPossible = false;
-            break;
-        }
-        else if (anyObjectHasProperty(objectOnOneFieldPtrs, "Sink") || anyObjectHasProperty(objectOnOneFieldPtrs, "Defeat"))
-        {
-            isPushPossible = true;
+            isMovePossible = false;
             break;
         }
         else if (anyObjectHasProperty(objectOnOneFieldPtrs, "Push"))
@@ -398,12 +365,12 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
         }
         else
         {
-            isPushPossible = true;
+            isMovePossible = true;
             break;
         }
     }
 
-    if (!isPushPossible)
+    if (!isMovePossible)
         objectsToMove = 0;
 
     return std::make_pair(isMovePossible, objectsToMove);
@@ -530,19 +497,50 @@ void Board::resetRules()
     }
 }
 
-void Board::mergeSameObjects()
+void Board::mergeSameObjects(std::vector<ObjectOnFieldPtr> &vector1)
 {
-    for (int x = 0; x < _objectOnFieldPtrs.size(); x++)
+    if (vector1.size() > 1)
     {
-        for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
+        // Remove duplicates
+        std::vector<ObjectOnFieldPtr>::iterator ip;
+        ip = std::unique(vector1.begin(), vector1.end());
+        vector1.resize(std::distance(vector1.begin(), ip));
+    }
+}
+
+void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
+{
+    // Check if exist objects, which cannot be on the same field
+    // (for example: Sink object and objects which is not Float), if so, make specific action
+    if (vector1.size() > 1)
+    {
+        // Sink and Defeat
+        if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                        { return (objectOnFieldPtr->getProperty("Sink") && !objectOnFieldPtr->getProperty("Float")) ||
+                                 (objectOnFieldPtr->getProperty("Defeat") && !objectOnFieldPtr->getProperty("Float")); }))
         {
-            if (_objectOnFieldPtrs[x][y].size() > 1)
-            {
-                // Remove duplicates
-                std::vector<ObjectOnFieldPtr>::iterator ip;
-                ip = std::unique(_objectOnFieldPtrs[x][y].begin(), _objectOnFieldPtrs[x][y].end());
-                _objectOnFieldPtrs[x][y].resize(std::distance(_objectOnFieldPtrs[x][y].begin(), ip));
-            }
+            vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                         { return !objectOnFieldPtr->getProperty("Float"); }),
+                          vector1.end());
+            vector1.emplace_back(_emptyFieldPtr);
+        }
+        // Hot and Melt
+        else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                             { return objectOnFieldPtr->getProperty("Hot") && !objectOnFieldPtr->getProperty("Float"); }))
+        {
+            vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                         { return objectOnFieldPtr->getProperty("Melt") && !objectOnFieldPtr->getProperty("Float"); }),
+                          vector1.end());
+            vector1.emplace_back(_emptyFieldPtr);
         }
     }
+}
+
+bool Board::checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const
+{
+    if (anyObjectHasProperty(vector1, "You") && anyObjectHasProperty(vector1, "Win"))
+    {
+        return true;
+    }
+    return false;
 }

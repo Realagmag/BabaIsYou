@@ -24,7 +24,8 @@ protected:
         {"Sink", false},
         {"Defeat", false},
         {"Hot", false},
-        {"Melt", false}};
+        {"Melt", false},
+        {"Float", false}};
 
 public:
     ObjectOnField(std::string imagePath);

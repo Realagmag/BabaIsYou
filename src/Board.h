@@ -22,8 +22,7 @@ enum GameStatus
 {
     IN_PROGRESS,
     WIN,
-    LOSE,
-    FROZEN // There is no "You" object on the board
+    LOSE
 };
 
 /* Struct to store coordinates of object on board*/
@@ -81,8 +80,11 @@ public:
 
     int getZSize(int x, int y) const;
 
+    GameStatus getGameStatus() const;
+
     /** Removes object */
     void removeObject(int x, int y, int z);
+    void removeObject(const Coordinates &coordinates);
 
     /** Add object to board */
     void addObject(int x, int y, const ObjectOnFieldPtr &ptr);
@@ -96,17 +98,7 @@ public:
 
     bool moveRight(int x, int y, int z);
 
-    void makeMove(ObjectOnFieldPtrs2Vector& nextObjects, int objectsToMove);
-
-    /** Checks move impact, changes game status if should.
-     * Especially checks if there is win or lose situation.
-     * @param currentObject object which is moving.
-     * @param nextObjects objects from the next object in the direction
-     * of movement to the end of the board.
-     * @return a pair of: 1. bool - indicates if move is possible
-     * 2. int - how many objects will move in that direction (if they have isPush flag). */
-    std::pair<bool, int> checkMoveImpact(const ObjectOnFieldPtr &currentObject,
-                                         const ObjectOnFieldPtrs2Vector &nextObjects);
+    void makeMove(ObjectOnFieldPtrs2Vector& nextObjects, ObjectOnFieldPtr &currentObject, int objectsToMove);
 
     /** Checks if move into objects in vector is possible (PUSH and STOP issues).
      * This method does not check if there is win or lose situation.
@@ -134,5 +126,9 @@ public:
     void resetRules();
 
     /** If there are same objects on the same field, merge them. */
-    void mergeSameObjects();
+    void mergeSameObjects(std::vector<ObjectOnFieldPtr> &vector1);
+
+    void anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1);
+
+    bool checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const;
 };
