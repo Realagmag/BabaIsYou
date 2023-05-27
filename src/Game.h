@@ -40,29 +40,67 @@ class Game{
         Game(const Board &board);
         Game();
         ~Game();
+
+        /** Handles player's keyboard input
+         * Including: move action, choosing level, restart.*/
         void HandleInput();
+
+        /** Handles events happening to window like closing it.*/
         void Update();
+
+        /** Renders either game's menu or board if level has started.*/
         void Render();
+
         Window* GetWindow();
-        int getCurrentLevel();
-        void setCurrentLevel(int level_number);
-        Board _board;
-        std::vector<int> _select_level;
-        bool IsKeyReleased = true;
-        bool GameHasStarted = false;
 
-        std::vector<ObjectOnField> AllObjects;
-        std::vector<sf::Sprite> AllSprites;
-        std::vector<sf::Texture> AllTexturesOfSprites;
-        std::vector<ObjectOnFieldPtr> AllObjectsPtrs;
+        unsigned int getCurrentLevel() const;
 
-        std::vector<std::vector<std::vector<std::string>>> LoadedLevels;
+        void setCurrentLevel(unsigned int level_number);
 
     private:
 
+        /** Fills board with ObjectOnFieldPtr depending on
+         * current level. Deployment of pointers is coded
+         * in LoadedLevels variable.*/
         void SetupBoard();
+
+        /** Creates one entity of each ObjectOnField member,
+         * loads their textures from files and creates sprite
+         * for each object so it can be drawn in window.
+         * Also load each ObjectOnField, Texture and sprite to
+         * adequate vector.*/
         void CreateObjectInstances();
+
+        /** Loads objects deployment for each level from .txt file.*/
         void LoadLevelsFromFile();
+
+        /** Stores one entity of each ObjectOnField used in game
+         * in order complementary with enum Loads.*/
+        std::vector<ObjectOnField> AllObjects;
+
+        /** Stores one sprite for each ObjectOnField used in game
+         * so it can be drawn in window.*/
+        std::vector<sf::Sprite> AllSprites;
+
+        /** Stores texture of each sprite. This must be done because
+         * sprite only gets pointer to texture.*/
+        std::vector<sf::Texture> AllTexturesOfSprites;
+
+        /** Stores shared pointers to each ObjectOnField used in game that
+         * will be passed to board.*/
+        std::vector<ObjectOnFieldPtr> AllObjectsPtrs;
+
+        /** Stores objects deplopment for each level loaded from .txt file.*/
+        std::vector<std::vector<std::vector<std::string>>> LoadedLevels;
+
         Window _window;
-        int _current_level;
+        Board _board;
+        unsigned int _current_level;
+
+        /** Flag used to prevent multiple actions while pressing key.*/
+        bool IsKeyReleased = true;
+
+        /** Flag used to change behaviour of program depending on whether
+         * menu or level should be displayed.*/
+        bool GameHasStarted = false;
 };

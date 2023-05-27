@@ -13,8 +13,8 @@
 #include "./Operator.h"
 #include "./Property.h"
 
-Game::Game(const Board &board)
-: _board(board) {}
+Game::Game(const Board &board): _board(board), _window("Baba is You", sf::Vector2u(1920,1080)){}
+
 
 Game::Game(): _window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
 {
@@ -25,6 +25,7 @@ Game::Game(): _window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
 }
 
 Game::~Game(){}
+
 
 void Game::HandleInput()
 {
@@ -89,6 +90,8 @@ void Game::HandleInput()
         IsKeyReleased = false;
         if (GameHasStarted){_board.updateState(UNDO);}
     }
+    //Ensures that each action related to pressed key will be performed only once
+    //Player has to release pressed key in order to perform the action again.
     else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
     !sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
     !sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
@@ -99,23 +102,24 @@ void Game::HandleInput()
 
 void Game::Update()
 {
-    _window.Update(GameHasStarted); // Update window events.
+    // Updates window events such as closing level or window.
+    _window.Update(GameHasStarted);
 }
 
 void Game::Render()
 {
     _window.BeginDraw(); // Clear.
     if (GameHasStarted){
-    _window.DrawBoard(_board);}
+    _window.DrawBoard(_board);} // Render current board.
     else{
-    _window.DrawMenu(_current_level);}
+    _window.DrawMenu(_current_level);} // Render game's menu.
     if (_board.getGameStatus() == WIN && GameHasStarted)
     {
-        _window.DrawWin();
+        _window.DrawWin(); // Render text when game is won.
     }
     else if ( _board.getGameStatus() == LOSE && GameHasStarted)
     {
-        _window.DrawLose();
+        _window.DrawLose(); //Render text when game is lost.
     }
     _window.EndDraw(); // Display.
 }
@@ -125,12 +129,12 @@ Window* Game::GetWindow()
     return &_window;
 }
 
-int Game::getCurrentLevel()
+unsigned int Game::getCurrentLevel() const
 {
     return _current_level;
 }
 
-void Game::setCurrentLevel(int level_number)
+void Game::setCurrentLevel(unsigned int level_number)
 {
     _current_level = level_number;
 }
@@ -141,6 +145,7 @@ void Game::SetupBoard()
     {
         for (int j = 0; j< _board.getYSize(); j++)
         {
+            //Add different object to board for each corresponding letter
             std::string letter = LoadedLevels[getCurrentLevel()][j][i];
             if (letter == "-"){}
             else if (letter == "and") _board.addObject(i,j,AllObjectsPtrs[LOAD_AND]);
@@ -173,7 +178,7 @@ void Game::SetupBoard()
         }
     }
 
-    // Update rules before start of the game
+    // Update rules before start of the game or after restart
     _board.updateRules();
 }
 
@@ -195,8 +200,10 @@ void Game::LoadLevelsFromFile()
             {
                 getline(file, row);
                 std::stringstream ss1(row);
+                // Cut loaded row into smaller parts. One for each ObjectOnField
                 while(getline(ss1, object_letter, ','))
                 {
+                    // Clear object_letter out of whitesigns
                     object_letter.erase(std::remove_if(object_letter.begin(), object_letter.end(), ::isspace), object_letter.end());
                     row_of_letters.push_back(object_letter);
                 }
@@ -402,10 +409,13 @@ void Game::CreateObjectInstances()
     ObjectOnFieldPtr youtext_ptr = std::make_shared<Property>("You");
     AllObjectsPtrs.emplace_back(youtext_ptr);
 
+
     for (int i=0; i < AllObjectsPtrs.size(); i++)
     {
         AllTexturesOfSprites[i].loadFromFile(AllObjectsPtrs[i]->getImagePath());
         AllSprites[i].setTexture(AllTexturesOfSprites[i]);
+
+        //Change each sprite's size to 64x64 pxl
         AllSprites[i].setScale(sf::Vector2f((64.0f/AllTexturesOfSprites[i].getSize().x),(64.0f/AllTexturesOfSprites[i].getSize().y)));
         AllObjectsPtrs[i]->SetSpritePtr(std::make_shared<sf::Sprite>(AllSprites[i]));
     }
