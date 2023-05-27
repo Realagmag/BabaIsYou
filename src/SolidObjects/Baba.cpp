@@ -1,17 +1,17 @@
 #include "Baba.h"
-#include "../paths.h"
+#include "../Parameters.h"
 
 Baba::Baba(std::string imagePath) : SolidObject(imagePath)
 {}
 
 Baba::Baba()
 {
-    _imagePath = "../" + paths.at("Baba");
-    _imagePathUp = "../" + paths.at("BabaUp");
-    _imagePathDown = "../" + paths.at("BabaDown");
-    _imagePathLeft = "../" + paths.at("BabaLeft");
-    _imagePathRight = "../" + paths.at("BabaRight");
-    _nounImagePath = "../" + paths.at("Babatext");
+    _imagePath = "../" + Parameters::PATHS.at("Baba");
+    _imagePathUp = "../" + Parameters::PATHS.at("BabaUp");
+    _imagePathDown = "../" + Parameters::PATHS.at("BabaDown");
+    _imagePathLeft = "../" + Parameters::PATHS.at("BabaLeft");
+    _imagePathRight = "../" + Parameters::PATHS.at("BabaRight");
+    _nounImagePath = "../" + Parameters::PATHS.at("Babatext");
 }
 
 std::string Baba::getImagePath() const

@@ -6,7 +6,9 @@
 #include "../src/SolidObjects/Rock.h"
 #include "../src/SolidObjects/Flag.h"
 #include "../src/SolidObjects/Skull.h"
-#include "../src/paths.h"
+#include "../src/SolidObjects/Water.h"
+#include "../src/SolidObjects/Lava.h"
+#include "../src/Parameters.h"
 
 TEST_CASE("Board tests general and move", "[Board]")
 {
@@ -18,11 +20,15 @@ TEST_CASE("Board tests general and move", "[Board]")
     ObjectOnFieldPtr rock_ptr = std::make_shared<Rock>();
     ObjectOnFieldPtr flag_ptr = std::make_shared<Flag>();
     ObjectOnFieldPtr skull_ptr = std::make_shared<Skull>();
+    ObjectOnFieldPtr water_ptr = std::make_shared<Water>();
+    ObjectOnFieldPtr lava_ptr = std::make_shared<Lava>();
     flag_ptr->setProperty("Win", true);
     rock_ptr->setProperty("Stop", true);
     baba_ptr->setProperty("You", true);
     wall_ptr->setProperty("Push", true);
     skull_ptr->setProperty("Defeat", true);
+    water_ptr->setProperty("Sink", true);
+    lava_ptr->setProperty("Hot", true);
 
     board.addObject(0, 0, baba_ptr);
     board.addObject(0, 1, SolidObject_ptr);
@@ -46,7 +52,7 @@ TEST_CASE("Board tests general and move", "[Board]")
     SECTION("Add and remove objects")
     {
         board.removeObject(0, 0, 0);
-        CHECK(board.getObject(0, 0, 0)->getImagePath() == paths.at("Empty"));
+        CHECK(board.getObject(0, 0, 0)->getImagePath() == Parameters::PATHS.at("Empty"));
 
         board.addObject(0, 0, baba_ptr);
         board.addObject(0, 0, SolidObject_ptr);
@@ -61,7 +67,7 @@ TEST_CASE("Board tests general and move", "[Board]")
     {
         board.moveDown(0, 0, 0);
         CHECK(board.getObject(0, 1, 1)->getImagePath() == "baba.png");
-        CHECK(board.getObject(0, 0, 0)->getImagePath() == paths.at("Empty"));
+        CHECK(board.getObject(0, 0, 0)->getImagePath() == Parameters::PATHS.at("Empty"));
 
         board.moveRight(0, 1, 0);
         CHECK(board.getObject(0, 1, 0)->getImagePath() == "baba.png");
@@ -111,7 +117,7 @@ TEST_CASE("Board tests general and move", "[Board]")
     SECTION("Move tests")
     {
         board.moveDown(1, 1, 0);
-        CHECK(board.getObject(1, 2, 0)->getImagePath() == "../" + paths.at("Wall"));
+        CHECK(board.getObject(1, 2, 0)->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
         CHECK(board.getZSize(1, 2) == 1);
 
         board.moveLeft(1, 1, 0);
@@ -135,7 +141,7 @@ TEST_CASE("Board tests general and move", "[Board]")
         std::vector<ObjectOnFieldPtr> ptrs3 = {wall_ptr, wall_ptr, wall_ptr};
         board.mergeSameObjects(ptrs1);
         CHECK(ptrs1.size() == 2);
-        CHECK(ptrs1[0]->getImagePath() == "../" + paths.at("Wall"));
+        CHECK(ptrs1[0]->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
         board.mergeSameObjects(ptrs2);
         CHECK(ptrs2.size() == 2);
         board.mergeSameObjects(ptrs3);
@@ -148,8 +154,8 @@ TEST_CASE("Board tests general and move", "[Board]")
         std::vector<ObjectOnFieldPtr> ptrs2 = {flag_ptr, baba_ptr};
         CHECK(board.checkWinConditions(ptrs1) == false);
         CHECK(board.checkWinConditions(ptrs2) == true);
-        // baba_ptr->setProperty("Win", true);
-        // CHECK(board.checkWinConditions(ptrs1) == true);
+        baba_ptr->setProperty("Win", true);
+        CHECK(board.checkWinConditions(ptrs1) == true);
     }
 
     SECTION("Win test")
@@ -176,9 +182,30 @@ TEST_CASE("Board tests general and move", "[Board]")
 
     SECTION("Anihilate test")
     {
-        std::vector<ObjectOnFieldPtr> ptrs1 = {wall_ptr, wall_ptr, skull_ptr};
+        std::vector<ObjectOnFieldPtr> ptrs1 = {wall_ptr, skull_ptr, baba_ptr};
         board.anihilateSomeOfObjects(ptrs1);
-        CHECK(ptrs1.size() == 1);
-        CHECK(ptrs1[0]->getType() == "Empty");
+        CHECK(ptrs1.size() == 2);
+
+        std::vector<ObjectOnFieldPtr> ptrs2 = {wall_ptr, water_ptr, baba_ptr};
+        board.anihilateSomeOfObjects(ptrs2);
+        CHECK(ptrs2.size() == 1);
+        CHECK(ptrs2[0]->getType() == "Empty");
+
+        baba_ptr->setProperty("Melt", true);
+        std::vector<ObjectOnFieldPtr> ptrs3 = {lava_ptr, wall_ptr, baba_ptr};
+        board.anihilateSomeOfObjects(ptrs3);
+        CHECK(ptrs3.size() == 2);
+    }
+
+    SECTION("Undo test")
+    {
+        board.updateState(Action::LEFT);
+        board.updateState(Action::UP);
+        CHECK(board.getYouObjectsCoordinates().size() == 1);
+        board.updateState(Action::UNDO);
+        CHECK(board.getYouObjectsCoordinates()[0].x == 0);
+        CHECK(board.getYouObjectsCoordinates()[0].y == 0);
+        CHECK(board.getYouObjectsCoordinates()[1].x == 0);
+        CHECK(board.getYouObjectsCoordinates()[1].y == 1);
     }
 }

@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "../src/SolidObjects/Baba.h"
-#include "../src/paths.h"
+#include "../src/Parameters.h"
 
 TEST_CASE("Baba tests", "[Baba]")
 {
@@ -9,10 +9,10 @@ TEST_CASE("Baba tests", "[Baba]")
 
     SECTION("Getters")
     {
-        CHECK(baba.getImagePath() == "../" + paths.at("Baba"));
-        CHECK(baba.getImagePath("up") == "../" + paths.at("BabaUp"));
-        CHECK(baba.getImagePath("down") == "../" + paths.at("BabaDown"));
-        CHECK(baba.getImagePath("left") == "../" + paths.at("BabaLeft"));
-        CHECK(baba.getImagePath("right") == "../" + paths.at("BabaRight"));
+        CHECK(baba.getImagePath() == "../" + Parameters::PATHS.at("Baba"));
+        CHECK(baba.getImagePath("up") == "../" + Parameters::PATHS.at("BabaUp"));
+        CHECK(baba.getImagePath("down") == "../" + Parameters::PATHS.at("BabaDown"));
+        CHECK(baba.getImagePath("left") == "../" + Parameters::PATHS.at("BabaLeft"));
+        CHECK(baba.getImagePath("right") == "../" + Parameters::PATHS.at("BabaRight"));
     }
 }

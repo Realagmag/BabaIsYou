@@ -2,7 +2,7 @@
 
 #include "../src/SolidObject.h"
 #include "../src/SolidObjects/Baba.h"
-#include "../src/paths.h"
+#include "../src/Parameters.h"
 
 TEST_CASE("SolidObject tests", "[SolidObject]")
 {
@@ -11,7 +11,7 @@ TEST_CASE("SolidObject tests", "[SolidObject]")
 
     SECTION("Getters")
     {
-        CHECK(solid_object->getImagePath() == paths.at("Empty"));
+        CHECK(solid_object->getImagePath() == Parameters::PATHS.at("Empty"));
         CHECK(solid_object->getType() == "SolidObject");
     }
 
@@ -21,7 +21,7 @@ TEST_CASE("SolidObject tests", "[SolidObject]")
         CHECK(solid_object->getImagePath() == baba_ptr->getImagePath());
         CHECK(solid_object->getType() == "SolidObject");
         solid_object->clearTemporaryIdentity();
-        CHECK(solid_object->getImagePath() == paths.at("Empty"));
+        CHECK(solid_object->getImagePath() == Parameters::PATHS.at("Empty"));
         CHECK(solid_object->getType() == "SolidObject");
         CHECK(solid_object->getTemporaryIdentity() == nullptr);
     }

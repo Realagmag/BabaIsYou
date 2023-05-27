@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-#include "paths.h"
+#include "Parameters.h"
 
 class ObjectOnField
 {

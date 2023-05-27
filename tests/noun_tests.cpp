@@ -2,7 +2,7 @@
 
 #include "../src/Noun.h"
 #include "../src/SolidObjects/Baba.h"
-#include "../src/paths.h"
+#include "../src/Parameters.h"
 
 TEST_CASE("Noun tests", "[Noun]")
 {
@@ -11,7 +11,7 @@ TEST_CASE("Noun tests", "[Noun]")
 
     SECTION("Getters")
     {
-        CHECK(noun->getImagePath() == "../" + paths.at("Babatext"));
+        CHECK(noun->getImagePath() == "../" + Parameters::PATHS.at("Babatext"));
         CHECK(noun->getType() == "Noun");
         CHECK(noun->getProperty("Push") == true);
         CHECK(noun->getProperty("Stop") == true);

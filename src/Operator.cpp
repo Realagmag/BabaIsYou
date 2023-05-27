@@ -12,7 +12,7 @@ Operator::Operator(const std::string &text)
     : _text(text)
 {
     _type = "Operator";
-    _imagePath = "../" + paths.at(text);
+    _imagePath = "../" + Parameters::PATHS.at(text);
     setProperty("Push", true);
     setProperty("Stop", true);
 }

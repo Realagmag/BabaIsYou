@@ -1,11 +1,11 @@
 #include "Water.h"
-#include "../paths.h"
+#include "../Parameters.h"
 
 Water::Water(std::string imagePath) : SolidObject(imagePath)
 {}
 
 Water::Water()
 {
-    _imagePath = "../" + paths.at("Water");
-    _nounImagePath = "../" + paths.at("Watertext");
+    _imagePath = "../" + Parameters::PATHS.at("Water");
+    _nounImagePath = "../" + Parameters::PATHS.at("Watertext");
 }

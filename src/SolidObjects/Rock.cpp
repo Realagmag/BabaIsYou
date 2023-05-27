@@ -1,11 +1,11 @@
 #include "Rock.h"
-#include "../paths.h"
+#include "../Parameters.h"
 
 Rock::Rock(std::string imagePath) : SolidObject(imagePath)
 {}
 
 Rock::Rock()
 {
-    _imagePath = "../" + paths.at("Rock");
-    _nounImagePath = "../" + paths.at("Rocktext");
+    _imagePath = "../" + Parameters::PATHS.at("Rock");
+    _nounImagePath = "../" + Parameters::PATHS.at("Rocktext");
 }

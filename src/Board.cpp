@@ -10,7 +10,7 @@ Board::Board(const ObjectOnFieldPtrs3Vector &objectOnFieldPtrs)
 
     _gameStatus = GameStatus::IN_PROGRESS;
 
-    _archivalStates.reserve(Constants::MAX_ARCHIVAL_STATES);
+    _archivalStates.reserve(Parameters::MAX_ARCHIVAL_STATES);
 }
 
 Board::Board(int x, int y)
@@ -49,7 +49,7 @@ Board::Board(int x, int y)
 
     _gameStatus = GameStatus::IN_PROGRESS;
 
-    _archivalStates.reserve(Constants::MAX_ARCHIVAL_STATES);
+    _archivalStates.reserve(Parameters::MAX_ARCHIVAL_STATES);
 }
 
 void Board::updateState(Action action)
@@ -575,7 +575,7 @@ bool Board::checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const
 
 void Board::saveState(const ObjectOnFieldPtrs3Vector &state)
 {
-    if (_archivalStates.size() < Constants::MAX_ARCHIVAL_STATES)
+    if (_archivalStates.size() < Parameters::MAX_ARCHIVAL_STATES)
     {
         _archivalStates.push_back(state);
     }

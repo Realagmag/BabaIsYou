@@ -1,11 +1,11 @@
 #include "Flag.h"
-#include "../paths.h"
+#include "../Parameters.h"
 
 Flag::Flag(std::string imagePath) : SolidObject(imagePath)
 {}
 
 Flag::Flag()
 {
-    _imagePath = "../" + paths.at("Flag");
-    _nounImagePath = "../" + paths.at("Flagtext");
+    _imagePath = "../" + Parameters::PATHS.at("Flag");
+    _nounImagePath = "../" + Parameters::PATHS.at("Flagtext");
 }

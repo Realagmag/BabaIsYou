@@ -1,11 +1,11 @@
 #include "Skull.h"
-#include "../paths.h"
+#include "../Parameters.h"
 
 Skull::Skull(std::string imagePath) : SolidObject(imagePath)
 {}
 
 Skull::Skull()
 {
-    _imagePath = "../" + paths.at("Skull");
-    _nounImagePath = "../" + paths.at("Skulltext");
+    _imagePath = "../" + Parameters::PATHS.at("Skull");
+    _nounImagePath = "../" + Parameters::PATHS.at("Skulltext");
 }

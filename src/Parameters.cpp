@@ -1,9 +1,8 @@
-#pragma once
+#include "Parameters.h"
 
-#include <iostream>
-#include <map>
+const int Parameters::MAX_ARCHIVAL_STATES = 10;
 
-const std::map<std::string, std::string> paths = {
+const std::map<std::string, std::string> Parameters::PATHS = {
     {"Empty", "src/textures/Empty.png"},
     {"Baba", "src/textures/Baba.png"},
     {"BabaUp", "src/textures/BabaUp.png"},

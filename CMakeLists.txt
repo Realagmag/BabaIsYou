@@ -29,7 +29,7 @@ add_library(BabaIsYouLib
   src/SolidObjects/Skull.cpp
   src/SolidObjects/Rock.cpp
   src/SolidObjects/Tree.cpp
-  src/paths.h)
+  src/Parameters.cpp)
 
 target_link_libraries(BabaIsYouLib PRIVATE
 sfml-system sfml-window sfml-graphics sfml-network sfml-audio

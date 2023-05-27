@@ -8,6 +8,7 @@
 
 #include "ObjectOnField.h"
 #include "SolidObject.h"
+#include "Parameters.h"
 
 enum GameStatus
 {
@@ -32,12 +33,6 @@ struct Coordinates
     int x;
     int y;
     int z;
-};
-
-struct Constants
-{
-    // Number of archival states to store
-    static const int MAX_ARCHIVAL_STATES = 10;
 };
 
 class Board
