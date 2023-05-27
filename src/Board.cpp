@@ -57,7 +57,7 @@ void Board::updateState(Action action)
     _wereRulesChanged = false;
 
     // Move all "You" objects
-    for (const Coordinates &object_coordinates : getYouObjectsCoordinates())
+    for (const Coordinates &object_coordinates : getObjectsToMoveCoordinates())
     {
         switch (action)
         {
@@ -103,19 +103,19 @@ void Board::updateState(Action action)
     }
 
     // Check lose condition
-    if (getYouObjectsCoordinates().size() == 0)
+    if (getObjectsToMoveCoordinates().size() == 0)
     {
         _gameStatus = GameStatus::LOSE;
         return;
     }
 
+    // Save past board state
     if (action != Action::UNDO)
     {
-        // Save past board state
         saveState(_latestState);
     }
 
-    // Mark current state as latest
+    // Save current state as latest
     _latestState = _objectOnFieldPtrs;
 }
 
@@ -397,9 +397,9 @@ bool Board::anyObjectHasProperty(const std::vector<ObjectOnFieldPtr> &objectOnFi
                        { return ptr->getProperty(property); });
 }
 
-std::vector<Coordinates> Board::getYouObjectsCoordinates() const
+std::vector<Coordinates> Board::getObjectsToMoveCoordinates() const
 {
-    std::vector<Coordinates> youObjectsCoordinates;
+    std::vector<Coordinates> objectsCoordinates;
 
     // Iterate over vector
     for (int x = 0; x < _objectOnFieldPtrs.size(); x++)
@@ -408,17 +408,17 @@ std::vector<Coordinates> Board::getYouObjectsCoordinates() const
         {
             for (int z = 0; z < _objectOnFieldPtrs[x][y].size(); z++)
             {
-                // Check if object has You property
-                if (_objectOnFieldPtrs[x][y][z]->getProperty("You"))
+                // Check if object has You property and not Stop property
+                if (_objectOnFieldPtrs[x][y][z]->getProperty("You") && !_objectOnFieldPtrs[x][y][z]->getProperty("Stop"))
                 {
                     Coordinates coordinates = {x, y, z};
-                    youObjectsCoordinates.emplace_back(coordinates);
+                    objectsCoordinates.emplace_back(coordinates);
                 }
             }
         }
     }
 
-    return youObjectsCoordinates;
+    return objectsCoordinates;
 }
 
 void Board::updateRules()
@@ -454,7 +454,8 @@ void Board::updateRules()
                         }
                     }
                     // NOUN IS NOUN
-                    else if (x < _xSize - 1 && _objectOnFieldPtrs[x + 1][y][0]->getType() == "Noun")
+                    else if (x < _xSize - 1 && _objectOnFieldPtrs[x + 1][y][0]->getType() == "Noun" &&
+                             _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->getTemporaryIdentity() == nullptr)
                     {
                         _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->setTemporaryIdentity(
                             _objectOnFieldPtrs[x + 1][y][0]->getSolidObjectPtr());
@@ -480,7 +481,8 @@ void Board::updateRules()
                         }
                     }
                     // NOUN IS NOUN
-                    else if (y < _ySize - 1 && _objectOnFieldPtrs[x][y + 1][0]->getType() == "Noun")
+                    else if (y < _ySize - 1 && _objectOnFieldPtrs[x][y + 1][0]->getType() == "Noun" &&
+                             _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->getTemporaryIdentity() == nullptr)
                     {
                         _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->setTemporaryIdentity(
                             _objectOnFieldPtrs[x][y + 1][0]->getSolidObjectPtr());
@@ -524,9 +526,11 @@ void Board::mergeSameObjects(std::vector<ObjectOnFieldPtr> &vector1)
 
 void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
 {
-    // Check if exist objects, which cannot be on the same field
-    // (for example: Sink object and objects which is not Float), if so, make specific action
-    if (vector1.size() > 1)
+    // Count objects which are not Float in the vector
+    int count = std::count_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                              { return !objectOnFieldPtr->getProperty("Float"); });
+
+    if (count > 1)
     {
         // Sink
         if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
