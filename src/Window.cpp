@@ -6,6 +6,7 @@ Window::Window(const std::string& l_title, const sf::Vector2u& l_size)
 {
     Setup(l_title,l_size);
     CreateMenuDrawables();
+    SetupEndgameText();
 }
 
 Window::~Window(){ Destroy(); }
@@ -61,6 +62,40 @@ void Window::Draw(sf::Drawable& l_drawable)
     _window.draw(l_drawable);
 }
 
+void Window::SetupEndgameText()
+{
+    std::string win_text = "Congratulations! Press Esc to go back to menu";
+    std::string lose_text = "Press R to restart level";
+    if(!font.loadFromFile("../src/fonts/ARIBL0.ttf")){
+        std::cerr <<"Failed to load font" <<std::endl;
+    }
+    _win_text.setFont(font);
+    _lose_text.setFont(font);
+    _win_text.setString(win_text);
+    _lose_text.setString(lose_text);
+
+    _win_text.setCharacterSize(30);
+    _win_text.setStyle(sf::Text::Bold);
+    _win_text.setFillColor(sf::Color::Black);
+    _win_text.setOutlineColor(sf::Color::Yellow);
+    _win_text.setOutlineThickness(3);
+    sf::FloatRect win_text_bounds = _win_text.getLocalBounds();
+    _win_text.setOrigin(win_text_bounds.left + win_text_bounds.width/2.0f,
+                        win_text_bounds.top + win_text_bounds.height/2.0f);
+    _win_text.setPosition(_windowSize.x/2, 64);
+
+    _lose_text.setCharacterSize(30);
+    _lose_text.setStyle(sf::Text::Bold);
+    _lose_text.setFillColor(sf::Color::Black);
+    _lose_text.setOutlineColor(sf::Color::Red);
+    _lose_text.setOutlineThickness(3);
+    sf::FloatRect lose_text_bounds = _lose_text.getLocalBounds();
+    _lose_text.setOrigin(lose_text_bounds.left + lose_text_bounds.width/2.0f,
+                        lose_text_bounds.top + lose_text_bounds.height/2.0f);
+    _lose_text.setPosition(_windowSize.x/2, 64);
+
+}
+
 void Window::DrawBoard(Board& board)
 {
     for (int i=0; i < board.getYSize(); i++)
@@ -81,12 +116,12 @@ void Window::DrawBoard(Board& board)
 
 void Window::DrawWin()
 {
-
+    Draw(_win_text);
 }
 
 void Window::DrawLose()
 {
-
+    Draw(_lose_text);
 }
 
 void Window::CreateMenuDrawables()
