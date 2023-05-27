@@ -6,6 +6,8 @@ Operator::Operator(const std::string &imagePath, const std::string &text)
     _type = "Operator";
     setProperty("Push", true);
     setProperty("Stop", true);
+
+    isChangeless = true;
 }
 
 Operator::Operator(const std::string &text)
@@ -15,6 +17,8 @@ Operator::Operator(const std::string &text)
     _imagePath = "../" + Parameters::PATHS.at(text);
     setProperty("Push", true);
     setProperty("Stop", true);
+
+    isChangeless = true;
 }
 
 std::string Operator::getText() const
