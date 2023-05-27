@@ -28,7 +28,7 @@ Game::~Game(){}
 
 void Game::HandleInput()
 {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && IsKeyReleased)
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && IsKeyReleased && _board.getGameStatus() == IN_PROGRESS)
     {
         IsKeyReleased = false;
         if (GameHasStarted){
@@ -37,7 +37,7 @@ void Game::HandleInput()
         else
         {}
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && IsKeyReleased)
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && IsKeyReleased && _board.getGameStatus() == IN_PROGRESS)
     {
         IsKeyReleased = false;
         if (GameHasStarted){
@@ -46,7 +46,7 @@ void Game::HandleInput()
         else{
             if (_current_level > 0) _current_level -= 1;}
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && IsKeyReleased)
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && IsKeyReleased && _board.getGameStatus() == IN_PROGRESS)
     {
         IsKeyReleased = false;
         if (GameHasStarted){
@@ -55,7 +55,7 @@ void Game::HandleInput()
         else
         {}
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && IsKeyReleased)
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && IsKeyReleased && _board.getGameStatus() == IN_PROGRESS)
     {
         IsKeyReleased = false;
         if (GameHasStarted){
@@ -64,7 +64,7 @@ void Game::HandleInput()
         else{
             if (_current_level < LoadedLevels.size()-1) _current_level += 1;}
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && IsKeyReleased)
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && IsKeyReleased && _board.getGameStatus() != WIN)
     {
         IsKeyReleased = false;
         if (GameHasStarted){
@@ -77,16 +77,21 @@ void Game::HandleInput()
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && IsKeyReleased)
     {
         IsKeyReleased = false;
-        if (GameHasStarted){}
-        else {
+        if (!GameHasStarted)
+        {
             GameHasStarted = true;
             Board new_board(_board.getXSize(), _board.getYSize());
             _board = new_board;
             SetupBoard();}
-
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && IsKeyReleased && _board.getGameStatus() != WIN)
+    {
+        IsKeyReleased = false;
+        if (GameHasStarted){_board.updateState(UNDO);}
     }
     else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
-    !sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    !sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
+    !sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
     {
         IsKeyReleased = true;
     }
@@ -104,6 +109,14 @@ void Game::Render()
     _window.DrawBoard(_board);}
     else{
     _window.DrawMenu(_current_level);}
+    if (_board.getGameStatus() == WIN && GameHasStarted)
+    {
+        _window.DrawWin();
+    }
+    else if ( _board.getGameStatus() == LOSE && GameHasStarted)
+    {
+        _window.DrawLose();
+    }
     _window.EndDraw(); // Display.
 }
 

@@ -5,8 +5,6 @@ Window::Window(){ Setup("Window", sf::Vector2u(1920,1080)); }
 Window::Window(const std::string& l_title, const sf::Vector2u& l_size)
 {
     Setup(l_title,l_size);
-    levels_sprites = {};
-    levels_textures = {};
     CreateMenuDrawables();
 }
 
@@ -79,6 +77,16 @@ void Window::DrawBoard(Board& board)
             }
         }
     }
+}
+
+void Window::DrawWin()
+{
+
+}
+
+void Window::DrawLose()
+{
+
 }
 
 void Window::CreateMenuDrawables()
