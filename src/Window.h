@@ -26,10 +26,14 @@ class Window{
         sf::Texture _choose_level_texture;
         sf::Sprite _choose_level_sprite;
         sf::RectangleShape red_level;
+        sf::Text _win_text;
+        sf::Text _lose_text;
+        sf::Font font;
 
     private:
         void CreateMenuDrawables();
         void Setup(const std::string l_title, const sf::Vector2u& l_size);
+        void SetupEndgameText();
         void Destroy();
         void Create();
         sf::RenderWindow _window;

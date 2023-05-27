@@ -37,10 +37,10 @@ void Game::HandleInput()
         else
         {}
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && IsKeyReleased && _board.getGameStatus() == IN_PROGRESS)
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && IsKeyReleased )
     {
         IsKeyReleased = false;
-        if (GameHasStarted){
+        if (GameHasStarted && _board.getGameStatus() == IN_PROGRESS){
         Action action = LEFT;
         _board.updateState(action);}
         else{
@@ -55,10 +55,10 @@ void Game::HandleInput()
         else
         {}
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && IsKeyReleased && _board.getGameStatus() == IN_PROGRESS)
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && IsKeyReleased)
     {
         IsKeyReleased = false;
-        if (GameHasStarted){
+        if (GameHasStarted && _board.getGameStatus() == IN_PROGRESS){
         Action action = RIGHT;
         _board.updateState(action);}
         else{
