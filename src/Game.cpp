@@ -43,7 +43,7 @@ void Game::HandleInput()
         if (GameHasStarted && _board.getGameStatus() == IN_PROGRESS){
         Action action = LEFT;
         _board.updateState(action);}
-        else{
+        else if (!GameHasStarted){
             if (_current_level > 0) _current_level -= 1;}
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && IsKeyReleased && _board.getGameStatus() == IN_PROGRESS)
@@ -61,7 +61,7 @@ void Game::HandleInput()
         if (GameHasStarted && _board.getGameStatus() == IN_PROGRESS){
         Action action = RIGHT;
         _board.updateState(action);}
-        else{
+        else if (!GameHasStarted){
             if (_current_level < LoadedLevels.size()-1) _current_level += 1;}
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && IsKeyReleased && _board.getGameStatus() != WIN)
