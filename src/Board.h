@@ -120,9 +120,9 @@ public:
     static bool anyObjectHasProperty(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
                                      const std::string &property);
 
-    /** Finds solid objects which have isYou flag set to true from objects on board
+    /** Finds solid objects which will move
      * and returns their coordinates. */
-    std::vector<Coordinates> getYouObjectsCoordinates() const;
+    std::vector<Coordinates> getObjectsToMoveCoordinates() const;
 
     /** Updates rules. */
     void updateRules();
@@ -134,6 +134,8 @@ public:
     /** If there are same objects on the same field, merge them. */
     void mergeSameObjects(std::vector<ObjectOnFieldPtr> &vector1);
 
+    /** Check if exist objects, which cannot be on the same field
+    (for example: Sink object and objects which is not Float), if so, make specific action*/
     void anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1);
 
     bool checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const;

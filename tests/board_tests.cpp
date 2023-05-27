@@ -76,7 +76,7 @@ TEST_CASE("Board tests general and move", "[Board]")
 
     SECTION("getYouObjects")
     {
-        std::vector<Coordinates> coordinates = board.getYouObjectsCoordinates();
+        std::vector<Coordinates> coordinates = board.getObjectsToMoveCoordinates();
         CHECK(coordinates.size() == 2);
         Coordinates coordinates_1 = coordinates[0];
         Coordinates coordinates_2 = coordinates[1];
@@ -177,7 +177,7 @@ TEST_CASE("Board tests general and move", "[Board]")
     {
         board.updateState(Action::LEFT);
         board.updateState(Action::UP);
-        CHECK(board.getYouObjectsCoordinates().size() == 1);
+        CHECK(board.getObjectsToMoveCoordinates().size() == 1);
     }
 
     SECTION("Anihilate test")
@@ -201,11 +201,11 @@ TEST_CASE("Board tests general and move", "[Board]")
     {
         board.updateState(Action::LEFT);
         board.updateState(Action::UP);
-        CHECK(board.getYouObjectsCoordinates().size() == 1);
+        CHECK(board.getObjectsToMoveCoordinates().size() == 1);
         board.updateState(Action::UNDO);
-        CHECK(board.getYouObjectsCoordinates()[0].x == 0);
-        CHECK(board.getYouObjectsCoordinates()[0].y == 0);
-        CHECK(board.getYouObjectsCoordinates()[1].x == 0);
-        CHECK(board.getYouObjectsCoordinates()[1].y == 1);
+        CHECK(board.getObjectsToMoveCoordinates()[0].x == 0);
+        CHECK(board.getObjectsToMoveCoordinates()[0].y == 0);
+        CHECK(board.getObjectsToMoveCoordinates()[1].x == 0);
+        CHECK(board.getObjectsToMoveCoordinates()[1].y == 1);
     }
 }
