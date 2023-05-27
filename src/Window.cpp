@@ -106,7 +106,7 @@ void Window::DrawBoard(Board& board)
             {
                 if (board.getObject(j,i,k) != board.getemptyFieldPtr())
                 {
-                    board.getObject(j,i,k)->GetSpritePtr()->setPosition(sf::Vector2f(float(j*64),float(i*66)));
+                    board.getObject(j,i,k)->GetSpritePtr()->setPosition(sf::Vector2f(float(j*64),float(i*64) +32));
                     Draw(*board.getObject(j,i,k)->GetSpritePtr());
                 }
             }
