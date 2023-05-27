@@ -120,7 +120,9 @@ public:
     static bool anyObjectHasProperty(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
                                      const std::string &property);
 
-    static bool anyObjectsHasType(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
+    /** Returns index of first occurency of object with given type in the vector.
+     * If there is no such object, returns -1. */
+    static int objectWithTypeIndex(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
                                   const std::string &type);
 
     /** Finds solid objects which will move
