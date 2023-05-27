@@ -110,7 +110,7 @@ void Board::updateState(Action action)
     }
 
     // Save past board state
-    if (action != Action::UNDO)
+    if (_latestState.size() != 0 && action != Action::UNDO)
     {
         saveState(_latestState);
     }
@@ -596,5 +596,8 @@ void Board::undoMove()
     {
         _objectOnFieldPtrs = _archivalStates[_archivalStates.size() - 1];
         _archivalStates.pop_back();
+
+        // Update rules, because board state has changed
+        updateRules();
     }
 }
