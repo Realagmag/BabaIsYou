@@ -58,6 +58,9 @@ public:
     virtual std::string getNounImagePath() const;
 
     virtual std::string getText() const;
+
+    /* Indicates if object identity can be changed. */
+    bool isChangeless = false;
 };
 
 using ObjectOnFieldPtr = std::shared_ptr<ObjectOnField>;

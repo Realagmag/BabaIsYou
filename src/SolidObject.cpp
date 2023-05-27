@@ -3,11 +3,13 @@
 SolidObject::SolidObject(std::string imagePath) : ObjectOnField(imagePath)
 {
     _type = "SolidObject";
+    isChangeless = false;
 }
 
 SolidObject::SolidObject() : ObjectOnField()
 {
     _type = "SolidObject";
+    isChangeless = false;
 }
 
 std::shared_ptr<sf::Sprite> SolidObject::GetSpritePtr() const
@@ -45,6 +47,7 @@ void SolidObject::setTemporaryIdentity(const ObjectOnFieldPtr &objectPtr)
 void SolidObject::clearTemporaryIdentity()
 {
     _temporaryIdentity = nullptr;
+    isChangeless = false;
 }
 
 bool SolidObject::getProperty(const std::string &property) const

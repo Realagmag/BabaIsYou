@@ -6,6 +6,8 @@ Property::Property(const std::string &imagePath, const std::string &text)
     _type = "Property";
     setProperty("Push", true);
     setProperty("Stop", true);
+
+    isChangeless = true;
 }
 
 Property::Property(const std::string &text)
@@ -15,6 +17,8 @@ Property::Property(const std::string &text)
     _imagePath = "../" + Parameters::PATHS.at(text + "text");
     setProperty("Push", true);
     setProperty("Stop", true);
+
+    isChangeless = true;
 }
 
 std::string Property::getText() const

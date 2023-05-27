@@ -57,26 +57,36 @@ void Board::updateState(Action action)
     _wereRulesChanged = false;
 
     // Move all "You" objects
-    for (const Coordinates &object_coordinates : getObjectsToMoveCoordinates())
+
+    switch (action)
     {
-        switch (action)
+    case Action::UP:
+        for (const Coordinates &coordinates : getObjectsToMoveCoordinates())
         {
-        case Action::UP:
-            moveUp(object_coordinates.x, object_coordinates.y, object_coordinates.z);
-            break;
-        case Action::DOWN:
-            moveDown(object_coordinates.x, object_coordinates.y, object_coordinates.z);
-            break;
-        case Action::LEFT:
-            moveLeft(object_coordinates.x, object_coordinates.y, object_coordinates.z);
-            break;
-        case Action::RIGHT:
-            moveRight(object_coordinates.x, object_coordinates.y, object_coordinates.z);
-            break;
-        case Action::UNDO:
-            undoMove();
-            break;
+            moveUp(coordinates.x, coordinates.y, coordinates.z);
         }
+        break;
+    case Action::DOWN:
+        for (const Coordinates &coordinates : getObjectsToMoveCoordinates())
+        {
+            moveDown(coordinates.x, coordinates.y, coordinates.z);
+        }
+        break;
+    case Action::LEFT:
+        for (const Coordinates &coordinates : getObjectsToMoveCoordinates())
+        {
+            moveLeft(coordinates.x, coordinates.y, coordinates.z);
+        }
+        break;
+    case Action::RIGHT:
+        for (const Coordinates &coordinates : getObjectsToMoveCoordinates())
+        {
+            moveRight(coordinates.x, coordinates.y, coordinates.z);
+        }
+        break;
+    case Action::UNDO:
+        undoMove();
+        break;
     }
 
     // Upadate rules if they were changed
@@ -435,7 +445,7 @@ void Board::updateRules()
             if (_objectOnFieldPtrs[x][y][0]->getType() == "Operator" &&
                 _objectOnFieldPtrs[x][y][0]->getText() == "Is")
             {
-                // Read rules from left to right
+                //  1. Read rules from left to right
                 if ((x > 0 && _objectOnFieldPtrs[x - 1][y][0]->getType() == "Noun"))
                 {
                     // NOUN IS PROPERTY AND PROPERTY
@@ -455,14 +465,22 @@ void Board::updateRules()
                     }
                     // NOUN IS NOUN
                     else if (x < _xSize - 1 && _objectOnFieldPtrs[x + 1][y][0]->getType() == "Noun" &&
-                             _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->getTemporaryIdentity() == nullptr)
+                             !_objectOnFieldPtrs[x + 1][y][0]->getSolidObjectPtr()->isChangeless)
                     {
-                        _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->setTemporaryIdentity(
-                            _objectOnFieldPtrs[x + 1][y][0]->getSolidObjectPtr());
+                        if (_objectOnFieldPtrs[x - 1][y][0] == _objectOnFieldPtrs[x + 1][y][0])
+                        {
+                            _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->clearTemporaryIdentity();
+                            _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->isChangeless = true;
+                        }
+                        else
+                        {
+                            _objectOnFieldPtrs[x - 1][y][0]->getSolidObjectPtr()->setTemporaryIdentity(
+                                _objectOnFieldPtrs[x + 1][y][0]->getSolidObjectPtr());
+                        }
                     }
                 }
 
-                // Read rules from up to down
+                // 2. Read rules from up to down
                 if (y > 0 && _objectOnFieldPtrs[x][y - 1][0]->getType() == "Noun")
                 {
                     // NOUN IS PROPERTY AND PROPERTY
@@ -482,10 +500,18 @@ void Board::updateRules()
                     }
                     // NOUN IS NOUN
                     else if (y < _ySize - 1 && _objectOnFieldPtrs[x][y + 1][0]->getType() == "Noun" &&
-                             _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->getTemporaryIdentity() == nullptr)
+                             !_objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->isChangeless)
                     {
-                        _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->setTemporaryIdentity(
-                            _objectOnFieldPtrs[x][y + 1][0]->getSolidObjectPtr());
+                        if (_objectOnFieldPtrs[x][y - 1][0] == _objectOnFieldPtrs[x][y + 1][0])
+                        {
+                            _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->clearTemporaryIdentity();
+                            _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->isChangeless = true;
+                        }
+                        else
+                        {
+                            _objectOnFieldPtrs[x][y - 1][0]->getSolidObjectPtr()->setTemporaryIdentity(
+                                _objectOnFieldPtrs[x][y + 1][0]->getSolidObjectPtr());
+                        }
                     }
                 }
             }
@@ -570,7 +596,10 @@ void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
 
 bool Board::checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const
 {
-    if (anyObjectHasProperty(vector1, "You") && anyObjectHasProperty(vector1, "Win"))
+    if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                    { return objectOnFieldPtr->getProperty("You") && !objectOnFieldPtr->getProperty("Float"); }) &&
+        std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                    { return objectOnFieldPtr->getProperty("Win") && !objectOnFieldPtr->getProperty("Float"); }))
     {
         return true;
     }

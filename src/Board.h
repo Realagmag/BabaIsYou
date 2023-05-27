@@ -120,6 +120,9 @@ public:
     static bool anyObjectHasProperty(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
                                      const std::string &property);
 
+    static bool anyObjectsHasType(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs,
+                                  const std::string &type);
+
     /** Finds solid objects which will move
      * and returns their coordinates. */
     std::vector<Coordinates> getObjectsToMoveCoordinates() const;

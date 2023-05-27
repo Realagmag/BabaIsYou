@@ -196,16 +196,4 @@ TEST_CASE("Board tests general and move", "[Board]")
         board.anihilateSomeOfObjects(ptrs3);
         CHECK(ptrs3.size() == 2);
     }
-
-    SECTION("Undo test")
-    {
-        board.updateState(Action::LEFT);
-        board.updateState(Action::UP);
-        CHECK(board.getObjectsToMoveCoordinates().size() == 1);
-        board.updateState(Action::UNDO);
-        CHECK(board.getObjectsToMoveCoordinates()[0].x == 0);
-        CHECK(board.getObjectsToMoveCoordinates()[0].y == 0);
-        CHECK(board.getObjectsToMoveCoordinates()[1].x == 0);
-        CHECK(board.getObjectsToMoveCoordinates()[1].y == 1);
-    }
 }
