@@ -9,20 +9,21 @@
 #include "ObjectOnField.h"
 #include "SolidObject.h"
 
+enum GameStatus
+{
+    IN_PROGRESS,
+    WIN,
+    LOSE
+};
+
 enum Action
 {
     UP,
     DOWN,
     LEFT,
     RIGHT,
+    UNDO,
     WAIT
-};
-
-enum GameStatus
-{
-    IN_PROGRESS,
-    WIN,
-    LOSE
 };
 
 /* Struct to store coordinates of object on board*/
@@ -31,6 +32,12 @@ struct Coordinates
     int x;
     int y;
     int z;
+};
+
+struct Constants
+{
+    // Number of archival states to store
+    static const int MAX_ARCHIVAL_STATES = 10;
 };
 
 class Board
@@ -51,6 +58,10 @@ private:
 
     /** Ptr to the empty field */
     ObjectOnFieldPtr _emptyFieldPtr;
+
+    /** Archival game states */
+    std::vector<ObjectOnFieldPtrs3Vector> _archivalStates;
+    ObjectOnFieldPtrs3Vector _latestState;
 
 public:
     Board(const ObjectOnFieldPtrs3Vector &objectsOnFieldPtrs);
@@ -131,4 +142,8 @@ public:
     void anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1);
 
     bool checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const;
+
+    void saveState(const ObjectOnFieldPtrs3Vector &state);
+
+    void undoMove();
 };

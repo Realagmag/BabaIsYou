@@ -9,6 +9,8 @@ Board::Board(const ObjectOnFieldPtrs3Vector &objectOnFieldPtrs)
     _emptyFieldPtr = std::make_shared<ObjectOnField>();
 
     _gameStatus = GameStatus::IN_PROGRESS;
+
+    _archivalStates.reserve(Constants::MAX_ARCHIVAL_STATES);
 }
 
 Board::Board(int x, int y)
@@ -46,6 +48,8 @@ Board::Board(int x, int y)
     }
 
     _gameStatus = GameStatus::IN_PROGRESS;
+
+    _archivalStates.reserve(Constants::MAX_ARCHIVAL_STATES);
 }
 
 void Board::updateState(Action action)
@@ -68,6 +72,9 @@ void Board::updateState(Action action)
             break;
         case Action::RIGHT:
             moveRight(object_coordinates.x, object_coordinates.y, object_coordinates.z);
+            break;
+        case Action::UNDO:
+            undoMove();
             break;
         }
     }
@@ -101,6 +108,15 @@ void Board::updateState(Action action)
         _gameStatus = GameStatus::LOSE;
         return;
     }
+
+    if (action != Action::UNDO)
+    {
+        // Save past board state
+        saveState(_latestState);
+    }
+
+    // Mark current state as latest
+    _latestState = _objectOnFieldPtrs;
 }
 
 ObjectOnFieldPtr Board::getObject(int x, int y, int z) const
@@ -555,4 +571,26 @@ bool Board::checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const
         return true;
     }
     return false;
+}
+
+void Board::saveState(const ObjectOnFieldPtrs3Vector &state)
+{
+    if (_archivalStates.size() < Constants::MAX_ARCHIVAL_STATES)
+    {
+        _archivalStates.push_back(state);
+    }
+    else
+    {
+        _archivalStates.erase(_archivalStates.begin());
+        _archivalStates.push_back(state);
+    }
+}
+
+void Board::undoMove()
+{
+    if (_archivalStates.size() > 0)
+    {
+        _objectOnFieldPtrs = _archivalStates[_archivalStates.size() - 1];
+        _archivalStates.pop_back();
+    }
 }
