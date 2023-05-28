@@ -1,15 +1,13 @@
 #include "Game.h"
-#include <SFML/System.hpp>
 
 int main()
 {
-    // Program entry point.
-    Game game;
+    Game game; //Create game instance, window and board.
     while(!game.GetWindow()->IsDone())
     {
-        game.HandleInput();
-        game.Update();
-        game.Render();
+        game.HandleInput(); //Handle player's input.
+        game.Update(); //Update window events.
+        game.Render(); //Draw on screen.
     }
     return 0;
 }
