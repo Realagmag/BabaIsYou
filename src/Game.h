@@ -94,12 +94,13 @@ class Game{
         /** Stores objects deplopment for each level loaded from .txt file.*/
         std::vector<std::vector<std::vector<std::string>>> LoadedLevels;
 
-        /**Manages window events and displays drawables*/
+        /** Manages window events and displays drawables*/
         Window _window;
 
-        /**Holds objects' positions and manages game's logic*/
+        /** Holds objects' positions and manages game's logic*/
         Board _board;
 
+        /** Manages all music and sound effects present in game*/
         AudioManager _audio_manager;
 
         unsigned int _current_level;
@@ -111,7 +112,9 @@ class Game{
          * menu or level should be displayed.*/
         bool GameHasStarted = false;
 
+        /** Flag used to ensure that win sound will play only once*/
         bool WinSoundWasPlayed = false;
 
+        /** Flag used to ensure that lose sound will play only once*/
         bool LoseSoundWasPlayed = false;
 };
