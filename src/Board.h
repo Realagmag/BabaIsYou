@@ -132,6 +132,16 @@ public:
     /** Updates rules. */
     void updateRules();
 
+    /** Updates rules in the UpDown direction.
+     * @param x x coordinate of the "IS" object.
+     * @param y y coordinate of the "IS" object */
+    void updateRulesUpDown(int x, int y);
+
+    /** Updates rules in the LeftRight direction.
+     * @param x x coordinate of the "IS" object.
+     * @param y y coordinate of the "IS" object */
+    void upadateRulesLeftRight(int x, int y);
+
     /** Resets all properties of all SolidObjects on the board
      * and clear temporary identity of all objects. */
     void resetRules();
@@ -143,7 +153,7 @@ public:
     (for example: Sink object and objects which is not Float), if so, make specific action*/
     void anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1);
 
-    bool checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const;
+    bool checkWinConditions(const std::vector<ObjectOnFieldPtr> &vector1) const;
 
     void saveState(const ObjectOnFieldPtrs3Vector &state);
 
