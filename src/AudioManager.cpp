@@ -91,10 +91,3 @@ bool AudioManager::IsPlaying(Music music)
         else {return false;}
     }
 }
-
-bool AudioManager::IsPlaying(Sound sound)
-{
-    sf::SoundSource::Status status = _sounds[sound].getStatus();
-    if (status == 2) {return true;}
-    else {return false;}
-}
