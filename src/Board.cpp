@@ -492,31 +492,34 @@ void Board::updateRules()
                             }
 
                             // AND
-                            int AndIndex = objectWithTypeIndex(_objectOnFieldPtrs[x + 2][y], "Operator");
-                            if (AndIndex != -1 && (rightNounIndex != -1 || rightPropertyIndex != -1) &&
-                                _objectOnFieldPtrs[x + 2][y][AndIndex]->getText() == "And")
+                            if (x < _xSize - 3)
                             {
-                                // AND PROPERTY
-                                int rightAndPropertyIndex = objectWithTypeIndex(_objectOnFieldPtrs[x + 3][y], "Property");
-                                int rightAndNounIndex = objectWithTypeIndex(_objectOnFieldPtrs[x + 3][y], "Noun");
-                                if (rightAndPropertyIndex != -1)
+                                int AndIndex = objectWithTypeIndex(_objectOnFieldPtrs[x + 2][y], "Operator");
+                                if (AndIndex != -1 && (rightNounIndex != -1 || rightPropertyIndex != -1) &&
+                                    _objectOnFieldPtrs[x + 2][y][AndIndex]->getText() == "And")
                                 {
-                                    _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->setProperty(
-                                        _objectOnFieldPtrs[x + 3][y][rightAndPropertyIndex]->getText(), true);
-                                }
-                                // AND NOUN
-                                else if (rightNounIndex == -1 && rightAndNounIndex != -1 &&
-                                         !_objectOnFieldPtrs[x - 1][y][rightAndNounIndex]->getSolidObjectPtr()->isChangeless)
-                                {
-                                    if (_objectOnFieldPtrs[x - 1][y][leftNounIndex] == _objectOnFieldPtrs[x + 3][y][rightAndNounIndex])
+                                    // AND PROPERTY
+                                    int rightAndPropertyIndex = objectWithTypeIndex(_objectOnFieldPtrs[x + 3][y], "Property");
+                                    int rightAndNounIndex = objectWithTypeIndex(_objectOnFieldPtrs[x + 3][y], "Noun");
+                                    if (rightAndPropertyIndex != -1)
                                     {
-                                        _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->clearTemporaryIdentity();
-                                        _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->isChangeless = true;
+                                        _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->setProperty(
+                                            _objectOnFieldPtrs[x + 3][y][rightAndPropertyIndex]->getText(), true);
                                     }
-                                    else
+                                    // AND NOUN
+                                    else if (rightNounIndex == -1 && rightAndNounIndex != -1 &&
+                                             !_objectOnFieldPtrs[x - 1][y][rightAndNounIndex]->getSolidObjectPtr()->isChangeless)
                                     {
-                                        _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->setTemporaryIdentity(
-                                            _objectOnFieldPtrs[x + 3][y][rightAndNounIndex]->getSolidObjectPtr());
+                                        if (_objectOnFieldPtrs[x - 1][y][leftNounIndex] == _objectOnFieldPtrs[x + 3][y][rightAndNounIndex])
+                                        {
+                                            _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->clearTemporaryIdentity();
+                                            _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->isChangeless = true;
+                                        }
+                                        else
+                                        {
+                                            _objectOnFieldPtrs[x - 1][y][leftNounIndex]->getSolidObjectPtr()->setTemporaryIdentity(
+                                                _objectOnFieldPtrs[x + 3][y][rightAndNounIndex]->getSolidObjectPtr());
+                                        }
                                     }
                                 }
                             }
@@ -557,31 +560,34 @@ void Board::updateRules()
                             }
 
                             // AND
-                            int AndIndex = objectWithTypeIndex(_objectOnFieldPtrs[x][y + 2], "Operator");
-                            if (AndIndex != -1 && (downNounIndex != -1 || downPropertyIndex != -1) &&
-                                _objectOnFieldPtrs[x][y + 2][AndIndex]->getText() == "And")
+                            if (y < _ySize - 3)
                             {
-                                // AND PROPERTY
-                                int downAndPropertyIndex = objectWithTypeIndex(_objectOnFieldPtrs[x][y + 3], "Property");
-                                int downAndNounIndex = objectWithTypeIndex(_objectOnFieldPtrs[x][y + 3], "Noun");
-                                if (downAndPropertyIndex != -1)
+                                int AndIndex = objectWithTypeIndex(_objectOnFieldPtrs[x][y + 2], "Operator");
+                                if (AndIndex != -1 && (downNounIndex != -1 || downPropertyIndex != -1) &&
+                                    _objectOnFieldPtrs[x][y + 2][AndIndex]->getText() == "And")
                                 {
-                                    _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->setProperty(
-                                        _objectOnFieldPtrs[x][y + 3][downAndPropertyIndex]->getText(), true);
-                                }
-                                // AND NOUN
-                                else if (downNounIndex == -1 && downAndNounIndex != -1 &&
-                                         !_objectOnFieldPtrs[x][y + 3][downAndNounIndex]->getSolidObjectPtr()->isChangeless)
-                                {
-                                    if (_objectOnFieldPtrs[x][y - 1][upNounIndex] == _objectOnFieldPtrs[x][y + 3][downAndNounIndex])
+                                    // AND PROPERTY
+                                    int downAndPropertyIndex = objectWithTypeIndex(_objectOnFieldPtrs[x][y + 3], "Property");
+                                    int downAndNounIndex = objectWithTypeIndex(_objectOnFieldPtrs[x][y + 3], "Noun");
+                                    if (downAndPropertyIndex != -1)
                                     {
-                                        _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->clearTemporaryIdentity();
-                                        _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->isChangeless = true;
+                                        _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->setProperty(
+                                            _objectOnFieldPtrs[x][y + 3][downAndPropertyIndex]->getText(), true);
                                     }
-                                    else
+                                    // AND NOUN
+                                    else if (downNounIndex == -1 && downAndNounIndex != -1 &&
+                                             !_objectOnFieldPtrs[x][y + 3][downAndNounIndex]->getSolidObjectPtr()->isChangeless)
                                     {
-                                        _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->setTemporaryIdentity(
-                                            _objectOnFieldPtrs[x][y + 3][downAndNounIndex]->getSolidObjectPtr());
+                                        if (_objectOnFieldPtrs[x][y - 1][upNounIndex] == _objectOnFieldPtrs[x][y + 3][downAndNounIndex])
+                                        {
+                                            _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->clearTemporaryIdentity();
+                                            _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->isChangeless = true;
+                                        }
+                                        else
+                                        {
+                                            _objectOnFieldPtrs[x][y - 1][upNounIndex]->getSolidObjectPtr()->setTemporaryIdentity(
+                                                _objectOnFieldPtrs[x][y + 3][downAndNounIndex]->getSolidObjectPtr());
+                                        }
                                     }
                                 }
                             }
@@ -639,9 +645,6 @@ void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
             vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
                                          { return !objectOnFieldPtr->getProperty("Float"); }),
                           vector1.end());
-
-            if (vector1.size() == 0)
-                vector1.emplace_back(_emptyFieldPtr);
         }
         // Defeat
         else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
@@ -650,9 +653,6 @@ void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
             vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
                                          { return objectOnFieldPtr->getProperty("You") && !objectOnFieldPtr->getProperty("Float"); }),
                           vector1.end());
-
-            if (vector1.size() == 0)
-                vector1.emplace_back(_emptyFieldPtr);
         }
         // Hot and Melt
         else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
@@ -661,10 +661,10 @@ void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
             vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
                                          { return objectOnFieldPtr->getProperty("Melt") && !objectOnFieldPtr->getProperty("Float"); }),
                           vector1.end());
-
-            if (vector1.size() == 0)
-                vector1.emplace_back(_emptyFieldPtr);
         }
+
+        if (vector1.size() == 0)
+            vector1.emplace_back(_emptyFieldPtr);
     }
 }
 
