@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Window.h"
 #include "Board.h"
+#include "AudioManager.h"
 
 enum Load
 {
@@ -93,8 +94,14 @@ class Game{
         /** Stores objects deplopment for each level loaded from .txt file.*/
         std::vector<std::vector<std::vector<std::string>>> LoadedLevels;
 
+        /**Manages window events and displays drawables*/
         Window _window;
+
+        /**Holds objects' positions and manages game's logic*/
         Board _board;
+
+        AudioManager _audio_manager;
+
         unsigned int _current_level;
 
         /** Flag used to prevent multiple actions while pressing key.*/
@@ -103,4 +110,8 @@ class Game{
         /** Flag used to change behaviour of program depending on whether
          * menu or level should be displayed.*/
         bool GameHasStarted = false;
+
+        bool WinSoundWasPlayed = false;
+
+        bool LoseSoundWasPlayed = false;
 };

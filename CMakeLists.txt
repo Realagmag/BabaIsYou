@@ -20,6 +20,7 @@ add_library(BabaIsYouLib
   src/SolidObject.cpp
   src/Operator.cpp
   src/Property.cpp
+  src/AudioManager.cpp
   src/SolidObjects/Baba.cpp
   src/SolidObjects/Wall.cpp
   src/SolidObjects/Flag.cpp

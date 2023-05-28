@@ -33,8 +33,9 @@ void Game::HandleInput()
     {
         IsKeyReleased = false;
         if (GameHasStarted){
-        Action action = UP;
-        _board.updateState(action);}
+            _audio_manager.PlaySound(MOVE_SOUND);
+            _board.updateState(UP);
+        }
         else
         {}
     }
@@ -42,8 +43,9 @@ void Game::HandleInput()
     {
         IsKeyReleased = false;
         if (GameHasStarted && _board.getGameStatus() == IN_PROGRESS){
-        Action action = LEFT;
-        _board.updateState(action);}
+            _audio_manager.PlaySound(MOVE_SOUND);
+            _board.updateState(LEFT);
+        }
         else if (!GameHasStarted){
             if (_current_level > 0) _current_level -= 1;}
     }
@@ -51,8 +53,9 @@ void Game::HandleInput()
     {
         IsKeyReleased = false;
         if (GameHasStarted){
-        Action action = DOWN;
-        _board.updateState(action);}
+            _audio_manager.PlaySound(MOVE_SOUND);
+            _board.updateState(DOWN);
+        }
         else
         {}
     }
@@ -60,8 +63,9 @@ void Game::HandleInput()
     {
         IsKeyReleased = false;
         if (GameHasStarted && _board.getGameStatus() == IN_PROGRESS){
-        Action action = RIGHT;
-        _board.updateState(action);}
+            _audio_manager.PlaySound(MOVE_SOUND);
+            _board.updateState(RIGHT);
+        }
         else if (!GameHasStarted){
             if (_current_level < LoadedLevels.size()-1) _current_level += 1;}
     }
@@ -104,6 +108,33 @@ void Game::Update()
 {
     // Updates window events such as closing level or window.
     _window.Update(GameHasStarted);
+
+    if (!GameHasStarted && !_audio_manager.IsPlaying(MENU))
+    {
+        _audio_manager.StopMusic(LEVEL);
+        _audio_manager.PlayMusic(MENU);
+        WinSoundWasPlayed = false;
+        LoseSoundWasPlayed = false;
+    }
+    else if (GameHasStarted && !_audio_manager.IsPlaying(LEVEL) && _board.getGameStatus() == IN_PROGRESS)
+    {
+        _audio_manager.StopMusic(MENU);
+        _audio_manager.PlayMusic(LEVEL);
+        WinSoundWasPlayed = false;
+        LoseSoundWasPlayed = false;
+    }
+    else if (GameHasStarted && _board.getGameStatus() == WIN && !WinSoundWasPlayed)
+    {
+        _audio_manager.StopMusic(LEVEL);
+        _audio_manager.PlaySound(WIN_SOUND);
+        WinSoundWasPlayed = true;
+    }
+    else if (GameHasStarted && (_board.getGameStatus() == LOSE) && !LoseSoundWasPlayed)
+    {
+        _audio_manager.StopMusic(LEVEL);
+        _audio_manager.PlaySound(LOSE_SOUND);
+        LoseSoundWasPlayed = true;
+    }
 }
 
 void Game::Render()
