@@ -632,40 +632,75 @@ void Board::mergeSameObjects(std::vector<ObjectOnFieldPtr> &vector1)
 
 void Board::anihilateSomeOfObjects(std::vector<ObjectOnFieldPtr> &vector1)
 {
-    // Count objects which are not Float in the vector
-    int count = std::count_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
-                              { return !objectOnFieldPtr->getProperty("Float"); });
 
-    if (count > 1)
+    // Sink
+    // If sink objects is float
+    if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                    { return (objectOnFieldPtr->getProperty("Sink") && !objectOnFieldPtr->getProperty("Float")); }))
     {
-        // Sink
-        if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
-                        { return (objectOnFieldPtr->getProperty("Sink") && !objectOnFieldPtr->getProperty("Float")); }))
+        // Count objects which are not Float in the vector
+        int countNotFloat = std::count_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                          { return !objectOnFieldPtr->getProperty("Float"); });
+
+        // Assert that there is more than one object which is not Float (more than Sink object)
+        if (countNotFloat > 1)
         {
             vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
                                          { return !objectOnFieldPtr->getProperty("Float"); }),
                           vector1.end());
         }
-        // Defeat
-        else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
-                             { return (objectOnFieldPtr->getProperty("Defeat") && !objectOnFieldPtr->getProperty("Float")); }))
-        {
-            vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
-                                         { return objectOnFieldPtr->getProperty("You") && !objectOnFieldPtr->getProperty("Float"); }),
-                          vector1.end());
-        }
-        // Hot and Melt
-        else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
-                             { return objectOnFieldPtr->getProperty("Hot") && !objectOnFieldPtr->getProperty("Float"); }))
-        {
-            vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
-                                         { return objectOnFieldPtr->getProperty("Melt") && !objectOnFieldPtr->getProperty("Float"); }),
-                          vector1.end());
-        }
-
-        if (vector1.size() == 0)
-            vector1.emplace_back(_emptyFieldPtr);
     }
+    // If sink object is not float
+    else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                         { return (objectOnFieldPtr->getProperty("Sink") && objectOnFieldPtr->getProperty("Float")); }))
+    {
+        // Count objects which are Float in the vector
+        int countFloat = std::count_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                          { return objectOnFieldPtr->getProperty("Float"); });
+
+        // Assert that there is more than one object which is Float (more than Sink object)
+        if (countFloat > 1)
+        {
+            vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                         { return objectOnFieldPtr->getProperty("Float"); }),
+                          vector1.end());
+        }
+    }
+
+    // Defeat
+    if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                    { return (objectOnFieldPtr->getProperty("Defeat") && !objectOnFieldPtr->getProperty("Float")); }))
+    {
+        vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                     { return objectOnFieldPtr->getProperty("You") && !objectOnFieldPtr->getProperty("Float"); }),
+                      vector1.end());
+    }
+    else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                         { return (objectOnFieldPtr->getProperty("Defeat") && objectOnFieldPtr->getProperty("Float")); }))
+    {
+        vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                     { return objectOnFieldPtr->getProperty("You") && objectOnFieldPtr->getProperty("Float"); }),
+                      vector1.end());
+    }
+
+    // Hot and Melt
+    if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                    { return objectOnFieldPtr->getProperty("Hot") && !objectOnFieldPtr->getProperty("Float"); }))
+    {
+        vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                     { return objectOnFieldPtr->getProperty("Melt") && !objectOnFieldPtr->getProperty("Float"); }),
+                      vector1.end());
+    }
+    else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                         { return objectOnFieldPtr->getProperty("Hot") && objectOnFieldPtr->getProperty("Float"); }))
+    {
+        vector1.erase(std::remove_if(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                                     { return objectOnFieldPtr->getProperty("Melt") && objectOnFieldPtr->getProperty("Float"); }),
+                      vector1.end());
+    }
+
+    if (vector1.size() == 0)
+        vector1.emplace_back(_emptyFieldPtr);
 }
 
 bool Board::checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const
@@ -674,6 +709,13 @@ bool Board::checkWinConditions(std::vector<ObjectOnFieldPtr> &vector1) const
                     { return objectOnFieldPtr->getProperty("You") && !objectOnFieldPtr->getProperty("Float"); }) &&
         std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
                     { return objectOnFieldPtr->getProperty("Win") && !objectOnFieldPtr->getProperty("Float"); }))
+    {
+        return true;
+    }
+    else if (std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                         { return objectOnFieldPtr->getProperty("You") && objectOnFieldPtr->getProperty("Float"); }) &&
+             std::any_of(vector1.begin(), vector1.end(), [](const ObjectOnFieldPtr &objectOnFieldPtr)
+                         { return objectOnFieldPtr->getProperty("Win") && objectOnFieldPtr->getProperty("Float"); }))
     {
         return true;
     }
