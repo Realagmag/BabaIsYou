@@ -61,6 +61,9 @@ public:
 
     /* Indicates if object identity can be changed. */
     bool isChangeless = false;
+
+    /* Indicates if object was pushed in the current move. */
+    bool wasPushed = false;
 };
 
 using ObjectOnFieldPtr = std::shared_ptr<ObjectOnField>;
