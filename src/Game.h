@@ -59,8 +59,10 @@ class Game{
 
         void setCurrentLevel(unsigned int level_number);
 
+        /** Overloaded operator to enable easy data saving.*/
         friend std::ostream& operator<<(std::ostream& os, const Game& game);
 
+        /** Overloaded operator to enable easy data loading.*/
         friend std::istream& operator>>(std::istream& is, Game& game);
 
     private:
@@ -77,13 +79,17 @@ class Game{
          * adequate vector.*/
         void CreateObjectInstances();
 
+        /** Function used in the begining to highlight levels completed
+         * in last run.*/
         void LoadProgressFromFile();
 
         /** Loads objects deployment for each level from .txt file.*/
         void LoadLevelsFromFile();
 
+        /** Adds current level to list of completed levels*/
         void CountLevelAsComplited(unsigned int level);
 
+        /** Saves numers of completed levels to file*/
         void SaveProgressToFile();
 
         /** Stores one entity of each ObjectOnField used in game

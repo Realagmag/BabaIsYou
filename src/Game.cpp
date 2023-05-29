@@ -73,15 +73,17 @@ void Game::HandleInput()
         else if (!GameHasStarted){
             if (_current_level < LoadedLevels.size()-1) _current_level += 1;}
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && IsKeyReleased && _board.getGameStatus() != WIN)
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && IsKeyReleased )
     {
         IsKeyReleased = false;
-        if (GameHasStarted){
-        Board new_board(_board.getXSize(), _board.getYSize());
-        _board = new_board;
-        SetupBoard();}
-        else
-        {}
+        if (GameHasStarted && _board.getGameStatus() != WIN){
+            Board new_board(_board.getXSize(), _board.getYSize());
+            _board = new_board;
+            SetupBoard();}
+        else if (!GameHasStarted){
+            CompletedLevels.clear();
+            SaveProgressToFile();
+        }
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && IsKeyReleased)
     {

@@ -77,7 +77,7 @@ void Window::SetupEndgameText()
     _lose_text.setString(lose_text);
 
     //Customize win text and set position
-    _win_text.setCharacterSize(30);
+    _win_text.setCharacterSize(50);
     _win_text.setStyle(sf::Text::Bold);
     _win_text.setFillColor(sf::Color::Black);
     _win_text.setOutlineColor(sf::Color::Yellow);
@@ -85,10 +85,10 @@ void Window::SetupEndgameText()
     sf::FloatRect win_text_bounds = _win_text.getLocalBounds();
     _win_text.setOrigin(win_text_bounds.left + win_text_bounds.width/2.0f,
                         win_text_bounds.top + win_text_bounds.height/2.0f);
-    _win_text.setPosition(_windowSize.x/2, 64);
+    _win_text.setPosition(_windowSize.x/2, _windowSize.y/2);
 
     //Customize lose text and set position
-    _lose_text.setCharacterSize(30);
+    _lose_text.setCharacterSize(50);
     _lose_text.setStyle(sf::Text::Bold);
     _lose_text.setFillColor(sf::Color::Black);
     _lose_text.setOutlineColor(sf::Color::Red);
@@ -96,7 +96,7 @@ void Window::SetupEndgameText()
     sf::FloatRect lose_text_bounds = _lose_text.getLocalBounds();
     _lose_text.setOrigin(lose_text_bounds.left + lose_text_bounds.width/2.0f,
                         lose_text_bounds.top + lose_text_bounds.height/2.0f);
-    _lose_text.setPosition(_windowSize.x/2, 64);
+    _lose_text.setPosition(_windowSize.x/2, _windowSize.y/2);
 }
 
 void Window::DrawBoard(const Board& board)
@@ -144,7 +144,10 @@ void Window::CreateMenuDrawables()
         sprite.setPosition(sf::Vector2f((_windowSize.x/10)*(i+1)+32, (_windowSize.y/6)*4));
         levels_sprites.emplace_back(sprite);
     }
-    _choose_level_texture.loadFromFile("../src/textures/choose_level.png");
+    if (!_choose_level_texture.loadFromFile("../src/textures/choose_level.png"))
+    {
+        std::cerr << "Failed to load choose level texture" << std::endl;
+    }
     _choose_level_sprite.setTexture(_choose_level_texture);
     sf::Vector2u size = _choose_level_texture.getSize();
     _choose_level_sprite.setOrigin(size.x/2, size.y/2);
@@ -161,9 +164,13 @@ void Window::DrawMenu(int current_level, const std::vector<unsigned int> &comple
     _red_level.setPosition(sf::Vector2f(rectangle_xpos, rectangle_ypos));
     Draw(_red_level);
     Draw(_choose_level_sprite);
+    for ( int i = 0; i < Parameters::NUMBER_OF_LEVELS; i++)
+    {
+        levels_sprites[i].setColor(sf::Color::White); //Reset color of the sprite default.
+    }
     for ( auto i : completed_levels)
     {
-        levels_sprites[i].setColor(sf::Color::Green);
+        levels_sprites[i].setColor(sf::Color::Green); //Mark sprites displaying completed levels as green.
     }
     for (int i= 0; i < Parameters::NUMBER_OF_LEVELS; i++)
     {
