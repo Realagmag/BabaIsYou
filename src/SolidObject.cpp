@@ -57,7 +57,7 @@ bool SolidObject::getProperty(const std::string &property) const
         if (_properties.find(property) != _properties.end())
             return _properties.at(property);
         else
-            throw std::invalid_argument("Property " + property + " does not exist.");
+            throw InvalidPropertyException("Property " + property + " does not exist.");
     }
     else
     {

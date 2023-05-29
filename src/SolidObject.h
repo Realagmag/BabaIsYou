@@ -4,6 +4,7 @@
 #include <string>
 
 #include "ObjectOnField.h"
+#include "Exceptions.h"
 
 class SolidObject : public ObjectOnField
 {

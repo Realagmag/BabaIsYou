@@ -57,7 +57,6 @@ void Board::updateState(Action action)
     _wereRulesChanged = false;
 
     // Move all "You" objects
-
     switch (action)
     {
     case Action::UP:
@@ -131,17 +130,19 @@ void Board::updateState(Action action)
 
 ObjectOnFieldPtr Board::getObject(int x, int y, int z) const
 {
+    checkBoardCoordinatesValidity(x, y, z);
+
     return _objectOnFieldPtrs[x][y][z];
 }
 
 ObjectOnFieldPtr Board::getObject(const Coordinates &coordinates) const
 {
-    return _objectOnFieldPtrs[coordinates.x][coordinates.y][coordinates.z];
+    return getObject(coordinates.x, coordinates.y, coordinates.z);
 }
 
 ObjectOnFieldPtr Board::getObject(int x, int y) const
 {
-    return _objectOnFieldPtrs[x][y][0];
+    return getObject(x, y, 0);
 }
 
 ObjectOnFieldPtr Board::getemptyFieldPtr() const
@@ -161,6 +162,8 @@ int Board::getYSize() const
 
 int Board::getZSize(int x, int y) const
 {
+    checkBoardCoordinatesValidity(x, y, 0);
+
     return _objectOnFieldPtrs[x][y].size();
 }
 
@@ -171,6 +174,8 @@ GameStatus Board::getGameStatus() const
 
 void Board::removeObject(int x, int y, int z)
 {
+    checkBoardCoordinatesValidity(x, y, z);
+
     if (_objectOnFieldPtrs[x][y].size() == 1)
         _objectOnFieldPtrs[x][y][0] = _emptyFieldPtr;
     else
@@ -179,19 +184,48 @@ void Board::removeObject(int x, int y, int z)
 
 void Board::removeObject(const Coordinates &coordinates)
 {
+    checkBoardCoordinatesValidity(coordinates.x, coordinates.y, coordinates.z);
+
     removeObject(coordinates.x, coordinates.y, coordinates.z);
 }
 
 void Board::addObject(int x, int y, const ObjectOnFieldPtr &ptr)
 {
+    checkBoardCoordinatesValidity(x, y, 0);
+
     if (_objectOnFieldPtrs[x][y].size() == 1 && _objectOnFieldPtrs[x][y][0] == _emptyFieldPtr)
         _objectOnFieldPtrs[x][y][0] = ptr;
     else
         _objectOnFieldPtrs[x][y].push_back(ptr);
 }
 
+bool Board::checkBoardCoordinatesValidity(int x, int y, int z) const
+{
+    if (x < 0 || x >= _xSize)
+    {
+        throw IndexOutOfBoardSizeException("X");
+        return false;
+    }
+    else if (y < 0 || y >= _ySize)
+    {
+        throw IndexOutOfBoardSizeException("Y");
+        return false;
+    }
+    else if (z < 0 || z >= _objectOnFieldPtrs[x][y].size())
+    {
+        throw IndexOutOfBoardSizeException("Z");
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 bool Board::moveDown(int x, int y, int z)
 {
+    checkBoardCoordinatesValidity(x, y, z);
+
     if (y < _ySize - 1)
     {
         ObjectOnFieldPtrs2Vector nextObjects(_objectOnFieldPtrs[x].begin() + y + 1,
@@ -223,6 +257,8 @@ bool Board::moveDown(int x, int y, int z)
 
 bool Board::moveUp(int x, int y, int z)
 {
+    checkBoardCoordinatesValidity(x, y, z);
+
     if (y > 0)
     {
         ObjectOnFieldPtrs2Vector nextObjects(std::make_reverse_iterator(_objectOnFieldPtrs[x].begin() + y),
@@ -253,6 +289,8 @@ bool Board::moveUp(int x, int y, int z)
 
 bool Board::moveLeft(int x, int y, int z)
 {
+    checkBoardCoordinatesValidity(x, y, z);
+
     if (x > 0)
     {
         ObjectOnFieldPtrs2Vector nextObjects;
@@ -287,6 +325,8 @@ bool Board::moveLeft(int x, int y, int z)
 
 bool Board::moveRight(int x, int y, int z)
 {
+    checkBoardCoordinatesValidity(x, y, z);
+
     if (x < _xSize - 1)
     {
         ObjectOnFieldPtrs2Vector nextObjects;

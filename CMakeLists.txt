@@ -21,6 +21,7 @@ add_library(BabaIsYouLib
   src/Operator.cpp
   src/Property.cpp
   src/AudioManager.cpp
+  src/Exceptions.cpp
   src/SolidObjects/Baba.cpp
   src/SolidObjects/Wall.cpp
   src/SolidObjects/Flag.cpp

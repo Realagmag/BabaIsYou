@@ -9,6 +9,7 @@
 #include "ObjectOnField.h"
 #include "SolidObject.h"
 #include "Parameters.h"
+#include "Exceptions.h"
 
 enum GameStatus
 {
@@ -43,7 +44,7 @@ private:
     ObjectOnFieldPtrs3Vector _objectOnFieldPtrs;
 
     /** Size of board */
-    int _xSize, _ySize;
+    unsigned int _xSize, _ySize;
 
     /** Status of the game */
     GameStatus _gameStatus;
@@ -87,6 +88,8 @@ public:
     int getZSize(int x, int y) const;
 
     GameStatus getGameStatus() const;
+
+    bool checkBoardCoordinatesValidity(int x, int y, int z) const;
 
     /** Removes object */
     void removeObject(int x, int y, int z);
@@ -157,5 +160,6 @@ public:
 
     void saveState(const ObjectOnFieldPtrs3Vector &state);
 
+    /** Undo last move. */
     void undoMove();
 };

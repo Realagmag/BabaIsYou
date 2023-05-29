@@ -29,7 +29,8 @@ std::string Baba::getImagePath(std::string direction) const
         return _imagePathLeft;
     else if (direction == "right")
         return _imagePathRight;
-    // Error to handle
+    else
+        throw InvalidDirectionException(direction);
 }
 
 void Baba::setImagePath(std::string imagePath, std::string direction)
@@ -42,5 +43,6 @@ void Baba::setImagePath(std::string imagePath, std::string direction)
         _imagePathLeft = imagePath;
     else if (direction == "right")
         _imagePathRight = imagePath;
-    // Error to handle
+    else
+        throw InvalidDirectionException(direction);
 }
