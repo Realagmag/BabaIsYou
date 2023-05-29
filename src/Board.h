@@ -132,8 +132,7 @@ public:
      * and returns their coordinates. */
     std::vector<Coordinates> getObjectsToMoveCoordinates() const;
 
-    /** Sets all of objects wasMoved flag to the given value. */
-    void setObjectsWasMovedFlag(bool value);
+    static std::vector<int> indexesOfObjectsToPush(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs);
 
     /** Updates rules. */
     void updateRules();

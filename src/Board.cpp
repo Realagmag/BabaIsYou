@@ -56,9 +56,6 @@ void Board::updateState(Action action)
 {
     _wereRulesChanged = false;
 
-    // It is before move so no objects have moved yet
-    setObjectsWasMovedFlag(false);
-
     // Move all "You" objects
     switch (action)
     {
@@ -371,37 +368,35 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, ObjectOnFieldPtr &cu
         nextObjects[0].push_back(currentObject);
 
     // Move chain of objects before current object
-    for (int i = 0; i < objectsToMove; i++)
+    for (int i = objectsToMove - 1; i >= 0; i--)
     {
         // Find first object that can be pushed and wasn't pushed, we know that it exists
-        auto it = std::find_if(nextObjects[i].begin(), nextObjects[i].end(),
-                               [](const ObjectOnFieldPtr &ptr)
-                               { return ptr->getProperty("Push") && !ptr->getProperty("You") && !ptr->wasMoved; });
-        int index = std::distance(nextObjects[i].begin(), it);
+        std::vector indexes = indexesOfObjectsToPush(nextObjects[i]);
+        // Sort indexes descending
+        std::sort(indexes.begin(), indexes.end(), std::greater<int>());
 
-        // Check if this move will change rules
-        if (nextObjects[i][index]->getType() == "Noun" ||
-            nextObjects[i][index]->getType() == "Operator" ||
-            nextObjects[i][index]->getType() == "Property")
+        for (int index : indexes)
         {
-            _wereRulesChanged = true;
+            // Check if this move will change rules
+            if (nextObjects[i][index]->getType() == "Noun" ||
+                nextObjects[i][index]->getType() == "Operator" ||
+                nextObjects[i][index]->getType() == "Property")
+            {
+                _wereRulesChanged = true;
+            }
+
+            // Add object to the next field
+            if (nextObjects[i + 1].size() == 1 && nextObjects[i + 1][0] == _emptyFieldPtr)
+                nextObjects[i + 1][0] = nextObjects[i][index];
+            else
+                nextObjects[i + 1].push_back(nextObjects[i][index]);
+
+            // Remove object from the current field
+            if (nextObjects[i].size() == 1)
+                nextObjects[i][0] = _emptyFieldPtr;
+            else
+                nextObjects[i].erase(nextObjects[i].begin() + index);
         }
-
-        // Mark object as moved (Work only for Noun, Operator and Property!)
-        if (nextObjects[i][index]->getType() != "SolidObject")
-            nextObjects[i][index]->wasMoved = true;
-
-        // Add object to the next field
-        if (nextObjects[i + 1].size() == 1 && nextObjects[i + 1][0] == _emptyFieldPtr)
-            nextObjects[i + 1][0] = nextObjects[i][index];
-        else
-            nextObjects[i + 1].push_back(nextObjects[i][index]);
-
-        // Remove object from the current field
-        if (nextObjects[i].size() == 1)
-            nextObjects[i][0] = _emptyFieldPtr;
-        else
-            nextObjects[i].erase(nextObjects[i].begin() + index);
     }
 }
 
@@ -431,8 +426,7 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
         }
         else if (std::any_of(objectOnOneFieldPtrs.begin(), objectOnOneFieldPtrs.end(),
                              [&](ObjectOnFieldPtr objectOnFieldPtr)
-                             { return objectOnFieldPtr->getProperty("Push") && !objectOnFieldPtr->wasMoved &&
-                             !objectOnFieldPtr->getProperty("You"); }))
+                             { return objectOnFieldPtr->getProperty("Push") && !objectOnFieldPtr->getProperty("You"); }))
         {
             objectsToMove++;
             continue;
@@ -494,20 +488,17 @@ std::vector<Coordinates> Board::getObjectsToMoveCoordinates() const
     return objectsCoordinates;
 }
 
-void Board::setObjectsWasMovedFlag(bool flag)
+std::vector<int> Board::indexesOfObjectsToPush(const std::vector<ObjectOnFieldPtr> &objectOnFieldPtrs)
 {
-    // Iterate over vector
-    for (int x = 0; x < _objectOnFieldPtrs.size(); x++)
+    std::vector<int> indexes;
+
+    for (int i = 0; i < objectOnFieldPtrs.size(); i++)
     {
-        for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
-        {
-            for (int z = 0; z < _objectOnFieldPtrs[x][y].size(); z++)
-            {
-                // Set flag
-                _objectOnFieldPtrs[x][y][z]->wasMoved = flag;
-            }
-        }
+        if (objectOnFieldPtrs[i]->getProperty("Push") && !objectOnFieldPtrs[i]->getProperty("You"))
+            indexes.push_back(i);
     }
+
+    return indexes;
 }
 
 void Board::updateRules()
