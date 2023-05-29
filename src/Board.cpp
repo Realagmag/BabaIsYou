@@ -370,10 +370,10 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, ObjectOnFieldPtr &cu
     // Move chain of objects before current object
     for (int i = 0; i < objectsToMove; i++)
     {
-        // Find first object that can be pushed, we know that it exists
+        // Find first object that can be pushed and wasn't pushed, we know that it exists
         auto it = std::find_if(nextObjects[i].begin(), nextObjects[i].end(),
                                [](const ObjectOnFieldPtr &ptr)
-                               { return ptr->getProperty("Push"); });
+                               { return ptr->getProperty("Push") && !ptr->wasPushed; });
         int index = std::distance(nextObjects[i].begin(), it);
 
         // Check if this move will change rules
@@ -383,6 +383,9 @@ void Board::makeMove(ObjectOnFieldPtrs2Vector &nextObjects, ObjectOnFieldPtr &cu
         {
             _wereRulesChanged = true;
         }
+
+        // Mark object as pushed
+        nextObjects[i][index]->wasPushed = true;
 
         // Add object to the next field
         if (nextObjects[i + 1].size() == 1 && nextObjects[i + 1][0] == _emptyFieldPtr)
@@ -422,7 +425,9 @@ std::pair<bool, int> Board::isMovePossible(const ObjectOnFieldPtrs2Vector &nextO
             isMovePossible = false;
             break;
         }
-        else if (anyObjectHasProperty(objectOnOneFieldPtrs, "Push"))
+        else if (std::any_of(objectOnOneFieldPtrs.begin(), objectOnOneFieldPtrs.end(),
+                             [&](ObjectOnFieldPtr objectOnFieldPtr)
+                             { return objectOnFieldPtr->getProperty("Push") && !objectOnFieldPtr->wasPushed; }))
         {
             objectsToMove++;
             continue;
@@ -469,7 +474,7 @@ std::vector<Coordinates> Board::getObjectsToMoveCoordinates() const
     {
         for (int y = 0; y < _objectOnFieldPtrs[x].size(); y++)
         {
-            for (int z = 0; z < _objectOnFieldPtrs[x][y].size(); z++)
+            for (int z = _objectOnFieldPtrs[x][y].size() - 1; z >= 0 ; z--)
             {
                 // Check if object has You property and not Stop property
                 if (_objectOnFieldPtrs[x][y][z]->getProperty("You") && !_objectOnFieldPtrs[x][y][z]->getProperty("Stop"))
@@ -658,12 +663,15 @@ void Board::resetRules()
         {
             for (const ObjectOnFieldPtr &objectOnFieldPtr : vector1)
             {
+                // For SolidObjects
                 if (objectOnFieldPtr->getType() == "SolidObject")
                 {
                     // Clear SolidObject state
                     objectOnFieldPtr->resetProperties();
                     objectOnFieldPtr->clearTemporaryIdentity();
                 }
+                // For all objects
+                objectOnFieldPtr->wasPushed = false;
             }
         }
     }
