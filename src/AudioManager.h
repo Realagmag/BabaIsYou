@@ -50,6 +50,6 @@ public:
     void StopSound(Sound sound);
 
     /** Check if the music is playing at current moment*/
-    bool IsPlaying(Music music);
+    bool IsPlaying(Music music) const;
 
 };

@@ -77,7 +77,7 @@ void AudioManager::StopSound(Sound sound)
     _sounds[sound].stop();
 }
 
-bool AudioManager::IsPlaying(Music music)
+bool AudioManager::IsPlaying(Music music) const
 {
     if (music == MENU)
     {

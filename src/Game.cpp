@@ -20,11 +20,15 @@ Game::Game(): _window("Baba is You", sf::Vector2u(1920,1080)), _board(30, 16)
 {
     setCurrentLevel(0);
     CreateObjectInstances();
+    LoadProgressFromFile();
     LoadLevelsFromFile();
     SetupBoard();
 }
 
-Game::~Game(){}
+Game::~Game()
+{
+    SaveProgressToFile();
+}
 
 
 void Game::HandleInput()
@@ -128,6 +132,7 @@ void Game::Update()
         _audio_manager.StopMusic(LEVEL);
         _audio_manager.PlaySound(WIN_SOUND);
         WinSoundWasPlayed = true;
+        CountLevelAsComplited(_current_level);
     }
     else if (GameHasStarted && (_board.getGameStatus() == LOSE) && !LoseSoundWasPlayed)
     {
@@ -143,7 +148,7 @@ void Game::Render()
     if (GameHasStarted){
     _window.DrawBoard(_board);} // Render current board.
     else{
-    _window.DrawMenu(_current_level);} // Render game's menu.
+    _window.DrawMenu(_current_level, CompletedLevels);} // Render game's menu.
     if (_board.getGameStatus() == WIN && GameHasStarted)
     {
         _window.DrawWin(); // Render text when game is won.
@@ -168,6 +173,27 @@ unsigned int Game::getCurrentLevel() const
 void Game::setCurrentLevel(unsigned int level_number)
 {
     _current_level = level_number;
+}
+
+void Game::CountLevelAsComplited(unsigned int level_number)
+{
+    auto it = std::find(CompletedLevels.begin(), CompletedLevels.end(), level_number);
+    if (it == CompletedLevels.end())
+    {
+        CompletedLevels.push_back(level_number);
+    }
+}
+
+void Game::SaveProgressToFile()
+{
+    std::ofstream file("../src/completed_levels.txt");
+    if (file.is_open()) {
+        file << *this; //Save which levels are complited
+        file.close();
+    }
+    else {
+        std::cerr << "Failed to save completed levels" << std::endl;
+    }
 }
 
 void Game::SetupBoard()
@@ -211,6 +237,18 @@ void Game::SetupBoard()
 
     // Update rules before start of the game or after restart
     _board.updateRules();
+}
+
+void Game::LoadProgressFromFile()
+{
+    std::ifstream file("../src/completed_levels.txt");
+    if (file.is_open()) {
+        file >> *this;
+        file.close();
+    }
+    else {
+        std::cerr << "Failed to open the file with completed levels." << std::endl;
+    }
 }
 
 void Game::LoadLevelsFromFile()
@@ -451,4 +489,21 @@ void Game::CreateObjectInstances()
         AllObjectsPtrs[i]->SetSpritePtr(std::make_shared<sf::Sprite>(AllSprites[i]));
     }
 
+}
+
+std::ostream& operator<<(std::ostream& os, const Game& game)
+{
+    for (const int& element : game.CompletedLevels)
+    os << element << " ";
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Game& game)
+{
+    unsigned int data;
+    while(is >> data)
+    {
+        game.CompletedLevels.emplace_back(data);
+    }
+    return is;
 }

@@ -97,7 +97,6 @@ void Window::SetupEndgameText()
     _lose_text.setOrigin(lose_text_bounds.left + lose_text_bounds.width/2.0f,
                         lose_text_bounds.top + lose_text_bounds.height/2.0f);
     _lose_text.setPosition(_windowSize.x/2, 64);
-
 }
 
 void Window::DrawBoard(const Board& board)
@@ -155,13 +154,17 @@ void Window::CreateMenuDrawables()
     _red_level.setFillColor(sf::Color::Red);
 }
 
-void Window::DrawMenu(int current_level)
+void Window::DrawMenu(int current_level, const std::vector<unsigned int> &completed_levels)
 {
     float rectangle_xpos = _windowSize.x/10*(current_level+1) + 32;
     float rectangle_ypos = _windowSize.y/6*4 + 20;
     _red_level.setPosition(sf::Vector2f(rectangle_xpos, rectangle_ypos));
     Draw(_red_level);
     Draw(_choose_level_sprite);
+    for ( auto i : completed_levels)
+    {
+        levels_sprites[i].setColor(sf::Color::Green);
+    }
     for (int i= 0; i < Parameters::NUMBER_OF_LEVELS; i++)
     {
         levels_sprites[i].setTexture(levels_textures[i]);

@@ -40,7 +40,7 @@ class Window{
         void DrawLose();
 
         /** Draws game's menu where player can choose level*/
-        void DrawMenu(int current_level);
+        void DrawMenu(int current_level, const std::vector<unsigned int> &completed_levels);
 
 
 

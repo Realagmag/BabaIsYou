@@ -46,7 +46,8 @@ class Game{
          * Including: move action, choosing level, restart.*/
         void HandleInput();
 
-        /** Handles events happening to window like closing it.*/
+        /** Handles events happening to window like closing it and
+         * is updates sounds and music*/
         void Update();
 
         /** Renders either game's menu or board if level has started.*/
@@ -57,6 +58,10 @@ class Game{
         unsigned int getCurrentLevel() const;
 
         void setCurrentLevel(unsigned int level_number);
+
+        friend std::ostream& operator<<(std::ostream& os, const Game& game);
+
+        friend std::istream& operator>>(std::istream& is, Game& game);
 
     private:
 
@@ -72,8 +77,14 @@ class Game{
          * adequate vector.*/
         void CreateObjectInstances();
 
+        void LoadProgressFromFile();
+
         /** Loads objects deployment for each level from .txt file.*/
         void LoadLevelsFromFile();
+
+        void CountLevelAsComplited(unsigned int level);
+
+        void SaveProgressToFile();
 
         /** Stores one entity of each ObjectOnField used in game
          * in order complementary with enum Loads.*/
@@ -93,6 +104,9 @@ class Game{
 
         /** Stores objects deplopment for each level loaded from .txt file.*/
         std::vector<std::vector<std::vector<std::string>>> LoadedLevels;
+
+        /** Contains which levels have been completed*/
+        std::vector<unsigned int> CompletedLevels;
 
         /** Manages window events and displays drawables*/
         Window _window;
