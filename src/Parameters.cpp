@@ -1,6 +1,8 @@
 #include "Parameters.h"
 
-const int Parameters::MAX_ARCHIVAL_STATES = 10;
+const unsigned int Parameters::MAX_ARCHIVAL_STATES = 30;
+
+const unsigned int Parameters::NUMBER_OF_LEVELS = 8;
 
 const std::map<std::string, std::string> Parameters::PATHS = {
     {"Empty", "src/textures/Empty.png"},

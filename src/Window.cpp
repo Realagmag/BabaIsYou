@@ -13,7 +13,6 @@ Window::~Window(){ Destroy(); }
 
 void Window::Setup(const std::string l_title, const sf::Vector2u& l_size)
 {
-    _number_of_levels = 8;
     _windowTitle = l_title;
     _windowSize = l_size;
     _isFullscreen = true;
@@ -132,7 +131,7 @@ void Window::DrawLose()
 
 void Window::CreateMenuDrawables()
 {
-    for (int i=0; i < _number_of_levels; i++)
+    for (int i=0; i < Parameters::NUMBER_OF_LEVELS; i++)
     {
         sf::Texture texture;
         std::string number = std::to_string(i+1);
@@ -163,7 +162,7 @@ void Window::DrawMenu(int current_level)
     _red_level.setPosition(sf::Vector2f(rectangle_xpos, rectangle_ypos));
     Draw(_red_level);
     Draw(_choose_level_sprite);
-    for (int i= 0; i < _number_of_levels; i++)
+    for (int i= 0; i < Parameters::NUMBER_OF_LEVELS; i++)
     {
         levels_sprites[i].setTexture(levels_textures[i]);
         Draw(levels_sprites[i]);

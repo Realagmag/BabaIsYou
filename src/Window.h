@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Board.h"
+#include "Parameters.h"
 
 class Window{
     public:
@@ -92,6 +93,4 @@ class Window{
 
         /** Flag that checks if window should be displayed in fullscreen mode*/
         bool _isFullscreen;
-
-        int _number_of_levels;
 };
