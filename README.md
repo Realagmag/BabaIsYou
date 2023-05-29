@@ -48,6 +48,7 @@ make test
 Menu:
 * **Strzałki** - przechodzenie pomiędzy levelami
 * **R** - reset zapisu postępu
+* **ESC** - wyjście z gry
 
 Levele:
 * **Strzałka w górę** - obiekty "You" idą w górę
@@ -56,3 +57,4 @@ Levele:
 * **Strzałka w prawo** - obiekty "You" idą w prawo
 * **R** - reset levelu
 * **Q** - cofanie ruchu
+* **ESC** - wyjście do Menu
