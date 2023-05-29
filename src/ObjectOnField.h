@@ -59,11 +59,12 @@ public:
 
     virtual std::string getText() const;
 
-    /* Indicates if object identity can be changed. */
+    /** Indicates if object identity can be changed. */
     bool isChangeless = false;
 
-    /* Indicates if object was pushed in the current move. */
-    bool wasPushed = false;
+    /** Indicates if object was moved in the current move.
+     * It prevents from moving the same object twice in one move. */
+    bool wasMoved = false;
 };
 
 using ObjectOnFieldPtr = std::shared_ptr<ObjectOnField>;

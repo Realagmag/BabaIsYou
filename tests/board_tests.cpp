@@ -114,6 +114,19 @@ TEST_CASE("Board tests general and move", "[Board]")
         CHECK(board.isMovePossible(ptrs5).second == 0);
     }
 
+    SECTION("Make move test")
+    {
+        ObjectOnFieldPtrs2Vector nextObjects = {{wall_ptr}, {wall_ptr}, {SolidObject_ptr}};
+        ObjectOnFieldPtr currentObject = baba_ptr;
+        int objectsToMove = 2;
+        board.makeMove(nextObjects, currentObject, objectsToMove);
+        CHECK(nextObjects[0][0]->getType() == "SolidObject");
+        CHECK(nextObjects[0][0]->getImagePath() == "baba.png");
+        CHECK(nextObjects[1][0]->getType() == "SolidObject");
+        CHECK(nextObjects[1][0]->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
+        CHECK(nextObjects[2][1]->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
+    }
+
     SECTION("Move tests")
     {
         board.moveDown(1, 1, 0);
