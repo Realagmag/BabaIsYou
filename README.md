@@ -4,9 +4,9 @@
 Kamil Cisek i Konrad Karpiuk. Pomysł opiera się na grze "Baba Is You" autorstwa Arvi Teikari.
 ## Struktura projektu
 Program składa się z głównego pliku main.cpp oraz plików z klasami:
-* Klasa **Game**:
-* Klasa **Window**:
-* Klasa **AudioManager**:
+* Klasa **Game**: klasa czuwająca nad przebiegiem rozgrywki, wyznacza zadania pozostałym klasom.
+* Klasa **Window**: klasa odpowiedzialna za wyświetlanie na ekranie menu oraz poziomów.
+* Klasa **AudioManager**: klasa obsługująca muzykę i dźwięki obecne w grze.
 * Klasa **Board**: główna klasa odpowiedzialna za logikę gry. Przechowuje stan planszy, wykonuje na niej ruch, odświeża zasady.
 * Klasa **ObjectOnField**: klasa reprezentującą każdy możliwy obiekt w grze, po niej dziedziczą klasy obiektów określonych typów.
 
