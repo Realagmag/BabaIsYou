@@ -14,7 +14,7 @@ Operator::Operator(const std::string &text)
     : _text(text)
 {
     _type = "Operator";
-    _imagePath = "../" + Parameters::PATHS.at(text);
+    _imagePath = Parameters::OBJECT_PATHS.at(text);
     setProperty("Push", true);
     setProperty("Stop", true);
 

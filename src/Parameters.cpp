@@ -4,38 +4,52 @@ const unsigned int Parameters::MAX_ARCHIVAL_STATES = 30;
 
 const unsigned int Parameters::NUMBER_OF_LEVELS = 8;
 
-const std::map<std::string, std::string> Parameters::PATHS = {
-    {"Empty", "src/textures/Empty.png"},
-    {"Baba", "src/textures/Baba.png"},
-    {"BabaUp", "src/textures/BabaUp.png"},
-    {"BabaDown", "src/textures/BabaDown.png"},
-    {"BabaLeft", "src/textures/BabaLeft.png"},
-    {"BabaRight", "src/textures/BabaRight.png"},
-    {"Flag", "src/textures/Flag.png"},
-    {"Rock", "src/textures/Rock.png"},
-    {"Wall", "src/textures/Wall.png"},
-    {"Water", "src/textures/Water.png"},
-    {"Lava", "src/textures/Lava.png"},
-    {"Skull", "src/textures/Skull.png"},
-    {"Tree", "src/textures/Tree.png"},
-    {"Grass", "src/textures/Grass.png"},
-    {"Is", "src/textures/Is.png"},
-    {"And", "src/textures/And.png"},
-    {"Babatext", "src/textures/Babatext.png"},
-    {"Defeattext", "src/textures/Defeattext.png"},
-    {"Flagtext", "src/textures/Flagtext.png"},
-    {"Floattext", "src/textures/Floattext.png"},
-    {"Hottext", "src/textures/Hottext.png"},
-    {"Melttext", "src/textures/Melttext.png"},
-    {"Pushtext", "src/textures/Pushtext.png"},
-    {"Rocktext", "src/textures/Rocktext.png"},
-    {"Sinktext", "src/textures/Sinktext.png"},
-    {"Skulltext", "src/textures/Skulltext.png"},
-    {"Stoptext", "src/textures/Stoptext.png"},
-    {"Treetext", "src/textures/Treetext.png"},
-    {"Walltext", "src/textures/Walltext.png"},
-    {"Watertext", "src/textures/Watertext.png"},
-    {"Wintext", "src/textures/Wintext.png"},
-    {"Youtext", "src/textures/Youtext.png"},
-    {"Lavatext", "src/textures/Lavatext.png"},
+const std::map<std::string, std::string> Parameters::OBJECT_PATHS = {
+    {"Empty", "../textures/Empty.png"},
+    {"Baba", "../textures/Baba.png"},
+    {"BabaUp", "../textures/BabaUp.png"},
+    {"BabaDown", "../textures/BabaDown.png"},
+    {"BabaLeft", "../textures/BabaLeft.png"},
+    {"BabaRight", "../textures/BabaRight.png"},
+    {"Flag", "../textures/Flag.png"},
+    {"Rock", "../textures/Rock.png"},
+    {"Wall", "../textures/Wall.png"},
+    {"Water", "../textures/Water.png"},
+    {"Lava", "../textures/Lava.png"},
+    {"Skull", "../textures/Skull.png"},
+    {"Tree", "../textures/Tree.png"},
+    {"Grass", "../textures/Grass.png"},
+    {"Is", "../textures/Is.png"},
+    {"And", "../textures/And.png"},
+    {"Babatext", "../textures/Babatext.png"},
+    {"Defeattext", "../textures/Defeattext.png"},
+    {"Flagtext", "../textures/Flagtext.png"},
+    {"Floattext", "../textures/Floattext.png"},
+    {"Hottext", "../textures/Hottext.png"},
+    {"Melttext", "../textures/Melttext.png"},
+    {"Pushtext", "../textures/Pushtext.png"},
+    {"Rocktext", "../textures/Rocktext.png"},
+    {"Sinktext", "../textures/Sinktext.png"},
+    {"Skulltext", "../textures/Skulltext.png"},
+    {"Stoptext", "../textures/Stoptext.png"},
+    {"Treetext", "../textures/Treetext.png"},
+    {"Walltext", "../textures/Walltext.png"},
+    {"Watertext", "../textures/Watertext.png"},
+    {"Wintext", "../textures/Wintext.png"},
+    {"Youtext", "../textures/Youtext.png"},
+    {"Lavatext", "../textures/Lavatext.png"},
 };
+
+const std::map<std::string, std::string> Parameters::FONT_PATHS = {
+    {"ARIBLO", "../fonts/ARIBL0.ttf"}
+};
+
+const std::map<std::string, std::string> Parameters::AUDIO_PATHS = {
+    {"Win", "../sounds/win.wav"},
+    {"Lose", "../sounds/lose.wav"},
+    {"Move", "../sounds/move.wav"},
+    {"Menu", "../sounds/menumusic.ogg"},
+    {"Level", "../sounds/levelmusic.ogg"}
+};
+
+const std::string Parameters::CHOOSE_LEVEL_TEXT_PATH = "../textures/choose_level.png";

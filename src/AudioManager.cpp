@@ -8,24 +8,24 @@ AudioManager::AudioManager()
 void AudioManager::SetupSoundsAndMusic()
 {
     sf::SoundBuffer win_buffer;
-    if(!win_buffer.loadFromFile("../sounds/win.wav"))
+    if(!win_buffer.loadFromFile(Parameters::AUDIO_PATHS.at("Win")))
     {
-        std::cerr<<"Failed to load from file win.wav"<<std::endl;
+        InvalidPathException(Parameters::AUDIO_PATHS.at("Win"));
     }
     _buffers.emplace_back(win_buffer);
 
     sf::SoundBuffer lose_buffer;
-    if(!lose_buffer.loadFromFile("../sounds/lose.wav"))
+    if(!lose_buffer.loadFromFile(Parameters::AUDIO_PATHS.at("Lose")))
     {
-        std::cerr<<"Failed to load from file lose.wav"<<std::endl;
+        InvalidPathException(Parameters::AUDIO_PATHS.at("Lose"));
     }
     _buffers.emplace_back(lose_buffer);
 
 
     sf::SoundBuffer move_buffer;
-    if(!move_buffer.loadFromFile("../sounds/move.wav"))
+    if(!move_buffer.loadFromFile(Parameters::AUDIO_PATHS.at("Move")))
     {
-        std::cerr<<"Failed to load from file move.wav"<<std::endl;
+        InvalidPathException(Parameters::AUDIO_PATHS.at("Move"));
     }
     _buffers.emplace_back(move_buffer);
 
@@ -42,15 +42,15 @@ void AudioManager::SetupSoundsAndMusic()
     move_sound.setVolume(100);
     _sounds.emplace_back(move_sound);
 
-    if(!_menu_music.openFromFile("../sounds/menumusic.ogg"))
+    if(!_menu_music.openFromFile(Parameters::AUDIO_PATHS.at("Menu")))
     {
-        std::cerr<<"Failed to load menumusic.ogg"<<std::endl;
+        InvalidPathException(Parameters::AUDIO_PATHS.at("Menu"));
     };
     _menu_music.setLoop(true);
 
-    if(!_level_music.openFromFile("../sounds/levelmusic.ogg"))
+    if(!_level_music.openFromFile(Parameters::AUDIO_PATHS.at("Level")))
     {
-        std::cerr<<"Failed to load levelmusic.ogg"<<std::endl;
+        InvalidPathException(Parameters::AUDIO_PATHS.at("Level"));
     }
     _level_music.setLoop(true);
 }

@@ -8,3 +8,6 @@ IndexOutOfBoardSizeException::IndexOutOfBoardSizeException(const std::string &di
 
 InvalidDirectionException::InvalidDirectionException(const std::string &direction) :
     std::invalid_argument("Direction " + direction + " does not exist!") {}
+
+InvalidPathException::InvalidPathException(const std::string &path) :
+    std::invalid_argument("Unable to load " + path) {}

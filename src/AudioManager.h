@@ -2,6 +2,8 @@
 
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include "Parameters.h"
+#include "Exceptions.h"
 
 enum Sound{
     WIN_SOUND,

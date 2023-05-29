@@ -21,3 +21,9 @@ class InvalidDirectionException : public std::invalid_argument
     public:
         InvalidDirectionException(const std::string &direction);
 };
+
+class InvalidPathException : public std::invalid_argument
+{
+    public:
+        InvalidPathException(const std::string &path);
+};

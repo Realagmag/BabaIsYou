@@ -52,7 +52,7 @@ TEST_CASE("Board tests general and move", "[Board]")
     SECTION("Add and remove objects")
     {
         board.removeObject(0, 0, 0);
-        CHECK(board.getObject(0, 0, 0)->getImagePath() == Parameters::PATHS.at("Empty"));
+        CHECK(board.getObject(0, 0, 0)->getImagePath() == Parameters::OBJECT_PATHS.at("Empty"));
 
         board.addObject(0, 0, baba_ptr);
         board.addObject(0, 0, SolidObject_ptr);
@@ -67,7 +67,7 @@ TEST_CASE("Board tests general and move", "[Board]")
     {
         board.moveDown(0, 0, 0);
         CHECK(board.getObject(0, 1, 1)->getImagePath() == "baba.png");
-        CHECK(board.getObject(0, 0, 0)->getImagePath() == Parameters::PATHS.at("Empty"));
+        CHECK(board.getObject(0, 0, 0)->getImagePath() == Parameters::OBJECT_PATHS.at("Empty"));
 
         board.moveRight(0, 1, 0);
         CHECK(board.getObject(0, 1, 0)->getImagePath() == "baba.png");
@@ -123,14 +123,14 @@ TEST_CASE("Board tests general and move", "[Board]")
         CHECK(nextObjects[0][0]->getType() == "SolidObject");
         CHECK(nextObjects[0][0]->getImagePath() == "baba.png");
         CHECK(nextObjects[1][0]->getType() == "SolidObject");
-        CHECK(nextObjects[1][0]->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
-        CHECK(nextObjects[2][1]->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
+        CHECK(nextObjects[1][0]->getImagePath() == "../" + Parameters::OBJECT_PATHS.at("Wall"));
+        CHECK(nextObjects[2][1]->getImagePath() == "../" + Parameters::OBJECT_PATHS.at("Wall"));
     }
 
     SECTION("Move tests")
     {
         board.moveDown(1, 1, 0);
-        CHECK(board.getObject(1, 2, 0)->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
+        CHECK(board.getObject(1, 2, 0)->getImagePath() == "../" + Parameters::OBJECT_PATHS.at("Wall"));
         CHECK(board.getZSize(1, 2) == 1);
 
         board.moveLeft(1, 1, 0);
@@ -154,7 +154,7 @@ TEST_CASE("Board tests general and move", "[Board]")
         std::vector<ObjectOnFieldPtr> ptrs3 = {wall_ptr, wall_ptr, wall_ptr};
         board.mergeSameObjects(ptrs1);
         CHECK(ptrs1.size() == 2);
-        CHECK(ptrs1[0]->getImagePath() == "../" + Parameters::PATHS.at("Wall"));
+        CHECK(ptrs1[0]->getImagePath() == "../" + Parameters::OBJECT_PATHS.at("Wall"));
         board.mergeSameObjects(ptrs2);
         CHECK(ptrs2.size() == 2);
         board.mergeSameObjects(ptrs3);

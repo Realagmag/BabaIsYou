@@ -6,12 +6,12 @@ Baba::Baba(std::string imagePath) : SolidObject(imagePath)
 
 Baba::Baba()
 {
-    _imagePath = "../" + Parameters::PATHS.at("Baba");
-    _imagePathUp = "../" + Parameters::PATHS.at("BabaUp");
-    _imagePathDown = "../" + Parameters::PATHS.at("BabaDown");
-    _imagePathLeft = "../" + Parameters::PATHS.at("BabaLeft");
-    _imagePathRight = "../" + Parameters::PATHS.at("BabaRight");
-    _nounImagePath = "../" + Parameters::PATHS.at("Babatext");
+    _imagePath = Parameters::OBJECT_PATHS.at("Baba");
+    _imagePathUp = Parameters::OBJECT_PATHS.at("BabaUp");
+    _imagePathDown = Parameters::OBJECT_PATHS.at("BabaDown");
+    _imagePathLeft = Parameters::OBJECT_PATHS.at("BabaLeft");
+    _imagePathRight = Parameters::OBJECT_PATHS.at("BabaRight");
+    _nounImagePath = Parameters::OBJECT_PATHS.at("Babatext");
 }
 
 std::string Baba::getImagePath() const

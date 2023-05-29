@@ -11,7 +11,7 @@ TEST_CASE("Noun tests", "[Noun]")
 
     SECTION("Getters")
     {
-        CHECK(noun->getImagePath() == "../" + Parameters::PATHS.at("Babatext"));
+        CHECK(noun->getImagePath() == "../" + Parameters::OBJECT_PATHS.at("Babatext"));
         CHECK(noun->getType() == "Noun");
         CHECK(noun->getProperty("Push") == true);
         CHECK(noun->getProperty("Stop") == true);

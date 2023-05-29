@@ -14,7 +14,7 @@ Property::Property(const std::string &text)
     : _text(text)
 {
     _type = "Property";
-    _imagePath = "../" + Parameters::PATHS.at(text + "text");
+    _imagePath = Parameters::OBJECT_PATHS.at(text + "text");
     setProperty("Push", true);
     setProperty("Stop", true);
 

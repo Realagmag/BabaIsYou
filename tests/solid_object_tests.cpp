@@ -11,7 +11,7 @@ TEST_CASE("SolidObject tests", "[SolidObject]")
 
     SECTION("Getters")
     {
-        CHECK(solid_object->getImagePath() == Parameters::PATHS.at("Empty"));
+        CHECK(solid_object->getImagePath() == Parameters::OBJECT_PATHS.at("Empty"));
         CHECK(solid_object->getType() == "SolidObject");
     }
 
@@ -21,7 +21,7 @@ TEST_CASE("SolidObject tests", "[SolidObject]")
         CHECK(solid_object->getImagePath() == baba_ptr->getImagePath());
         CHECK(solid_object->getType() == "SolidObject");
         solid_object->clearTemporaryIdentity();
-        CHECK(solid_object->getImagePath() == Parameters::PATHS.at("Empty"));
+        CHECK(solid_object->getImagePath() == Parameters::OBJECT_PATHS.at("Empty"));
         CHECK(solid_object->getType() == "SolidObject");
         CHECK(solid_object->getTemporaryIdentity() == nullptr);
     }

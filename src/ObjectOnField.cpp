@@ -5,7 +5,7 @@ ObjectOnField::ObjectOnField(std::string imagePath)
     : _imagePath(imagePath), _type("Empty") {}
 
 ObjectOnField::ObjectOnField()
-    : _imagePath(Parameters::PATHS.at("Empty")), _type("Empty") {}
+    : _imagePath(Parameters::OBJECT_PATHS.at("Empty")), _type("Empty") {}
 
 ObjectOnField::~ObjectOnField() {}
 

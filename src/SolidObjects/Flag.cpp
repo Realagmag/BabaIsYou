@@ -6,6 +6,6 @@ Flag::Flag(std::string imagePath) : SolidObject(imagePath)
 
 Flag::Flag()
 {
-    _imagePath = "../" + Parameters::PATHS.at("Flag");
-    _nounImagePath = "../" + Parameters::PATHS.at("Flagtext");
+    _imagePath = Parameters::OBJECT_PATHS.at("Flag");
+    _nounImagePath = Parameters::OBJECT_PATHS.at("Flagtext");
 }

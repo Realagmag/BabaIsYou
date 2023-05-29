@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Board.h"
 #include "Parameters.h"
+#include "Exceptions.h"
 
 class Window{
     public:

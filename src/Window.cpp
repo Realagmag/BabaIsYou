@@ -67,8 +67,8 @@ void Window::SetupEndgameText()
     std::string lose_text = "Press R to restart level";
 
     //Load font from file
-    if(!_font.loadFromFile("../src/fonts/ARIBL0.ttf")){
-        std::cerr <<"Failed to load font" <<std::endl;
+    if(!_font.loadFromFile(Parameters::FONT_PATHS.at("ARIBLO"))){
+        InvalidPathException(Parameters::FONT_PATHS.at("ARIBLO"));
     }
 
     _win_text.setFont(_font);
@@ -134,9 +134,9 @@ void Window::CreateMenuDrawables()
     {
         sf::Texture texture;
         std::string number = std::to_string(i+1);
-        if(!texture.loadFromFile("../src/textures/level_"+number+".png"))
+        if(!texture.loadFromFile("../textures/level_"+number+".png"))
         {
-            std::cerr << "Failed to load texture for level " << number << std::endl;
+            InvalidPathException("../textures/level_"+number+".png");
         }
         levels_textures.emplace_back(texture);
 
@@ -144,9 +144,9 @@ void Window::CreateMenuDrawables()
         sprite.setPosition(sf::Vector2f((_windowSize.x/10)*(i+1)+32, (_windowSize.y/6)*4));
         levels_sprites.emplace_back(sprite);
     }
-    if (!_choose_level_texture.loadFromFile("../src/textures/choose_level.png"))
+    if (!_choose_level_texture.loadFromFile(Parameters::CHOOSE_LEVEL_TEXT_PATH))
     {
-        std::cerr << "Failed to load choose level texture" << std::endl;
+        InvalidPathException(Parameters::CHOOSE_LEVEL_TEXT_PATH);
     }
     _choose_level_sprite.setTexture(_choose_level_texture);
     sf::Vector2u size = _choose_level_texture.getSize();

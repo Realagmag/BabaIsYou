@@ -9,10 +9,10 @@ TEST_CASE("Baba tests", "[Baba]")
 
     SECTION("Getters")
     {
-        CHECK(baba.getImagePath() == "../" + Parameters::PATHS.at("Baba"));
-        CHECK(baba.getImagePath("up") == "../" + Parameters::PATHS.at("BabaUp"));
-        CHECK(baba.getImagePath("down") == "../" + Parameters::PATHS.at("BabaDown"));
-        CHECK(baba.getImagePath("left") == "../" + Parameters::PATHS.at("BabaLeft"));
-        CHECK(baba.getImagePath("right") == "../" + Parameters::PATHS.at("BabaRight"));
+        CHECK(baba.getImagePath() == "../" + Parameters::OBJECT_PATHS.at("Baba"));
+        CHECK(baba.getImagePath("up") == "../" + Parameters::OBJECT_PATHS.at("BabaUp"));
+        CHECK(baba.getImagePath("down") == "../" + Parameters::OBJECT_PATHS.at("BabaDown"));
+        CHECK(baba.getImagePath("left") == "../" + Parameters::OBJECT_PATHS.at("BabaLeft"));
+        CHECK(baba.getImagePath("right") == "../" + Parameters::OBJECT_PATHS.at("BabaRight"));
     }
 }
