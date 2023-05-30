@@ -682,6 +682,11 @@ void Board::resetRules()
                     objectOnFieldPtr->resetProperties();
                     objectOnFieldPtr->clearTemporaryIdentity();
                 }
+                else if (objectOnFieldPtr->getType() == "Noun")
+                {
+                    objectOnFieldPtr->getSolidObjectPtr()->resetProperties();
+                    objectOnFieldPtr->getSolidObjectPtr()->clearTemporaryIdentity();
+                }
             }
         }
     }
