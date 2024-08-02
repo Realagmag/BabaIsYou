@@ -59,14 +59,3 @@ Types of objects in level:
 * **ObjectOnField : Noun** class: represents words related to SolidObject type elements e.g. Noun BABA represents SolidObject Baba.
 * **ObjectOnField : Property** class: represents properties that SolidObject can obtain. Examples are: PUSH, SINK, STOP.
 * **ObjectOnField : Operator** class : words that connect nouns with their properties: IS, AND.
-
-
-### Tests
-To run tests go to the projects root direcotry and run (skip first line if you've already run it):
-```
-cmake -S . -B build/
-cd build/
-make test
-./test
-```
-

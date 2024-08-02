@@ -1,0 +1,22 @@
+version: '3'
+services:
+  xserver:
+    image: x11docker/xserver
+    container_name: xserver
+    ports:
+      - "6000:6000"  # X server port
+    environment:
+      - DISPLAY=:0
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: xinit /usr/bin/xterm -- :0
+
+  baba:
+    image: babaisyou-baba
+    container_name: baba
+    depends_on:
+      - xserver
+    environment:
+      - DISPLAY=:0
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
