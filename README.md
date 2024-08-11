@@ -1,5 +1,9 @@
 # BabaIsYou
 
+## Video
+See the game before downloading.  
+https://youtu.be/N-h9v40iITo
+
 ## Authors
 Kamil Cisek & Konrad Karpiuk - students of Warsaw University of Technology. This is a clone of Arvi Teikari's game BabaIsYou.
 
